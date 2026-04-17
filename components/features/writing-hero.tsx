@@ -29,7 +29,7 @@ export function WritingHero({ article, locale, dictionary }: WritingHeroProps) {
               src={article.cover_image}
               alt={lang.title}
               fill
-              className="object-cover transition-transform duration-[var(--duration-slow)] group-hover:scale-[1.02]"
+              className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
               sizes="(max-width: 768px) 100vw, 56rem"
               priority
             />

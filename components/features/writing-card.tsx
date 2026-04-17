@@ -41,7 +41,7 @@ export function WritingCard({
                 src={article.cover_image}
                 alt={lang.title}
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
@@ -153,7 +153,7 @@ export function WritingCard({
               src={article.cover_image}
               alt={lang.title}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-out-expo)] group-hover:scale-[1.08]"
               sizes="64px"
             />
           </div>
