@@ -26,7 +26,7 @@ export function AdminNavbar() {
             href="/"
             className="flex items-center gap-1.5 text-sm text-text-tertiary hover:text-text-primary transition-colors"
           >
-            <ArrowLeft className="h-3.5 w-3.5" />
+            <ArrowLeft className="h-4 w-4" />
             {SITE.name}
           </Link>
           <div className="h-4 w-px bg-border" />
@@ -43,7 +43,7 @@ export function AdminNavbar() {
                       : "text-text-tertiary hover:text-text-primary hover:bg-surface/50"
                   }`}
                 >
-                  <Icon className="h-3.5 w-3.5" />
+                  <Icon className="h-4 w-4" />
                   {label}
                 </Link>
               );
@@ -55,7 +55,7 @@ export function AdminNavbar() {
             type="submit"
             className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm text-text-tertiary hover:text-text-primary hover:bg-surface/50 transition-colors"
           >
-            <LogOut className="h-3.5 w-3.5" />
+            <LogOut className="h-4 w-4" />
             Sign out
           </button>
         </form>

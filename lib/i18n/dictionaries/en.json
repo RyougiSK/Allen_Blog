@@ -1,16 +1,23 @@
 {
   "nav.writing": "Writing",
-  "nav.themes": "Themes",
+  "nav.themes": "Threads",
   "nav.about": "About",
 
-  "hero.tagline": "Writing & Thinking",
-  "hero.title": "Independent thinking on technology, design & craft.",
-  "hero.subtitle": "A personal journal exploring ideas at the intersection of software, design, and the pursuit of quality.",
+  "hero.tagline": "Writing & Reflection",
+  "hero.title": "Thinking through the living of it.",
+  "hero.subtitle": "A personal journal on psychology, philosophy, and the questions that don't resolve.",
 
+  "home.heroCta": "Begin reading",
+  "home.heroMicro": "Updated when there is something worth saying.",
   "home.featured": "Featured",
+  "home.selected": "Selected",
   "home.recent": "Recent",
   "home.viewAll": "View all",
-  "home.themes": "Themes",
+  "home.themes": "Threads",
+  "home.threads": "Threads",
+  "home.authorLabel": "The Author",
+  "home.authorIntro": "I work with data and design by day, and think about meaning, structure, and the interior life by inclination. This site is where those two currents meet.",
+  "home.moreAbout": "More about me",
 
   "writing.title": "Writing",
   "writing.description": "Thoughts on technology, design, and the things worth thinking about.",
@@ -19,7 +26,7 @@
   "writing.clearFilters": "Clear filters",
   "writing.backToWriting": "Back to writing",
 
-  "themes.title": "Themes",
+  "themes.title": "Threads",
   "themes.description": "Topics and threads explored across the writing.",
   "themes.noThemes": "No themes yet.",
 
@@ -33,8 +40,8 @@
   "about.whatIWriteBody": "This site is where I explore the things I find worth thinking about. The writing spans technology, design, psychology, and the craft of working with information. If a thread connects them, it's an interest in how things work beneath the surface — in systems, in people, in ideas.",
   "about.quote": "The goal is not to be interesting, but to be interested — and to write clearly enough that the interest becomes contagious.",
 
-  "subscribe.title": "Stay in the current",
-  "subscribe.description": "Occasional dispatches on technology, design, and whatever else seems worth sharing.",
+  "subscribe.title": "Stay with the thinking",
+  "subscribe.description": "Receive new reflections by email, at a quiet pace.",
   "subscribe.button": "Subscribe",
   "subscribe.thankyou": "Thank you for subscribing.",
   "subscribe.noSpam": "No spam, unsubscribe anytime.",
@@ -43,8 +50,8 @@
   "subscribe.error": "Something went wrong. Please try again.",
   "subscribe.confirmed": "Your subscription is confirmed. Welcome aboard.",
   "subscribe.invalidToken": "This confirmation link is invalid or has expired.",
-  "subscribe.pageHeading": "Stay in the current",
-  "subscribe.pageDescription": "Get occasional dispatches on technology, design, and whatever else seems worth sharing. No spam, no noise — just the good stuff.",
+  "subscribe.pageHeading": "Stay with the thinking",
+  "subscribe.pageDescription": "Receive new reflections by email, at a quiet pace. No spam, no noise.",
 
   "share.title": "Share this article",
   "share.copyLink": "Copy link",
@@ -58,8 +65,8 @@
   "reading.min": "{count} min",
   "tags.all": "All",
   "tags.label": "Tags",
-  "tags.articles": "{count} articles",
-  "tags.article": "{count} article",
+  "tags.articles": "{count} reflections",
+  "tags.article": "{count} reflection",
 
   "categories.all": "All",
   "categories.label": "Categories",
@@ -74,6 +81,6 @@
   "nav.home": "Home",
   "toc.title": "Table of Contents",
 
-  "site.description": "Writing about technology, design, and the things worth thinking about.",
-  "site.authorBio": "BI analyst and consultant based in Australia. Writing at the intersection of technology, design, and thoughtful analysis."
+  "site.description": "A personal journal on psychology, philosophy, and the questions that don't resolve.",
+  "site.authorBio": "BI analyst and consultant based in Australia. Writing on psychology, philosophy, and the inner life."
 }

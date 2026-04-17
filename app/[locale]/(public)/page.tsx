@@ -1,8 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { HeroSection } from "@/components/features/hero-section";
-import { FeaturedWriting } from "@/components/features/featured-writing";
-import { RecentWriting } from "@/components/features/recent-writing";
+import { SelectedWriting } from "@/components/features/selected-writing";
 import { ThemeCard } from "@/components/features/theme-card";
+import { AuthorSection } from "@/components/features/author-section";
 import { SubscribeForm } from "@/components/features/subscribe-form";
 import { Reveal } from "@/components/features/reveal";
 import { Separator } from "@/components/ui/separator";
@@ -86,33 +86,34 @@ export default async function Home({
   const featured = articles.slice(0, 2);
   const recent = articles.slice(2);
 
+  const urlLocale = locale === "zh" ? "zh" : "en";
+
   return (
     <>
-      <HeroSection dictionary={dictionary} />
+      <HeroSection dictionary={dictionary} locale={urlLocale} />
 
-      {featured.length > 0 && (
+      {(featured.length > 0 || recent.length > 0) && (
         <Reveal className="mt-[var(--spacing-section)]">
-          <FeaturedWriting posts={featured} locale={contentLocale} dictionary={dictionary} />
-        </Reveal>
-      )}
-
-      {recent.length > 0 && (
-        <Reveal className="mt-[var(--spacing-section)]" delay={80}>
-          <RecentWriting posts={recent} locale={contentLocale} dictionary={dictionary} />
+          <SelectedWriting
+            featured={featured}
+            recent={recent}
+            locale={contentLocale}
+            dictionary={dictionary}
+          />
         </Reveal>
       )}
 
       {themes.length > 0 && (
-        <Reveal className="mt-[var(--spacing-section)]" delay={160}>
+        <Reveal className="mt-[var(--spacing-section)]" delay={80}>
           <div className="mx-auto w-full max-w-[var(--width-content)] px-6">
             <Separator className="mb-[var(--spacing-section)]" />
           </div>
           <section>
             <div className="mx-auto w-full max-w-[var(--width-page)] px-6">
               <p className="text-[length:var(--text-micro)] uppercase tracking-[var(--tracking-widest)] text-text-quaternary mb-8">
-                {dictionary["home.themes"]}
+                {dictionary["home.threads"]}
               </p>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {themes.map((tag) => (
                   <ThemeCard key={tag.id} tag={tag} locale={contentLocale} dictionary={dictionary} />
                 ))}
@@ -121,6 +122,13 @@ export default async function Home({
           </section>
         </Reveal>
       )}
+
+      <Reveal className="mt-[var(--spacing-section)]" delay={160}>
+        <div className="mx-auto w-full max-w-[var(--width-content)] px-6">
+          <Separator ornament className="mb-[var(--spacing-section)]" />
+        </div>
+        <AuthorSection dictionary={dictionary} locale={urlLocale} />
+      </Reveal>
 
       <Reveal className="mt-[var(--spacing-section)]" delay={240}>
         <SubscribeForm />

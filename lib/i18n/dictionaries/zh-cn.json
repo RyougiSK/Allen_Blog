@@ -1,16 +1,23 @@
 {
   "nav.writing": "文章",
-  "nav.themes": "主题",
+  "nav.themes": "思绪",
   "nav.about": "关于",
 
-  "hero.tagline": "写作与思考",
-  "hero.title": "关于技术、设计与匠心的独立思考。",
-  "hero.subtitle": "一本探索软件、设计与品质交汇处的个人日志。",
+  "hero.tagline": "书写与反思",
+  "hero.title": "在生活中思考，在思考中生活。",
+  "hero.subtitle": "一本关于心理学、哲学，以及那些无法轻易解答的问题的个人日志。",
 
+  "home.heroCta": "开始阅读",
+  "home.heroMicro": "有值得说的事情时更新。",
   "home.featured": "精选",
+  "home.selected": "精选",
   "home.recent": "最近",
   "home.viewAll": "查看全部",
-  "home.themes": "主题",
+  "home.themes": "思绪",
+  "home.threads": "思绪",
+  "home.authorLabel": "作者",
+  "home.authorIntro": "白天我从事数据与设计工作，而出于内心的倾向，我思考意义、结构和内在生活。这个网站是这两条河流交汇的地方。",
+  "home.moreAbout": "更多关于我",
 
   "writing.title": "文章",
   "writing.description": "关于技术、设计和那些值得思考之事的随想。",
@@ -19,7 +26,7 @@
   "writing.clearFilters": "清除筛选",
   "writing.backToWriting": "返回文章",
 
-  "themes.title": "主题",
+  "themes.title": "思绪",
   "themes.description": "写作中探索的话题与线索。",
   "themes.noThemes": "暂无主题。",
 
@@ -33,8 +40,8 @@
   "about.whatIWriteBody": "这个网站是我探索那些值得思考之事的地方。写作涵盖技术、设计、心理学和信息处理的技艺。如果说有什么将它们串联在一起，那就是对事物表象之下如何运作的兴趣——在系统中、在人群中、在思想中。",
   "about.quote": "目标不是成为有趣的人，而是成为有好奇心的人——并且写得足够清晰，让这种好奇心具有感染力。",
 
-  "subscribe.title": "保持关注",
-  "subscribe.description": "关于技术、设计以及一切值得分享之事的不定期通讯。",
+  "subscribe.title": "与思考同行",
+  "subscribe.description": "以安静的节奏，通过邮件接收新的思考。",
   "subscribe.button": "订阅",
   "subscribe.thankyou": "感谢您的订阅。",
   "subscribe.noSpam": "没有垃圾邮件，随时退订。",
@@ -43,8 +50,8 @@
   "subscribe.error": "出了点问题，请重试。",
   "subscribe.confirmed": "您的订阅已确认。欢迎加入。",
   "subscribe.invalidToken": "此确认链接无效或已过期。",
-  "subscribe.pageHeading": "保持关注",
-  "subscribe.pageDescription": "获取关于技术、设计以及一切值得分享之事的不定期通讯。没有垃圾邮件——只有好内容。",
+  "subscribe.pageHeading": "与思考同行",
+  "subscribe.pageDescription": "以安静的节奏，通过邮件接收新的思考。没有垃圾邮件——只有好内容。",
 
   "share.title": "分享这篇文章",
   "share.copyLink": "复制链接",
@@ -58,8 +65,8 @@
   "reading.min": "{count} 分钟",
   "tags.all": "全部",
   "tags.label": "标签",
-  "tags.articles": "{count} 篇文章",
-  "tags.article": "{count} 篇文章",
+  "tags.articles": "{count} 篇思考",
+  "tags.article": "{count} 篇思考",
 
   "categories.all": "全部",
   "categories.label": "分类",
@@ -74,6 +81,6 @@
   "nav.home": "首页",
   "toc.title": "目录",
 
-  "site.description": "关于技术、设计和那些值得思考之事的写作。",
-  "site.authorBio": "常驻澳大利亚的商业智能分析师和顾问。在技术、设计与深思熟虑的分析交汇处写作。"
+  "site.description": "一本关于心理学、哲学，以及那些无法轻易解答的问题的个人日志。",
+  "site.authorBio": "常驻澳大利亚的商业智能分析师和顾问。在心理学、哲学与内在生活的交汇处写作。"
 }

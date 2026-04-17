@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2, ChevronUp, ChevronDown, Check, X } from "lucide-react";
+import { Pencil, Trash2, ChevronUp, ChevronDown, Check, X, FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tooltip } from "@/components/ui/tooltip";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { useToast } from "@/lib/hooks/use-toast";
 import {
   updateCategory,
   deleteCategory,
@@ -18,25 +21,29 @@ interface CategoryTableProps {
 
 export function CategoryTable({ categories: initial }: CategoryTableProps) {
   const router = useRouter();
+  const { addToast } = useToast();
   const [categories, setCategories] = useState(initial);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [editNameZh, setEditNameZh] = useState("");
   const [editDesc, setEditDesc] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string; count: number } | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   async function handleSaveEdit(id: string) {
     await updateCategory(id, { name: editName, name_zh: editNameZh, description: editDesc });
     setEditingId(null);
+    addToast({ message: "Category updated", variant: "success" });
     router.refresh();
   }
 
-  async function handleDelete(id: string, name: string, count: number) {
-    const msg =
-      count > 0
-        ? `Delete "${name}"? ${count} article(s) will become uncategorized.`
-        : `Delete "${name}"?`;
-    if (!confirm(msg)) return;
-    await deleteCategory(id);
+  async function handleConfirmDelete() {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    await deleteCategory(deleteTarget.id);
+    setDeleteTarget(null);
+    setDeleting(false);
+    addToast({ message: "Category deleted", variant: "success" });
     router.refresh();
   }
 
@@ -76,22 +83,31 @@ export function CategoryTable({ categories: initial }: CategoryTableProps) {
         </thead>
         <tbody>
           {categories.map((cat, i) => (
-            <tr key={cat.id} className="border-b border-border last:border-b-0">
+            <tr
+              key={cat.id}
+              className={`border-b border-border last:border-b-0 transition-colors duration-[var(--duration-fast)] ${
+                editingId === cat.id
+                  ? "bg-surface ring-1 ring-accent-warm/20"
+                  : "hover:bg-surface/30"
+              }`}
+            >
               <td className="px-4 py-2.5">
                 <div className="flex gap-0.5">
                   <button
                     onClick={() => handleMove(i, -1)}
                     disabled={i === 0}
-                    className="p-0.5 text-text-quaternary hover:text-text-primary disabled:opacity-30 transition-colors"
+                    aria-label="Move up"
+                    className="p-1.5 rounded-[var(--radius-sm)] text-text-tertiary hover:text-text-primary hover:bg-surface disabled:opacity-50 transition-colors"
                   >
-                    <ChevronUp className="h-3.5 w-3.5" />
+                    <ChevronUp className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => handleMove(i, 1)}
                     disabled={i === categories.length - 1}
-                    className="p-0.5 text-text-quaternary hover:text-text-primary disabled:opacity-30 transition-colors"
+                    aria-label="Move down"
+                    className="p-1.5 rounded-[var(--radius-sm)] text-text-tertiary hover:text-text-primary hover:bg-surface disabled:opacity-50 transition-colors"
                   >
-                    <ChevronDown className="h-3.5 w-3.5" />
+                    <ChevronDown className="h-4 w-4" />
                   </button>
                 </div>
               </td>
@@ -139,51 +155,59 @@ export function CategoryTable({ categories: initial }: CategoryTableProps) {
                 <span className="text-text-quaternary">{cat.articleCount}</span>
               </td>
               <td className="px-4 py-2.5 text-right">
-                <div className="flex items-center justify-end gap-1">
+                <div className="flex items-center justify-end gap-2">
                   {editingId === cat.id ? (
                     <>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0"
-                        onClick={() => handleSaveEdit(cat.id)}
-                      >
-                        <Check className="h-3.5 w-3.5 text-emerald-400" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0"
-                        onClick={() => setEditingId(null)}
-                      >
-                        <X className="h-3.5 w-3.5" />
-                      </Button>
+                      <Tooltip label="Save">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label="Save"
+                          onClick={() => handleSaveEdit(cat.id)}
+                        >
+                          <Check className="h-4 w-4 text-emerald-400" />
+                        </Button>
+                      </Tooltip>
+                      <Tooltip label="Cancel">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label="Cancel"
+                          onClick={() => setEditingId(null)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </Tooltip>
                     </>
                   ) : (
                     <>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0"
-                        onClick={() => {
-                          setEditingId(cat.id);
-                          setEditName(cat.name);
-                          setEditNameZh(cat.name_zh);
-                          setEditDesc(cat.description);
-                        }}
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0"
-                        onClick={() =>
-                          handleDelete(cat.id, cat.name, cat.articleCount)
-                        }
-                      >
-                        <Trash2 className="h-3.5 w-3.5 text-danger" />
-                      </Button>
+                      <Tooltip label="Edit">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label="Edit"
+                          onClick={() => {
+                            setEditingId(cat.id);
+                            setEditName(cat.name);
+                            setEditNameZh(cat.name_zh);
+                            setEditDesc(cat.description);
+                          }}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                      </Tooltip>
+                      <Tooltip label="Delete">
+                        <Button
+                          variant="ghost-danger"
+                          size="icon"
+                          aria-label="Delete"
+                          onClick={() =>
+                            setDeleteTarget({ id: cat.id, name: cat.name, count: cat.articleCount })
+                          }
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </Tooltip>
                     </>
                   )}
                 </div>
@@ -192,13 +216,36 @@ export function CategoryTable({ categories: initial }: CategoryTableProps) {
           ))}
           {categories.length === 0 && (
             <tr>
-              <td colSpan={6} className="px-4 py-8 text-center text-text-tertiary text-sm">
-                No categories yet.
+              <td colSpan={6} className="px-4 py-16 text-center">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-lg)] bg-surface border border-border">
+                    <FolderOpen className="h-6 w-6 text-text-quaternary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-text-secondary">No categories yet</p>
+                    <p className="mt-1 text-xs text-text-tertiary">
+                      Create your first category using the form above.
+                    </p>
+                  </div>
+                </div>
               </td>
             </tr>
           )}
         </tbody>
       </table>
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title={`Delete "${deleteTarget?.name ?? ""}"?`}
+        description={
+          deleteTarget && deleteTarget.count > 0
+            ? `${deleteTarget.count} article(s) will become uncategorized.`
+            : "This action cannot be undone."
+        }
+        variant="danger"
+        loading={deleting}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

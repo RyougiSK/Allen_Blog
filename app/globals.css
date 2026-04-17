@@ -210,31 +210,44 @@ body {
   margin: 2rem auto;
 }
 
-/* ─── Hero ink wash ambient gradient ─── */
+/* ─── Hero ink wash keyframes (reused by fallback background) ─── */
 @keyframes ink-wash-1 {
   0%, 100% { transform: translate(0%, 0%) scale(1); }
-  33% { transform: translate(5%, -8%) scale(1.1); }
-  66% { transform: translate(-3%, 5%) scale(0.95); }
+  25% { transform: translate(2%, -3%) scale(1.03); }
+  50% { transform: translate(3%, -4%) scale(0.97); }
+  75% { transform: translate(-1%, 2%) scale(1.02); }
 }
 
 @keyframes ink-wash-2 {
   0%, 100% { transform: translate(0%, 0%) scale(1); }
-  33% { transform: translate(-6%, 4%) scale(1.05); }
-  66% { transform: translate(4%, -6%) scale(1.1); }
+  30% { transform: translate(-3%, 2%) scale(1.03); }
+  60% { transform: translate(2%, -3%) scale(0.97); }
 }
 
-@keyframes ink-wash-3 {
-  0%, 100% { transform: translate(0%, 0%) scale(1.05); }
-  50% { transform: translate(3%, 3%) scale(0.95); }
-}
-
-.hero-ink-wash {
+/* ─── Cinematic hero ─── */
+.hero-cinematic {
   position: relative;
-  overflow: hidden;
+  background: var(--color-bg-primary);
 }
 
-.hero-ink-wash::before,
-.hero-ink-wash::after {
+.hero-video {
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-video {
+    display: none;
+  }
+}
+
+/* Ink-wash fallback — visible before video loads + on mobile */
+.hero-ink-wash-bg {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-ink-wash-bg::before,
+.hero-ink-wash-bg::after {
   content: "";
   position: absolute;
   inset: -50%;
@@ -242,35 +255,106 @@ body {
   pointer-events: none;
 }
 
-.hero-ink-wash::before {
+.hero-ink-wash-bg::before {
   background: radial-gradient(
     ellipse at 30% 40%,
-    rgba(196, 168, 130, 0.05) 0%,
+    rgba(196, 168, 130, 0.08) 0%,
     transparent 60%
   );
-  animation: ink-wash-1 25s ease-in-out infinite;
+  animation: ink-wash-1 40s ease-in-out infinite;
 }
 
-.hero-ink-wash::after {
+.hero-ink-wash-bg::after {
   background: radial-gradient(
     ellipse at 70% 60%,
-    rgba(138, 143, 152, 0.04) 0%,
+    rgba(138, 143, 152, 0.05) 0%,
     transparent 55%
   );
-  animation: ink-wash-2 30s ease-in-out infinite;
+  animation: ink-wash-2 55s ease-in-out infinite;
 }
 
-.hero-ink-wash-inner {
-  position: absolute;
-  inset: -50%;
-  border-radius: 50%;
+/* Dark overlay — bottom-heavy for readability + seamless bg transition */
+.hero-overlay {
+  z-index: 3;
   pointer-events: none;
-  background: radial-gradient(
-    ellipse at 50% 30%,
-    rgba(196, 168, 130, 0.03) 0%,
-    transparent 50%
+  background: linear-gradient(
+    to bottom,
+    rgba(12, 12, 14, 0.3) 0%,
+    rgba(12, 12, 14, 0.5) 40%,
+    rgba(12, 12, 14, 0.85) 80%,
+    rgba(12, 12, 14, 1) 100%
   );
-  animation: ink-wash-3 20s ease-in-out infinite;
+}
+
+/* ─── Hero entrance animations ─── */
+@keyframes hero-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-entrance {
+  opacity: 0;
+  animation: hero-fade-in-up 800ms var(--ease-out-expo) forwards;
+}
+
+.hero-stagger-1 { animation-delay: 200ms; }
+.hero-stagger-2 { animation-delay: 400ms; }
+.hero-stagger-3 { animation-delay: 600ms; }
+.hero-stagger-4 { animation-delay: 800ms; }
+.hero-stagger-5 { animation-delay: 1000ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-entrance {
+    opacity: 1;
+    animation: none;
+  }
+}
+
+/* ─── Hero CTA button ─── */
+.hero-cta-button {
+  box-shadow: 0 0 0 0 rgba(196, 168, 130, 0);
+}
+
+.hero-cta-button:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 20px rgba(196, 168, 130, 0.3),
+    0 0 40px rgba(196, 168, 130, 0.1);
+}
+
+.hero-cta-button:active {
+  transform: translateY(0);
+}
+
+/* ─── Scroll indicator ─── */
+@keyframes scroll-line-bounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 0.4;
+  }
+}
+
+.scroll-indicator-line {
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(to bottom, transparent, var(--color-accent-warm));
+  animation: scroll-line-bounce 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-indicator-line {
+    animation: none;
+  }
 }
 
 /* ─── Mobile nav overlay ─── */
@@ -281,6 +365,27 @@ body {
 
 .nav-overlay {
   animation: nav-overlay-in var(--duration-normal) var(--ease-default) both;
+}
+
+/* ─── Dialog & Toast animations ─── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(1rem); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideOutRight {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(1rem); }
 }
 
 /* ─── TipTap / ProseMirror editor ─── */
