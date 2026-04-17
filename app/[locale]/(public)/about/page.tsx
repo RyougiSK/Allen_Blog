@@ -42,7 +42,7 @@ export default async function AboutPage({
           {d["about.tagline"]}
         </p>
         <h1 className="font-display text-[length:var(--text-display-lg)] leading-[var(--leading-display)] text-text-primary mt-4">
-          {SITE.author.name}
+          {locale === "zh" ? SITE.author.nameZh : SITE.author.name}
         </h1>
         <p className="text-[length:var(--text-body-lg)] text-text-secondary mt-4 leading-[var(--leading-body)]">
           {d["site.authorBio"]}
@@ -82,6 +82,62 @@ export default async function AboutPage({
           {d["about.quote"]}
         </p>
       </blockquote>
+
+      <Separator ornament className="mt-12" />
+
+      <section className="mt-12">
+        <p className="text-[length:var(--text-micro)] uppercase tracking-[var(--tracking-widest)] text-text-quaternary mb-6">
+          {d["about.whatIDo"]}
+        </p>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {[
+            { title: d["about.skillBI"], desc: d["about.skillBIDesc"] },
+            { title: d["about.skillViz"], desc: d["about.skillVizDesc"] },
+            { title: d["about.skillConsulting"], desc: d["about.skillConsultingDesc"] },
+            { title: d["about.skillWriting"], desc: d["about.skillWritingDesc"] },
+          ].map(({ title, desc }) => (
+            <div key={title} className="border-l-2 border-l-accent-warm/40 pl-4 py-1">
+              <p className="text-[length:var(--text-body-sm)] text-text-primary">{title}</p>
+              <p className="text-[length:var(--text-caption)] text-text-tertiary mt-1">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <Separator ornament className="mt-12" />
+
+      <section className="mt-12">
+        <p className="text-[length:var(--text-micro)] uppercase tracking-[var(--tracking-widest)] text-text-quaternary mb-3">
+          {d["about.connect"]}
+        </p>
+        <p className="text-[length:var(--text-body-sm)] text-text-secondary mb-6">
+          {d["about.connectDescription"]}
+        </p>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Link
+            href={`/${locale}/contact`}
+            className="group rounded-[var(--radius-lg)] border border-border bg-bg-secondary p-6 transition-all duration-[var(--duration-fast)] hover:border-border-emphasis"
+          >
+            <p className="text-[length:var(--text-body)] text-text-primary group-hover:text-accent-warm transition-colors duration-[var(--duration-fast)]">
+              {d["about.getInTouch"]} &rarr;
+            </p>
+            <p className="text-[length:var(--text-caption)] text-text-tertiary mt-1">
+              {d["about.getInTouchDesc"]}
+            </p>
+          </Link>
+          <Link
+            href={`/${locale}/support`}
+            className="group rounded-[var(--radius-lg)] border border-border bg-bg-secondary p-6 transition-all duration-[var(--duration-fast)] hover:border-border-emphasis"
+          >
+            <p className="text-[length:var(--text-body)] text-text-primary group-hover:text-accent-warm transition-colors duration-[var(--duration-fast)]">
+              {d["about.supportWork"]} &rarr;
+            </p>
+            <p className="text-[length:var(--text-caption)] text-text-tertiary mt-1">
+              {d["about.supportWorkDesc"]}
+            </p>
+          </Link>
+        </div>
+      </section>
 
       <Separator ornament className="mt-12" />
 

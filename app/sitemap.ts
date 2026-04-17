@@ -65,6 +65,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
       },
     });
+
+    entries.push({
+      url: `${SITE.url}/${locale}/contact`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+      alternates: {
+        languages: {
+          en: `${SITE.url}/en/contact`,
+          "zh-CN": `${SITE.url}/zh/contact`,
+        },
+      },
+    });
+
+    entries.push({
+      url: `${SITE.url}/${locale}/support`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
+      alternates: {
+        languages: {
+          en: `${SITE.url}/en/support`,
+          "zh-CN": `${SITE.url}/zh/support`,
+        },
+      },
+    });
   }
 
   for (const article of articles ?? []) {

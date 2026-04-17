@@ -2,6 +2,7 @@ import Image from "next/image";
 import { format, parseISO } from "date-fns";
 import { TagLink } from "@/components/ui/tag-link";
 import { Separator } from "@/components/ui/separator";
+import { SITE } from "@/lib/constants";
 import type { Tag, ContentLocale } from "@/lib/types";
 
 interface ArticleHeaderProps {
@@ -25,9 +26,15 @@ export function ArticleHeader({
   locale = "en",
   coverImage,
 }: ArticleHeaderProps) {
+  const authorName = locale === "zh" ? SITE.author.nameZh : SITE.author.name;
+
   return (
     <header className="mb-12">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="text-[length:var(--text-micro)] text-text-tertiary">
+          {authorName}
+        </span>
+        <span className="text-text-quaternary">&middot;</span>
         <time
           dateTime={date}
           className="text-[length:var(--text-micro)] uppercase tracking-[var(--tracking-widest)] text-text-quaternary"

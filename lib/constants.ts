@@ -1,14 +1,26 @@
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const STORAGE_BASE = `${SUPABASE_URL}/storage/v1/object/public/media`;
 
+export const SUPPORT = {
+  stripe: {
+    coffee: process.env.NEXT_PUBLIC_STRIPE_LINK_COFFEE ?? "",
+    meal: process.env.NEXT_PUBLIC_STRIPE_LINK_MEAL ?? "",
+    patron: process.env.NEXT_PUBLIC_STRIPE_LINK_PATRON ?? "",
+  },
+  alipay: {
+    qrCode: `${SUPABASE_URL}/storage/v1/object/public/media/support/alipay-qr.png`,
+  },
+} as const;
+
 export const SITE = {
-  name: "Han Ming Chen",
-  title: "Han Ming Chen",
+  name: "Hanming's Journal",
+  title: "Hanming's Journal",
   description:
     "A personal journal on psychology, philosophy, and the questions that don't resolve.",
   url: "https://hanmingchen.com",
   author: {
-    name: "Han Ming Chen",
+    name: "Hanming (Allen) Chen",
+    nameZh: "陈翰明",
     bio: "BI analyst and consultant based in Australia. Writing on psychology, philosophy, and the inner life.",
   },
   hero: {

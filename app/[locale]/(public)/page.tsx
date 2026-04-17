@@ -3,7 +3,6 @@ import { HeroSection } from "@/components/features/hero-section";
 import { SelectedWriting } from "@/components/features/selected-writing";
 import { ThemeCard } from "@/components/features/theme-card";
 import { AuthorSection } from "@/components/features/author-section";
-import { SubscribeForm } from "@/components/features/subscribe-form";
 import { Reveal } from "@/components/features/reveal";
 import { Separator } from "@/components/ui/separator";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -130,9 +129,6 @@ export default async function Home({
         <AuthorSection dictionary={dictionary} locale={urlLocale} />
       </Reveal>
 
-      <Reveal className="mt-[var(--spacing-section)]" delay={240}>
-        <SubscribeForm />
-      </Reveal>
     </>
   );
 }

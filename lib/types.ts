@@ -106,6 +106,23 @@ export interface Subscriber {
   created_at: string;
 }
 
+// --- Contact Inquiries ---
+
+export type InquiryType = "interview" | "collaboration" | "speaking" | "other";
+export type InquiryStatus = "new" | "read" | "replied" | "archived";
+
+export interface ContactInquiry {
+  id: string;
+  name: string;
+  email: string;
+  inquiry_type: InquiryType;
+  message: string;
+  referral_source: string | null;
+  locale: "en" | "zh";
+  status: InquiryStatus;
+  created_at: string;
+}
+
 // --- Action results ---
 
 export interface ActionResult {

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { SITE } from "@/lib/constants";
-import { FooterSubscribe } from "@/components/features/footer-subscribe";
 import type { Dictionary } from "@/lib/i18n/types";
 
 interface FooterProps {
@@ -14,6 +13,8 @@ export function Footer({ dictionary }: FooterProps) {
     { href: `/${locale}/writing`, label: dictionary["nav.writing"] },
     { href: `/${locale}/themes`, label: dictionary["nav.themes"] },
     { href: `/${locale}/about`, label: dictionary["nav.about"] },
+    { href: `/${locale}/contact`, label: dictionary["nav.contact"] },
+    { href: `/${locale}/support`, label: dictionary["nav.support"] },
     { href: `/${locale}/subscribe`, label: dictionary["subscribe.button"] },
   ];
 
@@ -27,7 +28,7 @@ export function Footer({ dictionary }: FooterProps) {
           >
             {SITE.name}
           </Link>
-          <nav className="flex items-center gap-6">
+          <nav className="flex flex-wrap items-center gap-6">
             {footerLinks.map(({ href, label }) => (
               <Link
                 key={href}
@@ -38,9 +39,6 @@ export function Footer({ dictionary }: FooterProps) {
               </Link>
             ))}
           </nav>
-        </div>
-        <div className="mt-8 pt-8 border-t border-border">
-          <FooterSubscribe />
         </div>
         <div className="mt-8 flex items-center justify-between text-[length:var(--text-micro)] text-text-quaternary">
           <span>&copy; {new Date().getFullYear()} {SITE.name}</span>

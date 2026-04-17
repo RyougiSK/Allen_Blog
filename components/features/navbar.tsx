@@ -24,6 +24,7 @@ export function Navbar() {
     { href: `/${routeLocale}/writing`, label: t("nav.writing") },
     { href: `/${routeLocale}/themes`, label: t("nav.themes") },
     { href: `/${routeLocale}/about`, label: t("nav.about") },
+    { href: `/${routeLocale}/contact`, label: t("nav.contact") },
   ];
 
   return (

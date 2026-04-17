@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/features/navbar";
 import { Footer } from "@/components/features/footer";
+import { FloatingSubscribe } from "@/components/features/floating-subscribe";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import type { Locale } from "@/lib/i18n/types";
 
@@ -21,6 +22,7 @@ export default async function PublicLayout({
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer dictionary={dictionary} />
+      <FloatingSubscribe />
     </div>
   );
 }
