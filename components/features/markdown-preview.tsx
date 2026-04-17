@@ -8,7 +8,7 @@ import rehypeSlug from "rehype-slug";
 export function MarkdownPreview({ content }: { content: string }) {
   if (!content.trim()) {
     return (
-      <div className="flex items-center justify-center h-full min-h-[500px] text-muted text-sm">
+      <div className="flex items-center justify-center h-full min-h-[500px] text-text-tertiary text-sm">
         Preview will appear here...
       </div>
     );

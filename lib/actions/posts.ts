@@ -14,10 +14,20 @@ export async function createPost(formData: FormData): Promise<ActionResult> {
   const excerpt = formData.get("excerpt") as string;
   const published = formData.get("published") === "true";
   const tagIds = formData.getAll("tag_ids") as string[];
+  const locale = (formData.get("locale") as string) || "en";
+  const translationOf = (formData.get("translation_of") as string) || null;
 
   const { data: post, error } = await supabase
     .from("posts")
-    .insert({ title, slug, content, excerpt: excerpt || null, published })
+    .insert({
+      title,
+      slug,
+      content,
+      excerpt: excerpt || null,
+      published,
+      locale,
+      translation_of: translationOf,
+    })
     .select()
     .single();
 
@@ -30,6 +40,8 @@ export async function createPost(formData: FormData): Promise<ActionResult> {
   }
 
   revalidatePath("/");
+  revalidatePath("/writing");
+  revalidatePath("/themes");
   revalidatePath("/admin/posts");
   redirect("/admin/posts");
 }
@@ -43,6 +55,7 @@ export async function updatePost(id: string, formData: FormData): Promise<Action
   const excerpt = formData.get("excerpt") as string;
   const published = formData.get("published") === "true";
   const tagIds = formData.getAll("tag_ids") as string[];
+  const locale = (formData.get("locale") as string) || "en";
 
   const { error } = await supabase
     .from("posts")
@@ -52,6 +65,7 @@ export async function updatePost(id: string, formData: FormData): Promise<Action
       content,
       excerpt: excerpt || null,
       published,
+      locale,
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);
@@ -67,7 +81,9 @@ export async function updatePost(id: string, formData: FormData): Promise<Action
   }
 
   revalidatePath("/");
-  revalidatePath(`/blog/${slug}`);
+  revalidatePath(`/writing/${slug}`);
+  revalidatePath("/writing");
+  revalidatePath("/themes");
   revalidatePath("/admin/posts");
   redirect("/admin/posts");
 }
@@ -78,6 +94,8 @@ export async function deletePost(id: string): Promise<ActionResult> {
   if (error) return { success: false, error: error.message };
 
   revalidatePath("/");
+  revalidatePath("/writing");
+  revalidatePath("/themes");
   revalidatePath("/admin/posts");
   return { success: true };
 }
@@ -92,6 +110,8 @@ export async function togglePublish(id: string, published: boolean): Promise<Act
   if (error) return { success: false, error: error.message };
 
   revalidatePath("/");
+  revalidatePath("/writing");
+  revalidatePath("/themes");
   revalidatePath("/admin/posts");
   return { success: true };
 }

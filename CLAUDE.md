@@ -40,6 +40,14 @@ utils/supabase/   → Supabase client factories (server, client, middleware)
 - `NEXT_PUBLIC_SUPABASE_URL` — Supabase project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase anonymous/public key
 
+## Database
+
+The Supabase CLI is linked to the remote project. Use it to run migrations and queries directly — no manual steps needed.
+
+- `npx supabase db push` — Apply pending migrations to the remote database
+- `echo "SQL" | npx supabase db query --linked` — Run arbitrary SQL against the remote database
+- Migrations live in `supabase/migrations/`
+
 ## Commands
 
 - `npm run dev` — Start dev server (Turbopack)

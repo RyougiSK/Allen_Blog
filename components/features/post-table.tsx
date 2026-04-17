@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { format, parseISO } from "date-fns";
-import { Pencil, Trash2, Eye, EyeOff } from "lucide-react";
+import { Pencil, Trash2, Eye, EyeOff, Languages } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { deletePost, togglePublish } from "@/lib/actions/posts";
@@ -16,11 +16,12 @@ export function PostTable({ posts }: { posts: PostWithTags[] }) {
       <table className="w-full">
         <thead>
           <tr className="border-b border-border bg-surface/50">
-            <th className="text-left text-xs font-medium text-muted px-4 py-3">Title</th>
-            <th className="text-left text-xs font-medium text-muted px-4 py-3">Status</th>
-            <th className="text-left text-xs font-medium text-muted px-4 py-3">Tags</th>
-            <th className="text-left text-xs font-medium text-muted px-4 py-3">Date</th>
-            <th className="text-right text-xs font-medium text-muted px-4 py-3">Actions</th>
+            <th className="text-left text-xs font-medium text-text-tertiary px-4 py-3">Title</th>
+            <th className="text-left text-xs font-medium text-text-tertiary px-4 py-3">Lang</th>
+            <th className="text-left text-xs font-medium text-text-tertiary px-4 py-3">Status</th>
+            <th className="text-left text-xs font-medium text-text-tertiary px-4 py-3">Tags</th>
+            <th className="text-left text-xs font-medium text-text-tertiary px-4 py-3">Date</th>
+            <th className="text-right text-xs font-medium text-text-tertiary px-4 py-3">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -57,10 +58,15 @@ function PostRow({ post }: { post: PostWithTags }) {
       <td className="px-4 py-3">
         <Link
           href={`/admin/posts/${post.id}/edit`}
-          className="text-sm font-medium hover:text-accent transition-colors"
+          className="text-sm font-medium hover:text-accent-warm transition-colors"
         >
           {post.title}
         </Link>
+      </td>
+      <td className="px-4 py-3">
+        <Badge>
+          {post.locale === "en" ? "EN" : "中文"}
+        </Badge>
       </td>
       <td className="px-4 py-3">
         <Badge variant={post.published ? "success" : "warning"}>
@@ -74,7 +80,7 @@ function PostRow({ post }: { post: PostWithTags }) {
           ))}
         </div>
       </td>
-      <td className="px-4 py-3 text-xs text-muted whitespace-nowrap">
+      <td className="px-4 py-3 text-xs text-text-tertiary whitespace-nowrap">
         {format(parseISO(post.updated_at), "MMM d, yyyy")}
       </td>
       <td className="px-4 py-3">
@@ -88,6 +94,16 @@ function PostRow({ post }: { post: PostWithTags }) {
           >
             {post.published ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
           </Button>
+          {!post.translation_of && (
+            <Link
+              href={`/admin/posts/new?translation_of=${post.id}&locale=${post.locale === "en" ? "zh-cn" : "en"}`}
+              title="Create translation"
+            >
+              <Button variant="ghost" size="sm">
+                <Languages className="h-3.5 w-3.5" />
+              </Button>
+            </Link>
+          )}
           <Link href={`/admin/posts/${post.id}/edit`}>
             <Button variant="ghost" size="sm">
               <Pencil className="h-3.5 w-3.5" />

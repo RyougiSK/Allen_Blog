@@ -114,7 +114,7 @@ export function MarkdownEditor({ value, onChange }: MarkdownEditorProps) {
             type="button"
             title={action.label}
             onClick={() => insertMarkdown(action)}
-            className={`inline-flex items-center justify-center rounded p-1.5 text-muted hover:text-foreground hover:bg-surface transition-colors ${
+            className={`inline-flex items-center justify-center rounded p-1.5 text-text-tertiary hover:text-text-primary hover:bg-surface transition-colors ${
               i === 2 || i === 5 || i === 7 || i === 9 || i === 12
                 ? "ml-1.5 border-l border-border pl-2"
                 : ""
@@ -132,7 +132,7 @@ export function MarkdownEditor({ value, onChange }: MarkdownEditorProps) {
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Write your post in Markdown..."
-        className="w-full min-h-[500px] resize-y bg-background px-4 py-3 text-sm font-mono text-foreground placeholder:text-muted focus:outline-none"
+        className="w-full min-h-[500px] resize-y bg-bg-primary px-4 py-3 text-sm font-mono text-text-primary placeholder:text-text-quaternary focus:outline-none"
         spellCheck
       />
     </div>

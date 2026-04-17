@@ -1,0 +1,79 @@
+{
+  "nav.writing": "文章",
+  "nav.themes": "主题",
+  "nav.about": "关于",
+
+  "hero.tagline": "写作与思考",
+  "hero.title": "关于技术、设计与匠心的独立思考。",
+  "hero.subtitle": "一本探索软件、设计与品质交汇处的个人日志。",
+
+  "home.featured": "精选",
+  "home.recent": "最近",
+  "home.viewAll": "查看全部",
+  "home.themes": "主题",
+
+  "writing.title": "文章",
+  "writing.description": "关于技术、设计和那些值得思考之事的随想。",
+  "writing.noArticles": "暂无文章。",
+  "writing.noResults": "没有符合筛选条件的文章。",
+  "writing.clearFilters": "清除筛选",
+  "writing.backToWriting": "返回文章",
+
+  "themes.title": "主题",
+  "themes.description": "写作中探索的话题与线索。",
+  "themes.noThemes": "暂无主题。",
+
+  "about.tagline": "关于",
+  "about.whatIWrite": "我写些什么",
+  "about.elsewhere": "更多内容",
+  "about.browseThemes": "浏览主题",
+  "about.readWriting": "阅读文章",
+  "about.bio1": "我在数据、设计和清晰思维的交汇处工作——帮助组织将复杂信息转化为有意义的洞察。我的日常工作涉及仪表板、业务报告，以及让数字讲述真实故事的分析技艺。",
+  "about.bio2": "在分析工作之外，我对我们如何理解这个世界的问题充满兴趣：思维中的模式、我们不自觉携带的象征，以及日常决策背后的结构。",
+  "about.whatIWriteBody": "这个网站是我探索那些值得思考之事的地方。写作涵盖技术、设计、心理学和信息处理的技艺。如果说有什么将它们串联在一起，那就是对事物表象之下如何运作的兴趣——在系统中、在人群中、在思想中。",
+  "about.quote": "目标不是成为有趣的人，而是成为有好奇心的人——并且写得足够清晰，让这种好奇心具有感染力。",
+
+  "subscribe.title": "保持关注",
+  "subscribe.description": "关于技术、设计以及一切值得分享之事的不定期通讯。",
+  "subscribe.button": "订阅",
+  "subscribe.thankyou": "感谢您的订阅。",
+  "subscribe.noSpam": "没有垃圾邮件，随时退订。",
+  "subscribe.checkEmail": "请查看您的邮箱以确认订阅。",
+  "subscribe.alreadySubscribed": "您已经订阅了。",
+  "subscribe.error": "出了点问题，请重试。",
+  "subscribe.confirmed": "您的订阅已确认。欢迎加入。",
+  "subscribe.invalidToken": "此确认链接无效或已过期。",
+  "subscribe.pageHeading": "保持关注",
+  "subscribe.pageDescription": "获取关于技术、设计以及一切值得分享之事的不定期通讯。没有垃圾邮件——只有好内容。",
+
+  "share.title": "分享这篇文章",
+  "share.copyLink": "复制链接",
+  "share.copied": "已复制！",
+  "share.nativeShare": "分享",
+
+  "articleBottom.enjoyedThis": "喜欢这篇文章？",
+  "articleBottom.subscribeDescription": "新文章发布时收到通知。",
+
+  "reading.minRead": "{count} 分钟阅读",
+  "reading.min": "{count} 分钟",
+  "tags.all": "全部",
+  "tags.label": "标签",
+  "tags.articles": "{count} 篇文章",
+  "tags.article": "{count} 篇文章",
+
+  "categories.all": "全部",
+  "categories.label": "分类",
+
+  "pagination.previous": "上一页",
+  "pagination.next": "下一页",
+
+  "footer.builtWith": "使用 Next.js 构建",
+
+  "article.readInOther": "阅读英文版",
+
+  "nav.home": "首页",
+  "toc.title": "目录",
+
+  "site.description": "关于技术、设计和那些值得思考之事的写作。",
+  "site.authorBio": "常驻澳大利亚的商业智能分析师和顾问。在技术、设计与深思熟虑的分析交汇处写作。"
+}

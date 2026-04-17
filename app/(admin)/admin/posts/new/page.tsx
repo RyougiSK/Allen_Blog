@@ -1,11 +1,11 @@
 import { createClient } from "@/utils/supabase/server";
-import { PostForm } from "@/components/features/post-form";
+import { ArticleForm } from "@/components/features/article-form";
 import type { Tag } from "@/lib/types";
 
-export default async function NewPostPage() {
+export default async function NewArticlePage() {
   const supabase = await createClient();
   const { data } = await supabase.from("tags").select("*").order("name");
   const tags: Tag[] = data ?? [];
 
-  return <PostForm tags={tags} />;
+  return <ArticleForm tags={tags} />;
 }

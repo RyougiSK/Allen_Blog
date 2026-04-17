@@ -1,36 +1,36 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import { PostForm } from "@/components/features/post-form";
-import type { PostWithTags, Tag } from "@/lib/types";
+import { ArticleForm } from "@/components/features/article-form";
+import type { ArticleWithTags, Tag } from "@/lib/types";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function EditPostPage({ params }: PageProps) {
+export default async function EditArticlePage({ params }: PageProps) {
   const { id } = await params;
   const supabase = await createClient();
 
-  const [postResult, tagsResult] = await Promise.all([
+  const [articleResult, tagsResult] = await Promise.all([
     supabase
-      .from("posts")
-      .select("*, post_tags(tag_id, tags(*))")
+      .from("articles")
+      .select("*, article_tags(tag_id, tags(*))")
       .eq("id", id)
       .single(),
     supabase.from("tags").select("*").order("name"),
   ]);
 
-  if (!postResult.data) notFound();
+  if (!articleResult.data) notFound();
 
-  const rawPost = postResult.data;
-  const post: PostWithTags = {
-    ...rawPost,
-    tags: (rawPost.post_tags ?? []).map(
-      (pt: { tag_id: string; tags: Tag }) => pt.tags
+  const rawArticle = articleResult.data;
+  const article: ArticleWithTags = {
+    ...rawArticle,
+    tags: (rawArticle.article_tags ?? []).map(
+      (at: { tag_id: string; tags: Tag }) => at.tags,
     ),
   };
 
   const tags: Tag[] = tagsResult.data ?? [];
 
-  return <PostForm post={post} tags={tags} />;
+  return <ArticleForm article={article} tags={tags} />;
 }

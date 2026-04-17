@@ -7,7 +7,7 @@ import rehypeSlug from "rehype-slug";
 
 export function PostContent({ content }: { content: string }) {
   return (
-    <div className="prose-blog prose prose-invert max-w-none">
+    <div className="prose-editorial prose prose-invert max-w-none">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight, rehypeSlug]}

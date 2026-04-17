@@ -11,10 +11,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  default: "bg-accent text-background hover:bg-accent/90",
-  ghost: "bg-transparent hover:bg-surface text-foreground",
-  outline: "border border-border bg-transparent hover:bg-surface text-foreground",
-  danger: "bg-red-600 text-white hover:bg-red-700",
+  default: "bg-accent-warm text-bg-primary hover:bg-accent-warm/90",
+  ghost: "bg-transparent hover:bg-surface text-text-primary",
+  outline:
+    "border border-border bg-transparent hover:bg-surface text-text-primary",
+  danger: "bg-danger text-white hover:bg-danger/90",
 };
 
 const sizeClasses: Record<Size, string> = {
@@ -24,19 +25,30 @@ const sizeClasses: Record<Size, string> = {
 };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = "default", size = "md", loading, className = "", children, disabled, ...props }, ref) => {
+  (
+    {
+      variant = "default",
+      size = "md",
+      loading,
+      className = "",
+      children,
+      disabled,
+      ...props
+    },
+    ref,
+  ) => {
     return (
       <button
         ref={ref}
         disabled={disabled || loading}
-        className={`inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:opacity-50 disabled:pointer-events-none ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+        className={`inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-colors duration-[var(--duration-fast)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm/50 disabled:opacity-50 disabled:pointer-events-none ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
         {...props}
       >
         {loading && <Loader2 className="h-4 w-4 animate-spin" />}
         {children}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";

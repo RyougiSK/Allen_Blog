@@ -17,14 +17,19 @@ type ViewMode = "edit" | "split" | "preview";
 interface PostFormProps {
   post?: PostWithTags;
   tags: Tag[];
+  defaultLocale?: "en" | "zh-cn";
+  translationOf?: string;
 }
 
-export function PostForm({ post, tags }: PostFormProps) {
+export function PostForm({ post, tags, defaultLocale, translationOf }: PostFormProps) {
   const router = useRouter();
   const [title, setTitle] = useState(post?.title ?? "");
   const [slug, setSlug] = useState(post?.slug ?? "");
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? "");
   const [content, setContent] = useState(post?.content ?? "");
+  const [locale, setLocale] = useState<"en" | "zh-cn">(
+    post?.locale ?? defaultLocale ?? "en"
+  );
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(
     post?.tags.map((t) => t.id) ?? []
   );
@@ -32,12 +37,11 @@ export function PostForm({ post, tags }: PostFormProps) {
   const [saving, setSaving] = useState(false);
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
 
-  // Auto-generate slug from title
   useEffect(() => {
-    if (!slugManuallyEdited) {
+    if (!slugManuallyEdited && locale === "en") {
       setSlug(slugify(title));
     }
-  }, [title, slugManuallyEdited]);
+  }, [title, slugManuallyEdited, locale]);
 
   async function handleSubmit(published: boolean) {
     setSaving(true);
@@ -47,6 +51,8 @@ export function PostForm({ post, tags }: PostFormProps) {
     formData.set("content", content);
     formData.set("excerpt", excerpt);
     formData.set("published", String(published));
+    formData.set("locale", locale);
+    if (translationOf) formData.set("translation_of", translationOf);
     selectedTagIds.forEach((id) => formData.append("tag_ids", id));
 
     try {
@@ -95,10 +101,37 @@ export function PostForm({ post, tags }: PostFormProps) {
         </div>
       </div>
 
+      {/* Locale selector */}
+      <div className="flex items-center gap-2 mb-6">
+        <span className="text-xs font-medium text-text-tertiary">Language:</span>
+        <div className="flex items-center gap-1">
+          {(["en", "zh-cn"] as const).map((loc) => (
+            <button
+              key={loc}
+              type="button"
+              onClick={() => setLocale(loc)}
+              disabled={!!post}
+              className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
+                locale === loc
+                  ? "bg-accent-warm/15 text-accent-warm border border-accent-warm/30"
+                  : "text-text-tertiary hover:text-text-primary border border-border"
+              } ${post ? "opacity-60 cursor-not-allowed" : ""}`}
+            >
+              {loc === "en" ? "English" : "中文"}
+            </button>
+          ))}
+        </div>
+        {translationOf && (
+          <span className="text-xs text-text-quaternary ml-2">
+            Translation of another post
+          </span>
+        )}
+      </div>
+
       {/* Meta fields */}
       <div className="space-y-4 mb-6">
         <div>
-          <label className="block text-xs font-medium text-muted mb-1.5">Title</label>
+          <label className="block text-xs font-medium text-text-tertiary mb-1.5">Title</label>
           <Input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -108,7 +141,7 @@ export function PostForm({ post, tags }: PostFormProps) {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-muted mb-1.5">Slug</label>
+            <label className="block text-xs font-medium text-text-tertiary mb-1.5">Slug</label>
             <Input
               value={slug}
               onChange={(e) => {
@@ -120,7 +153,7 @@ export function PostForm({ post, tags }: PostFormProps) {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-muted mb-1.5">Excerpt</label>
+            <label className="block text-xs font-medium text-text-tertiary mb-1.5">Excerpt</label>
             <Input
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
@@ -129,7 +162,7 @@ export function PostForm({ post, tags }: PostFormProps) {
           </div>
         </div>
         <div>
-          <label className="block text-xs font-medium text-muted mb-1.5">Tags</label>
+          <label className="block text-xs font-medium text-text-tertiary mb-1.5">Tags</label>
           <TagPicker
             allTags={tags}
             selectedIds={selectedTagIds}
@@ -147,8 +180,8 @@ export function PostForm({ post, tags }: PostFormProps) {
             onClick={() => setViewMode(mode)}
             className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
               viewMode === mode
-                ? "bg-surface text-foreground"
-                : "text-muted hover:text-foreground"
+                ? "bg-surface text-text-primary"
+                : "text-text-tertiary hover:text-text-primary"
             }`}
           >
             <Icon className="h-3.5 w-3.5" />

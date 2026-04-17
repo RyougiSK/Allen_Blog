@@ -1,0 +1,79 @@
+{
+  "nav.writing": "Writing",
+  "nav.themes": "Themes",
+  "nav.about": "About",
+
+  "hero.tagline": "Writing & Thinking",
+  "hero.title": "Independent thinking on technology, design & craft.",
+  "hero.subtitle": "A personal journal exploring ideas at the intersection of software, design, and the pursuit of quality.",
+
+  "home.featured": "Featured",
+  "home.recent": "Recent",
+  "home.viewAll": "View all",
+  "home.themes": "Themes",
+
+  "writing.title": "Writing",
+  "writing.description": "Thoughts on technology, design, and the things worth thinking about.",
+  "writing.noArticles": "No articles found.",
+  "writing.noResults": "No articles matching your filters.",
+  "writing.clearFilters": "Clear filters",
+  "writing.backToWriting": "Back to writing",
+
+  "themes.title": "Themes",
+  "themes.description": "Topics and threads explored across the writing.",
+  "themes.noThemes": "No themes yet.",
+
+  "about.tagline": "About",
+  "about.whatIWrite": "What I write about",
+  "about.elsewhere": "Elsewhere",
+  "about.browseThemes": "Browse themes",
+  "about.readWriting": "Read the writing",
+  "about.bio1": "I work at the intersection of data, design, and clear thinking — helping organisations turn complex information into meaningful insight. My day-to-day involves dashboards, business reporting, and the analytical craft of making numbers tell honest stories.",
+  "about.bio2": "Outside of analytics, I'm drawn to questions about how we make sense of the world: the patterns in our thinking, the symbols we carry without knowing, and the structures beneath everyday decisions.",
+  "about.whatIWriteBody": "This site is where I explore the things I find worth thinking about. The writing spans technology, design, psychology, and the craft of working with information. If a thread connects them, it's an interest in how things work beneath the surface — in systems, in people, in ideas.",
+  "about.quote": "The goal is not to be interesting, but to be interested — and to write clearly enough that the interest becomes contagious.",
+
+  "subscribe.title": "Stay in the current",
+  "subscribe.description": "Occasional dispatches on technology, design, and whatever else seems worth sharing.",
+  "subscribe.button": "Subscribe",
+  "subscribe.thankyou": "Thank you for subscribing.",
+  "subscribe.noSpam": "No spam, unsubscribe anytime.",
+  "subscribe.checkEmail": "Check your email to confirm your subscription.",
+  "subscribe.alreadySubscribed": "You're already subscribed.",
+  "subscribe.error": "Something went wrong. Please try again.",
+  "subscribe.confirmed": "Your subscription is confirmed. Welcome aboard.",
+  "subscribe.invalidToken": "This confirmation link is invalid or has expired.",
+  "subscribe.pageHeading": "Stay in the current",
+  "subscribe.pageDescription": "Get occasional dispatches on technology, design, and whatever else seems worth sharing. No spam, no noise — just the good stuff.",
+
+  "share.title": "Share this article",
+  "share.copyLink": "Copy link",
+  "share.copied": "Copied!",
+  "share.nativeShare": "Share",
+
+  "articleBottom.enjoyedThis": "Enjoyed this?",
+  "articleBottom.subscribeDescription": "Get notified when new articles are published.",
+
+  "reading.minRead": "{count} min read",
+  "reading.min": "{count} min",
+  "tags.all": "All",
+  "tags.label": "Tags",
+  "tags.articles": "{count} articles",
+  "tags.article": "{count} article",
+
+  "categories.all": "All",
+  "categories.label": "Categories",
+
+  "pagination.previous": "Previous",
+  "pagination.next": "Next",
+
+  "footer.builtWith": "Built with Next.js",
+
+  "article.readInOther": "Read in Chinese",
+
+  "nav.home": "Home",
+  "toc.title": "Table of Contents",
+
+  "site.description": "Writing about technology, design, and the things worth thinking about.",
+  "site.authorBio": "BI analyst and consultant based in Australia. Writing at the intersection of technology, design, and thoughtful analysis."
+}

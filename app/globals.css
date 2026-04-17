@@ -2,62 +2,368 @@
 @plugin "@tailwindcss/typography";
 
 @theme inline {
-  --color-background: #09090b;
-  --color-foreground: #fafafa;
-  --color-muted: #a1a1aa;
-  --color-border: #27272a;
-  --color-surface: #18181b;
-  --color-accent: #a78bfa;
-  --font-sans: var(--font-geist-sans);
+  /* ─── Backgrounds ─── */
+  --color-bg-primary: #0C0C0E;
+  --color-bg-secondary: #141416;
+  --color-bg-tertiary: #1C1C20;
+
+  /* ─── Surfaces ─── */
+  --color-surface: #18181C;
+  --color-surface-hover: #1E1E23;
+
+  /* ─── Text hierarchy ─── */
+  --color-text-primary: #EDEDEF;
+  --color-text-secondary: #A0A0A8;
+  --color-text-tertiary: #6B6B74;
+  --color-text-quaternary: #45454D;
+
+  /* ─── Accents ─── */
+  --color-accent: #8A8F98;
+  --color-accent-warm: #C4A882;
+
+  /* ─── Borders ─── */
+  --color-border: #1E1E23;
+  --color-border-emphasis: #2A2A31;
+
+  /* ─── Semantic ─── */
+  --color-success: #34D399;
+  --color-warning: #FBBF24;
+  --color-danger: #EF4444;
+
+  /* ─── Fonts ─── */
+  --font-display: var(--font-instrument-serif);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+
+  /* ─── Type scale ─── */
+  --text-display-xl: 3.5rem;
+  --text-display-lg: 2.75rem;
+  --text-display-md: 2rem;
+  --text-display-sm: 1.5rem;
+  --text-body-lg: 1.125rem;
+  --text-body: 1rem;
+  --text-body-sm: 0.875rem;
+  --text-caption: 0.8125rem;
+  --text-micro: 0.75rem;
+
+  /* ─── Leading ─── */
+  --leading-display: 1.1;
+  --leading-body: 1.7;
+  --leading-tight: 1.3;
+
+  /* ─── Tracking ─── */
+  --tracking-display: -0.025em;
+  --tracking-body: -0.011em;
+  --tracking-wide: 0.05em;
+  --tracking-widest: 0.1em;
+
+  /* ─── Layout widths ─── */
+  --width-content: 42rem;
+  --width-page: 56rem;
+  --width-wide: 72rem;
+
+  /* ─── Spacing supplements ─── */
+  --spacing-section: 7rem;
+  --spacing-section-sm: 4.5rem;
+  --spacing-block: 3rem;
+  --spacing-element: 1.5rem;
+
+  /* ─── Radius ─── */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  /* ─── Shadows ─── */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+  /* ─── Transitions ─── */
+  --ease-default: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
 }
 
+/* ─── Base ─── */
 body {
-  background: var(--color-background);
-  color: var(--color-foreground);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
   font-family: var(--font-sans), system-ui, sans-serif;
+  letter-spacing: var(--tracking-body);
 }
 
 ::selection {
-  background: var(--color-accent);
-  color: var(--color-background);
+  background: var(--color-accent-warm);
+  color: var(--color-bg-primary);
 }
 
-/* Typography prose overrides for dark mode */
-.prose-blog {
-  --tw-prose-body: var(--color-foreground);
-  --tw-prose-headings: var(--color-foreground);
-  --tw-prose-links: var(--color-accent);
-  --tw-prose-bold: var(--color-foreground);
+/* ─── Display font utility ─── */
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+  letter-spacing: var(--tracking-display);
+}
+
+/* ─── Prose: editorial article styling ─── */
+.prose-editorial {
+  --tw-prose-body: #C8C8CF;
+  --tw-prose-headings: var(--color-text-primary);
+  --tw-prose-links: var(--color-accent-warm);
+  --tw-prose-bold: var(--color-text-primary);
   --tw-prose-code: var(--color-accent);
-  --tw-prose-pre-bg: var(--color-surface);
-  --tw-prose-pre-code: var(--color-foreground);
-  --tw-prose-quotes: var(--color-muted);
-  --tw-prose-quote-borders: var(--color-border);
+  --tw-prose-pre-bg: var(--color-bg-secondary);
+  --tw-prose-pre-code: var(--color-text-primary);
+  --tw-prose-quotes: var(--color-text-secondary);
+  --tw-prose-quote-borders: var(--color-accent-warm);
   --tw-prose-hr: var(--color-border);
-  --tw-prose-th-borders: var(--color-border);
+  --tw-prose-th-borders: var(--color-border-emphasis);
   --tw-prose-td-borders: var(--color-border);
+  font-size: var(--text-body-lg);
+  line-height: var(--leading-body);
 }
 
-.prose-blog pre {
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
+.prose-editorial h1,
+.prose-editorial h2,
+.prose-editorial h3 {
+  font-family: var(--font-display), Georgia, serif;
+  letter-spacing: var(--tracking-display);
 }
 
-.prose-blog code:not(pre code) {
-  background: var(--color-surface);
+.prose-editorial pre {
   border: 1px solid var(--color-border);
-  border-radius: 0.25rem;
+  border-radius: var(--radius-md);
+}
+
+.prose-editorial code:not(pre code) {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   padding: 0.125rem 0.375rem;
   font-size: 0.875em;
 }
 
-.prose-blog a {
-  text-decoration: underline;
-  text-underline-offset: 2px;
+.prose-editorial a {
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-accent-warm);
+  transition: border-color var(--duration-fast) var(--ease-default),
+    color var(--duration-fast) var(--ease-default);
 }
 
-.prose-blog a:hover {
-  color: var(--color-accent);
-  opacity: 0.8;
+.prose-editorial a:hover {
+  color: var(--color-accent-warm);
+  border-bottom-color: transparent;
+}
+
+.prose-editorial p {
+  margin-bottom: 1.75em;
+}
+
+.prose-editorial blockquote {
+  border-left-width: 2px;
+  font-family: var(--font-display), Georgia, serif;
+  font-style: italic;
+}
+
+/* ─── Reading progress bar ─── */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: var(--color-accent-warm);
+  z-index: 50;
+  transition: width 100ms linear;
+}
+
+/* ─── Scroll reveal ─── */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up var(--duration-slow) var(--ease-out-expo) both;
+}
+
+.stagger-1 { animation-delay: 0ms; }
+.stagger-2 { animation-delay: 80ms; }
+.stagger-3 { animation-delay: 160ms; }
+.stagger-4 { animation-delay: 240ms; }
+.stagger-5 { animation-delay: 320ms; }
+.stagger-6 { animation-delay: 400ms; }
+
+/* ─── Ornament dot separator ─── */
+.ornament-dot::after {
+  content: "";
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-accent-warm);
+  margin: 2rem auto;
+}
+
+/* ─── Hero ink wash ambient gradient ─── */
+@keyframes ink-wash-1 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  33% { transform: translate(5%, -8%) scale(1.1); }
+  66% { transform: translate(-3%, 5%) scale(0.95); }
+}
+
+@keyframes ink-wash-2 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  33% { transform: translate(-6%, 4%) scale(1.05); }
+  66% { transform: translate(4%, -6%) scale(1.1); }
+}
+
+@keyframes ink-wash-3 {
+  0%, 100% { transform: translate(0%, 0%) scale(1.05); }
+  50% { transform: translate(3%, 3%) scale(0.95); }
+}
+
+.hero-ink-wash {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-ink-wash::before,
+.hero-ink-wash::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-ink-wash::before {
+  background: radial-gradient(
+    ellipse at 30% 40%,
+    rgba(196, 168, 130, 0.05) 0%,
+    transparent 60%
+  );
+  animation: ink-wash-1 25s ease-in-out infinite;
+}
+
+.hero-ink-wash::after {
+  background: radial-gradient(
+    ellipse at 70% 60%,
+    rgba(138, 143, 152, 0.04) 0%,
+    transparent 55%
+  );
+  animation: ink-wash-2 30s ease-in-out infinite;
+}
+
+.hero-ink-wash-inner {
+  position: absolute;
+  inset: -50%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    rgba(196, 168, 130, 0.03) 0%,
+    transparent 50%
+  );
+  animation: ink-wash-3 20s ease-in-out infinite;
+}
+
+/* ─── Mobile nav overlay ─── */
+@keyframes nav-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.nav-overlay {
+  animation: nav-overlay-in var(--duration-normal) var(--ease-default) both;
+}
+
+/* ─── TipTap / ProseMirror editor ─── */
+.tiptap-editor.ProseMirror {
+  outline: none;
+  min-height: 400px;
+}
+
+.tiptap-editor.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--color-text-quaternary);
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+
+.tiptap-editor.ProseMirror hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 2rem 0;
+}
+
+.tiptap-editor.ProseMirror img {
+  max-width: 100%;
+  border-radius: var(--radius-md);
+  margin: 1.5rem 0;
+}
+
+.tiptap-editor.ProseMirror blockquote {
+  border-left: 2px solid var(--color-accent-warm);
+  padding-left: 1rem;
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin: 1.5rem 0;
+}
+
+.tiptap-editor.ProseMirror pre {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.tiptap-editor.ProseMirror code:not(pre code) {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.125rem 0.375rem;
+  font-size: 0.875em;
+}
+
+.tiptap-editor.ProseMirror ul,
+.tiptap-editor.ProseMirror ol {
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+.tiptap-editor.ProseMirror h1,
+.tiptap-editor.ProseMirror h2,
+.tiptap-editor.ProseMirror h3,
+.tiptap-editor.ProseMirror h4 {
+  font-family: var(--font-display), Georgia, serif;
+  letter-spacing: var(--tracking-display);
+  color: var(--color-text-primary);
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.tiptap-editor.ProseMirror h1 { font-size: var(--text-display-md); }
+.tiptap-editor.ProseMirror h2 { font-size: var(--text-display-sm); }
+.tiptap-editor.ProseMirror h3 { font-size: var(--text-body-lg); }
+.tiptap-editor.ProseMirror h4 { font-size: var(--text-body); font-weight: 600; }
+
+.tiptap-editor.ProseMirror a {
+  color: var(--color-accent-warm);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-accent-warm);
+}
+
+.tiptap-editor.ProseMirror p {
+  margin-bottom: 1rem;
+  line-height: var(--leading-body);
 }
