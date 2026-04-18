@@ -86,54 +86,33 @@ export default async function AboutPage({
       <Separator ornament className="mt-12" />
 
       <section className="mt-12">
-        <p className="text-[length:var(--text-micro)] uppercase tracking-[var(--tracking-widest)] text-text-quaternary mb-6">
-          {d["about.whatIDo"]}
-        </p>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {[
-            { title: d["about.skillBI"], desc: d["about.skillBIDesc"] },
-            { title: d["about.skillViz"], desc: d["about.skillVizDesc"] },
-            { title: d["about.skillConsulting"], desc: d["about.skillConsultingDesc"] },
-            { title: d["about.skillWriting"], desc: d["about.skillWritingDesc"] },
-          ].map(({ title, desc }) => (
-            <div key={title} className="border-l-2 border-l-accent-warm/40 pl-4 py-1">
-              <p className="text-[length:var(--text-body-sm)] text-text-primary">{title}</p>
-              <p className="text-[length:var(--text-caption)] text-text-tertiary mt-1">{desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <Separator ornament className="mt-12" />
-
-      <section className="mt-12">
         <p className="text-[length:var(--text-micro)] uppercase tracking-[var(--tracking-widest)] text-text-quaternary mb-3">
           {d["about.connect"]}
         </p>
         <p className="text-[length:var(--text-body-sm)] text-text-secondary mb-6">
           {d["about.connectDescription"]}
         </p>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="space-y-4">
+          <Link
+            href={`/${locale}/support`}
+            className="group block rounded-[var(--radius-lg)] border border-accent-warm/30 bg-accent-warm/5 p-8 transition-all duration-[var(--duration-fast)] hover:border-accent-warm/50 hover:bg-accent-warm/10"
+          >
+            <p className="font-display text-[length:var(--text-body-lg)] text-accent-warm transition-colors duration-[var(--duration-fast)]">
+              {d["about.supportWork"]} &rarr;
+            </p>
+            <p className="text-[length:var(--text-body-sm)] text-text-secondary mt-2">
+              {d["about.supportWorkDesc"]}
+            </p>
+          </Link>
           <Link
             href={`/${locale}/contact`}
-            className="group rounded-[var(--radius-lg)] border border-border bg-bg-secondary p-6 transition-all duration-[var(--duration-fast)] hover:border-border-emphasis"
+            className="group block rounded-[var(--radius-lg)] border border-border bg-bg-secondary p-6 transition-all duration-[var(--duration-fast)] hover:border-border-emphasis"
           >
             <p className="text-[length:var(--text-body)] text-text-primary group-hover:text-accent-warm transition-colors duration-[var(--duration-fast)]">
               {d["about.getInTouch"]} &rarr;
             </p>
             <p className="text-[length:var(--text-caption)] text-text-tertiary mt-1">
               {d["about.getInTouchDesc"]}
-            </p>
-          </Link>
-          <Link
-            href={`/${locale}/support`}
-            className="group rounded-[var(--radius-lg)] border border-border bg-bg-secondary p-6 transition-all duration-[var(--duration-fast)] hover:border-border-emphasis"
-          >
-            <p className="text-[length:var(--text-body)] text-text-primary group-hover:text-accent-warm transition-colors duration-[var(--duration-fast)]">
-              {d["about.supportWork"]} &rarr;
-            </p>
-            <p className="text-[length:var(--text-caption)] text-text-tertiary mt-1">
-              {d["about.supportWorkDesc"]}
             </p>
           </Link>
         </div>

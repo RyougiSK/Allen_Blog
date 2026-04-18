@@ -48,6 +48,11 @@ The Supabase CLI is linked to the remote project. Use it to run migrations and q
 - `echo "SQL" | npx supabase db query --linked` — Run arbitrary SQL against the remote database
 - Migrations live in `supabase/migrations/`
 
+## Communication
+
+- The user may write requirements or clarifications in Chinese — this is expected. Always understand and incorporate Chinese input fully.
+- All output (documents, plans, actions, code comments, and commentary) must be in English to keep the project consistent.
+
 ## Commands
 
 - `npm run dev` — Start dev server (Turbopack)

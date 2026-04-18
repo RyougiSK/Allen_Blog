@@ -1,11 +1,15 @@
 import Link from "next/link";
+import { MessageSquare } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
-import { ThemeCard } from "@/components/features/theme-card";
+import { fetchPublishedThreads } from "@/lib/actions/threads";
+import { ThreadCard } from "@/components/features/thread-card";
+import { Pagination } from "@/components/features/pagination";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { getLocalizedName } from "@/lib/utils/localized-name";
-import { fetchCategoriesWithCounts } from "@/lib/actions/categories";
 import { SITE } from "@/lib/constants";
-import type { TagWithCount, ContentLocale } from "@/lib/types";
+import { format, parseISO } from "date-fns";
+import { enUS, zhCN } from "date-fns/locale";
+import type { ContentLocale, Tag } from "@/lib/types";
 import type { Locale } from "@/lib/i18n/types";
 import type { Metadata } from "next";
 
@@ -14,15 +18,20 @@ const LOCALE_MAP: Record<string, { content: ContentLocale; dict: Locale }> = {
   zh: { content: "zh", dict: "zh-cn" },
 };
 
+const PAGE_SIZE = 20;
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const { dict: dictLocale } = LOCALE_MAP[locale] ?? LOCALE_MAP.en;
+  const dictionary = await getDictionary(dictLocale);
+
   return {
-    title: "Themes",
-    description: "Topics and themes explored across the writing.",
+    title: dictionary["themes.title"] ?? "Threads",
+    description: dictionary["themes.description"],
     alternates: {
       canonical: `${SITE.url}/${locale}/themes`,
       languages: {
@@ -33,44 +42,46 @@ export async function generateMetadata({
   };
 }
 
-export default async function ThemesPage({
+export default async function ThreadsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ page?: string; tag?: string }>;
 }) {
   const { locale } = await params;
+  const { page: pageParam, tag: tagSlug } = await searchParams;
+  const page = Math.max(1, parseInt(pageParam || "1", 10));
+  const offset = (page - 1) * PAGE_SIZE;
+
   const { content: contentLocale, dict: dictLocale } =
     LOCALE_MAP[locale] ?? LOCALE_MAP.en;
   const dictionary = await getDictionary(dictLocale);
   const supabase = await createClient();
 
-  // Fetch categories with article counts
-  const categories = await fetchCategoriesWithCounts();
+  const { threads, total } = await fetchPublishedThreads({
+    limit: PAGE_SIZE,
+    offset,
+    tagSlug,
+  });
 
-  // Fetch tags with article counts
-  const { data: rawTags } = await supabase
+  const { data: allTags } = await supabase
     .from("tags")
-    .select("*, article_tags(article_id, articles!inner(status, en, zh))")
-    .eq("article_tags.articles.status", "published")
+    .select("*")
     .order("name");
 
-  const col = contentLocale;
-  const themes: TagWithCount[] = (rawTags ?? [])
-    .map((t) => {
-      const validArticles = (t.article_tags ?? []).filter(
-        (at: { article_id: string; articles: Record<string, unknown> }) => {
-          const art = at.articles as Record<string, unknown>;
-          const lang = art[col] as Record<string, unknown> | undefined;
-          return lang?.slug && lang.slug !== "";
-        },
-      );
-      return {
-        ...t,
-        postCount: validArticles.length,
-        article_tags: undefined,
-      };
-    })
-    .filter((t: TagWithCount) => t.postCount > 0);
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+
+  const filterParams = new URLSearchParams();
+  if (tagSlug) filterParams.set("tag", tagSlug);
+  const filterString = filterParams.toString();
+  const basePath = filterString
+    ? `/${locale}/themes?${filterString}`
+    : `/${locale}/themes`;
+
+  const dateFmtLocale = contentLocale === "zh" ? zhCN : enUS;
+
+  let lastDate = "";
 
   return (
     <div className="mx-auto w-full max-w-[var(--width-page)] px-6 py-16">
@@ -83,61 +94,72 @@ export default async function ThemesPage({
         </p>
       </header>
 
-      {/* Categories Section */}
-      {categories.length > 0 && (
-        <section className="mb-16">
-          <h2 className="text-xs font-medium uppercase tracking-[var(--tracking-widest)] text-text-tertiary mb-6">
-            {dictionary["categories.label"] ?? "Categories"}
-          </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/${locale}/category/${cat.slug}`}
-                className="group rounded-[var(--radius-lg)] border border-border bg-bg-secondary p-6 transition-all duration-[var(--duration-normal)] hover:border-border-emphasis hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5"
-              >
-                <h3 className="font-display text-lg text-text-primary transition-colors group-hover:text-accent-warm">
-                  {getLocalizedName(cat, contentLocale)}
-                </h3>
-                {cat.description && (
-                  <p className="text-sm text-text-secondary mt-2 line-clamp-2">
-                    {cat.description}
+      {/* Tag filter */}
+      {(allTags ?? []).length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-10">
+          <Link
+            href={`/${locale}/themes`}
+            className={`rounded-[var(--radius-sm)] border px-3 py-1 text-[length:var(--text-caption)] transition-colors ${
+              !tagSlug
+                ? "border-accent-warm/30 bg-accent-warm/10 text-accent-warm"
+                : "border-border bg-surface text-text-tertiary hover:text-text-primary hover:border-border-emphasis"
+            }`}
+          >
+            {dictionary["categories.all"] ?? "All"}
+          </Link>
+          {(allTags ?? []).map((tag: Tag) => (
+            <Link
+              key={tag.id}
+              href={`/${locale}/themes?tag=${tag.slug}`}
+              className={`rounded-[var(--radius-sm)] border px-3 py-1 text-[length:var(--text-caption)] transition-colors ${
+                tag.slug === tagSlug
+                  ? "border-accent-warm/30 bg-accent-warm/10 text-accent-warm"
+                  : "border-border bg-surface text-text-tertiary hover:text-text-primary hover:border-border-emphasis"
+              }`}
+            >
+              {getLocalizedName(tag, contentLocale)}
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {/* Thread feed with date grouping */}
+      {threads.length > 0 ? (
+        <div className="space-y-1">
+          {threads.map((thread) => {
+            const dateStr = format(parseISO(thread.created_at), "MMMM d, yyyy", {
+              locale: dateFmtLocale,
+            });
+            const showDate = dateStr !== lastDate;
+            lastDate = dateStr;
+
+            return (
+              <div key={thread.id}>
+                {showDate && (
+                  <p className="text-[length:var(--text-micro)] uppercase tracking-[var(--tracking-widest)] text-text-quaternary pt-8 pb-4 first:pt-0">
+                    {dateStr}
                   </p>
                 )}
-                <p className="text-xs text-text-quaternary mt-3">
-                  {cat.articleCount}{" "}
-                  {cat.articleCount === 1 ? "article" : "articles"}
-                </p>
-              </Link>
-            ))}
-          </div>
-        </section>
+                <ThreadCard thread={thread} locale={contentLocale} />
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center py-16 text-center">
+          <MessageSquare className="h-10 w-10 text-text-quaternary mb-4" />
+          <p className="text-text-secondary text-sm">
+            {dictionary["themes.noThemes"]}
+          </p>
+        </div>
       )}
 
-      {/* Tags Section */}
-      {themes.length > 0 && (
-        <section>
-          <h2 className="text-xs font-medium uppercase tracking-[var(--tracking-widest)] text-text-tertiary mb-6">
-            {dictionary["tags.label"] ?? "Tags"}
-          </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {themes.map((tag) => (
-              <ThemeCard
-                key={tag.id}
-                tag={tag}
-                locale={contentLocale}
-                dictionary={dictionary}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {categories.length === 0 && themes.length === 0 && (
-        <p className="text-text-tertiary py-12 text-center">
-          {dictionary["themes.noThemes"]}
-        </p>
-      )}
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        basePath={basePath}
+        dictionary={dictionary}
+      />
     </div>
   );
 }

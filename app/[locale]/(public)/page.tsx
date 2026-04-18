@@ -1,12 +1,13 @@
+import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { HeroSection } from "@/components/features/hero-section";
 import { SelectedWriting } from "@/components/features/selected-writing";
-import { ThemeCard } from "@/components/features/theme-card";
 import { AuthorSection } from "@/components/features/author-section";
 import { Reveal } from "@/components/features/reveal";
 import { Separator } from "@/components/ui/separator";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
-import type { ArticleWithTags, Tag, TagWithCount, ContentLocale } from "@/lib/types";
+import { fetchRecentThreads } from "@/lib/actions/threads";
+import type { ArticleWithTags, Tag, ContentLocale } from "@/lib/types";
 import type { Locale } from "@/lib/i18n/types";
 import type { Metadata } from "next";
 import { SITE } from "@/lib/constants";
@@ -66,21 +67,7 @@ export default async function Home({
     article_tags: undefined,
   }));
 
-  const { data: rawTags } = await supabase
-    .from("tags")
-    .select("*, article_tags(article_id)")
-    .order("name");
-
-  const articleIds = articles.map((a) => a.id);
-  const themes: TagWithCount[] = (rawTags ?? [])
-    .map((t) => ({
-      ...t,
-      postCount: (t.article_tags ?? []).filter(
-        (at: { article_id: string }) => articleIds.includes(at.article_id),
-      ).length,
-      article_tags: undefined,
-    }))
-    .filter((t: TagWithCount) => t.postCount > 0);
+  const recentThreads = await fetchRecentThreads(3);
 
   const featured = articles.slice(0, 2);
   const recent = articles.slice(2);
@@ -102,21 +89,42 @@ export default async function Home({
         </Reveal>
       )}
 
-      {themes.length > 0 && (
+      {recentThreads.length > 0 && (
         <Reveal className="mt-[var(--spacing-section)]" delay={80}>
           <div className="mx-auto w-full max-w-[var(--width-content)] px-6">
             <Separator className="mb-[var(--spacing-section)]" />
           </div>
           <section>
             <div className="mx-auto w-full max-w-[var(--width-page)] px-6">
-              <p className="text-[length:var(--text-micro)] uppercase tracking-[var(--tracking-widest)] text-text-quaternary mb-8">
+              <p className="text-[length:var(--text-micro)] uppercase tracking-[var(--tracking-widest)] text-text-quaternary mb-6">
                 {dictionary["home.threads"]}
               </p>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {themes.map((tag) => (
-                  <ThemeCard key={tag.id} tag={tag} locale={contentLocale} dictionary={dictionary} />
-                ))}
+              <div className="space-y-4">
+                {recentThreads.map((thread) => {
+                  const content =
+                    contentLocale === "zh" && thread.content_zh.trim()
+                      ? thread.content_zh
+                      : thread.content_en;
+                  const snippet =
+                    content.length > 120 ? content.slice(0, 120) + "…" : content;
+                  return (
+                    <div
+                      key={thread.id}
+                      className="border-l-2 border-l-accent-warm/30 pl-4 py-2"
+                    >
+                      <p className="text-[length:var(--text-body-sm)] text-text-secondary leading-[var(--leading-body)]">
+                        {snippet}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
+              <Link
+                href={`/${urlLocale}/themes`}
+                className="inline-block mt-6 text-[length:var(--text-caption)] text-text-tertiary hover:text-accent-warm transition-colors"
+              >
+                {dictionary["home.viewAll"] ?? "View all"} &rarr;
+              </Link>
             </div>
           </section>
         </Reveal>

@@ -27,13 +27,13 @@
   "writing.backToWriting": "Back to writing",
 
   "themes.title": "Threads",
-  "themes.description": "Topics and threads explored across the writing.",
-  "themes.noThemes": "No themes yet.",
+  "themes.description": "Short thoughts, reading notes, and daily observations.",
+  "themes.noThemes": "No threads yet.",
 
   "about.tagline": "About",
   "about.whatIWrite": "What I write about",
   "about.elsewhere": "Elsewhere",
-  "about.browseThemes": "Browse themes",
+  "about.browseThemes": "Browse threads",
   "about.readWriting": "Read the writing",
   "about.bio1": "I work at the intersection of data, design, and clear thinking — helping organisations turn complex information into meaningful insight. My day-to-day involves dashboards, business reporting, and the analytical craft of making numbers tell honest stories.",
   "about.bio2": "Outside of analytics, I'm drawn to questions about how we make sense of the world: the patterns in our thinking, the symbols we carry without knowing, and the structures beneath everyday decisions.",
@@ -70,6 +70,17 @@
 
   "categories.all": "All",
   "categories.label": "Categories",
+  "types.title": "Writing Types",
+  "types.subtitle": "Manage sections in the Writing dropdown. Blog is built-in.",
+  "types.cannotDeleteDefault": "The default writing type cannot be deleted.",
+
+  "nav.writingDropdown.blog": "Blog",
+  "nav.writingDropdown.columns": "Columns",
+  "nav.writingDropdown.allWriting": "All Writing",
+
+  "writing.blog.title": "Blog",
+  "writing.blog.description": "Everyday musings, life reflections, and notes.",
+  "writing.typeRequired": "Select a writing type and complete both EN and 中文 to publish",
 
   "pagination.previous": "Previous",
   "pagination.next": "Next",

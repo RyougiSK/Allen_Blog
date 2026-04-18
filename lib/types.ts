@@ -24,6 +24,7 @@ export interface Article {
   status: ArticleStatus;
   cover_image: string | null;
   category_id: string | null;
+  writing_type_id: string | null;
   author_id: string | null;
   created_at: string;
   updated_at: string;
@@ -34,6 +35,7 @@ export interface Article {
 export interface ArticleWithTags extends Article {
   tags: Tag[];
   category?: Category | null;
+  writing_type?: WritingType | null;
 }
 
 export interface ArticleFormData {
@@ -41,8 +43,26 @@ export interface ArticleFormData {
   zh: ArticleLang;
   tag_ids: string[];
   category_id: string | null;
+  writing_type_id: string | null;
   cover_image: string | null;
   status: ArticleStatus;
+}
+
+// --- Writing Types ---
+
+export interface WritingType {
+  id: string;
+  name: string;
+  name_zh: string;
+  slug: string;
+  description: string;
+  is_default: boolean;
+  display_order: number;
+  created_at: string;
+}
+
+export interface WritingTypeWithCount extends WritingType {
+  articleCount: number;
 }
 
 // --- Categories ---
@@ -89,6 +109,31 @@ export interface Tag {
 
 export interface TagWithCount extends Tag {
   postCount: number;
+}
+
+// --- Threads ---
+
+export type ThreadStatus = "draft" | "published";
+
+export interface Thread {
+  id: string;
+  content_en: string;
+  content_zh: string;
+  status: ThreadStatus;
+  author_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ThreadWithTags extends Thread {
+  tags: Tag[];
+}
+
+export interface ThreadFormData {
+  content_en: string;
+  content_zh: string;
+  tag_ids: string[];
+  status: ThreadStatus;
 }
 
 // --- Subscribers ---

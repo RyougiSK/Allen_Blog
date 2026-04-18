@@ -4,11 +4,17 @@ import type { MetadataRoute } from "next";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient();
-  const { data: articles } = await supabase
-    .from("articles")
-    .select("en, zh, updated_at")
-    .eq("status", "published")
-    .order("updated_at", { ascending: false });
+  const [{ data: articles }, { data: writingTypes }] = await Promise.all([
+    supabase
+      .from("articles")
+      .select("en, zh, updated_at")
+      .eq("status", "published")
+      .order("updated_at", { ascending: false }),
+    supabase
+      .from("writing_types")
+      .select("slug, is_default")
+      .order("display_order"),
+  ]);
 
   const now = new Date();
   const entries: MetadataRoute.Sitemap = [];
@@ -40,10 +46,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
     });
 
+    for (const wt of writingTypes ?? []) {
+      const path = wt.is_default ? "blog" : wt.slug;
+      entries.push({
+        url: `${SITE.url}/${locale}/writing/${path}`,
+        lastModified: now,
+        changeFrequency: "weekly",
+        priority: wt.is_default ? 0.8 : 0.7,
+        alternates: {
+          languages: {
+            en: `${SITE.url}/en/writing/${path}`,
+            "zh-CN": `${SITE.url}/zh/writing/${path}`,
+          },
+        },
+      });
+    }
+
     entries.push({
       url: `${SITE.url}/${locale}/themes`,
       lastModified: now,
-      changeFrequency: "weekly",
+      changeFrequency: "daily",
       priority: 0.7,
       alternates: {
         languages: {

@@ -45,6 +45,7 @@ export async function createArticle(
       status: data.status,
       cover_image: data.cover_image,
       category_id: data.category_id,
+      writing_type_id: data.writing_type_id,
       en: buildLangJson(data.en),
       zh: buildLangJson(data.zh),
     })
@@ -81,6 +82,7 @@ export async function updateArticle(
       status: data.status,
       cover_image: data.cover_image,
       category_id: data.category_id,
+      writing_type_id: data.writing_type_id,
       en: buildLangJson(data.en),
       zh: buildLangJson(data.zh),
       updated_at: new Date().toISOString(),
@@ -116,6 +118,8 @@ export async function autoSaveArticle(
     updatePayload.cover_image = data.cover_image;
   if (data.category_id !== undefined)
     updatePayload.category_id = data.category_id;
+  if (data.writing_type_id !== undefined)
+    updatePayload.writing_type_id = data.writing_type_id;
 
   const { error } = await supabase
     .from("articles")

@@ -6,7 +6,7 @@ export default async function TagsPage() {
   const tags = await fetchAllTags();
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-6 py-8">
+    <div className="w-full max-w-6xl px-8 py-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-lg font-medium text-text-primary">Tags</h1>

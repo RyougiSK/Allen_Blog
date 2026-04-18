@@ -22,7 +22,7 @@ export default async function AdminPostsPage() {
   }));
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-6 py-10">
+    <div className="w-full max-w-6xl px-8 py-10">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold tracking-tight">Articles</h1>
         <Link href="/admin/posts/new">

@@ -27,13 +27,13 @@
   "writing.backToWriting": "返回文章",
 
   "themes.title": "思绪",
-  "themes.description": "写作中探索的话题与线索。",
-  "themes.noThemes": "暂无主题。",
+  "themes.description": "简短的想法、阅读笔记和日常观察。",
+  "themes.noThemes": "暂无思绪。",
 
   "about.tagline": "关于",
   "about.whatIWrite": "我写些什么",
   "about.elsewhere": "更多内容",
-  "about.browseThemes": "浏览主题",
+  "about.browseThemes": "浏览思绪",
   "about.readWriting": "阅读文章",
   "about.bio1": "我在数据、设计和清晰思维的交汇处工作——帮助组织将复杂信息转化为有意义的洞察。我的日常工作涉及仪表板、业务报告，以及让数字讲述真实故事的分析技艺。",
   "about.bio2": "在分析工作之外，我对我们如何理解这个世界的问题充满兴趣：思维中的模式、我们不自觉携带的象征，以及日常决策背后的结构。",
@@ -70,6 +70,17 @@
 
   "categories.all": "全部",
   "categories.label": "分类",
+  "types.title": "写作类型",
+  "types.subtitle": "管理「写作」下拉菜单中的栏目。博文为内置类型。",
+  "types.cannotDeleteDefault": "默认写作类型无法删除。",
+
+  "nav.writingDropdown.blog": "博文",
+  "nav.writingDropdown.columns": "专栏",
+  "nav.writingDropdown.allWriting": "全部文章",
+
+  "writing.blog.title": "博文",
+  "writing.blog.description": "日常随想、生活感悟与札记。",
+  "writing.typeRequired": "选择写作类型并完成中英文内容后方可发布",
 
   "pagination.previous": "上一页",
   "pagination.next": "下一页",

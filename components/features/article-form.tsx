@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TagPicker } from "@/components/features/tag-picker";
 import { CategoryPicker } from "@/components/features/category-picker";
+import { WritingTypePicker } from "@/components/features/writing-type-picker";
 import { MediaPicker } from "@/components/features/media-picker";
 import { TiptapEditor, type TiptapEditorHandle } from "@/components/features/tiptap-editor";
 import {
@@ -43,6 +44,7 @@ interface State {
   activeLocale: ContentLocale;
   tagIds: string[];
   categoryId: string | null;
+  writingTypeId: string | null;
   coverImage: string;
   status: "draft" | "published" | "archived";
   saving: boolean;
@@ -57,6 +59,7 @@ type Action =
   | { type: "SET_ACTIVE_LOCALE"; locale: ContentLocale }
   | { type: "SET_TAGS"; ids: string[] }
   | { type: "SET_CATEGORY"; id: string | null }
+  | { type: "SET_WRITING_TYPE"; id: string | null }
   | { type: "SET_COVER"; url: string }
   | { type: "SET_SLUG"; value: string }
   | { type: "DUPLICATE_EN_TO_ZH" }
@@ -91,6 +94,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, tagIds: action.ids };
     case "SET_CATEGORY":
       return { ...state, categoryId: action.id };
+    case "SET_WRITING_TYPE":
+      return { ...state, writingTypeId: action.id };
     case "SET_COVER":
       return { ...state, coverImage: action.url };
     case "SET_MEDIA_PICKER":
@@ -147,6 +152,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
     activeLocale: "en",
     tagIds: article?.tags?.map((t) => t.id) ?? [],
     categoryId: article?.category_id ?? null,
+    writingTypeId: article?.writing_type_id ?? null,
     coverImage: article?.cover_image ?? "",
     status: article?.status ?? "draft",
     saving: false,
@@ -156,7 +162,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
   });
 
   const activeLang = state[state.activeLocale];
-  const canPublish = state.en.completed && state.zh.completed;
+  const canPublish = state.en.completed && state.zh.completed && !!state.writingTypeId;
 
   useEffect(() => {
     if (!isEditing || !article) return;
@@ -169,6 +175,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
         zh: state.zh,
         tag_ids: state.tagIds,
         category_id: state.categoryId,
+        writing_type_id: state.writingTypeId,
         cover_image: state.coverImage || null,
         status: state.status,
       });
@@ -180,7 +187,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
     return () => {
       if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     };
-  }, [state.en, state.zh, state.tagIds, state.categoryId, state.coverImage]);
+  }, [state.en, state.zh, state.tagIds, state.categoryId, state.writingTypeId, state.coverImage]);
 
   const handleTitleChange = useCallback(
     (value: string) => {
@@ -206,6 +213,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
       zh: state.zh,
       tag_ids: state.tagIds,
       category_id: state.categoryId,
+      writing_type_id: state.writingTypeId,
       cover_image: state.coverImage || null,
       status: "draft",
     };
@@ -229,6 +237,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
         zh: state.zh,
         tag_ids: state.tagIds,
         category_id: state.categoryId,
+        writing_type_id: state.writingTypeId,
         cover_image: state.coverImage || null,
         status: "published",
       };
@@ -243,6 +252,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
         zh: state.zh,
         tag_ids: state.tagIds,
         category_id: state.categoryId,
+        writing_type_id: state.writingTypeId,
         cover_image: state.coverImage || null,
         status: "published",
       };
@@ -271,7 +281,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-6 py-10">
+    <div className="w-full max-w-5xl px-8 py-10">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold tracking-tight">
           {isEditing ? "Edit Article" : "New Article"}
@@ -496,6 +506,11 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
           />
         </div>
 
+        <WritingTypePicker
+          value={state.writingTypeId}
+          onChange={(id) => dispatch({ type: "SET_WRITING_TYPE", id })}
+        />
+
         <CategoryPicker
           value={state.categoryId}
           onChange={(id) => dispatch({ type: "SET_CATEGORY", id })}
@@ -555,7 +570,9 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
         <div className="flex-1" />
         {!canPublish && (
           <span className="text-xs text-text-quaternary">
-            Complete both EN and 中文 to publish
+            {!state.writingTypeId
+              ? "Select a writing type and complete both EN and 中文 to publish"
+              : "Complete both EN and 中文 to publish"}
           </span>
         )}
         <Button onClick={handlePublish} disabled={!canPublish || state.saving}>
