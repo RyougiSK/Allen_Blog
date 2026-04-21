@@ -3,7 +3,6 @@
 import { useState, type FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { submitContactInquiry } from "@/lib/actions/contact";
@@ -12,9 +11,7 @@ import { Mail } from "lucide-react";
 export function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [inquiryType, setInquiryType] = useState("collaboration");
   const [message, setMessage] = useState("");
-  const [referralSource, setReferralSource] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const { t, locale } = useLocale();
 
@@ -29,9 +26,7 @@ export function ContactForm() {
       const result = await submitContactInquiry(
         name,
         email,
-        inquiryType,
         message,
-        referralSource,
         dbLocale as "en" | "zh",
       );
       setStatus(result.success ? "success" : "error");
@@ -84,21 +79,6 @@ export function ContactForm() {
 
       <div>
         <label className="block text-[length:var(--text-caption)] text-text-tertiary mb-2">
-          {t("contact.inquiryType")}
-        </label>
-        <Select
-          value={inquiryType}
-          onChange={(e) => setInquiryType(e.target.value)}
-        >
-          <option value="interview">{t("contact.inquiryInterview")}</option>
-          <option value="collaboration">{t("contact.inquiryCollaboration")}</option>
-          <option value="speaking">{t("contact.inquirySpeaking")}</option>
-          <option value="other">{t("contact.inquiryOther")}</option>
-        </Select>
-      </div>
-
-      <div>
-        <label className="block text-[length:var(--text-caption)] text-text-tertiary mb-2">
           {t("contact.message")}
         </label>
         <Textarea
@@ -108,18 +88,6 @@ export function ContactForm() {
           rows={6}
           required
           className="font-sans"
-        />
-      </div>
-
-      <div>
-        <label className="block text-[length:var(--text-caption)] text-text-tertiary mb-2">
-          {t("contact.referralSource")}
-        </label>
-        <Input
-          type="text"
-          placeholder={t("contact.referralPlaceholder")}
-          value={referralSource}
-          onChange={(e) => setReferralSource(e.target.value)}
         />
       </div>
 

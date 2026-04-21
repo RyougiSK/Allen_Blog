@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { MessageSquare } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 import { fetchPublishedThreads } from "@/lib/actions/threads";
 import { ThreadCard } from "@/components/features/thread-card";
 import { Pagination } from "@/components/features/pagination";
+import { PageSizeSelect } from "@/components/features/page-size-select";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { getLocalizedName } from "@/lib/utils/localized-name";
 import { SITE } from "@/lib/constants";
@@ -18,7 +20,8 @@ const LOCALE_MAP: Record<string, { content: ContentLocale; dict: Locale }> = {
   zh: { content: "zh", dict: "zh-cn" },
 };
 
-const PAGE_SIZE = 20;
+const VALID_SIZES = [5, 10, 20, 50] as const;
+const DEFAULT_SIZE = 10;
 
 export async function generateMetadata({
   params,
@@ -47,12 +50,16 @@ export default async function ThreadsPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ page?: string; tag?: string }>;
+  searchParams: Promise<{ page?: string; tag?: string; size?: string }>;
 }) {
   const { locale } = await params;
-  const { page: pageParam, tag: tagSlug } = await searchParams;
+  const { page: pageParam, tag: tagSlug, size: sizeParam } = await searchParams;
+  const parsedSize = parseInt(sizeParam || "", 10);
+  const pageSize = VALID_SIZES.includes(parsedSize as (typeof VALID_SIZES)[number])
+    ? parsedSize
+    : DEFAULT_SIZE;
   const page = Math.max(1, parseInt(pageParam || "1", 10));
-  const offset = (page - 1) * PAGE_SIZE;
+  const offset = (page - 1) * pageSize;
 
   const { content: contentLocale, dict: dictLocale } =
     LOCALE_MAP[locale] ?? LOCALE_MAP.en;
@@ -60,7 +67,7 @@ export default async function ThreadsPage({
   const supabase = await createClient();
 
   const { threads, total } = await fetchPublishedThreads({
-    limit: PAGE_SIZE,
+    limit: pageSize,
     offset,
     tagSlug,
   });
@@ -70,10 +77,11 @@ export default async function ThreadsPage({
     .select("*")
     .order("name");
 
-  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const totalPages = Math.ceil(total / pageSize);
 
   const filterParams = new URLSearchParams();
   if (tagSlug) filterParams.set("tag", tagSlug);
+  if (pageSize !== DEFAULT_SIZE) filterParams.set("size", String(pageSize));
   const filterString = filterParams.toString();
   const basePath = filterString
     ? `/${locale}/themes?${filterString}`
@@ -154,12 +162,17 @@ export default async function ThreadsPage({
         </div>
       )}
 
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages}
-        basePath={basePath}
-        dictionary={dictionary}
-      />
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <Suspense>
+          <PageSizeSelect value={pageSize} options={VALID_SIZES} />
+        </Suspense>
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          basePath={basePath}
+          dictionary={dictionary}
+        />
+      </div>
     </div>
   );
 }

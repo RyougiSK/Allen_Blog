@@ -6,23 +6,19 @@ import {
   contactNotificationSubject,
   contactNotificationHtml,
 } from "@/lib/email/templates/contact-notification";
-import type { ActionResult, InquiryType } from "@/lib/types";
+import type { ActionResult } from "@/lib/types";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const VALID_TYPES: InquiryType[] = ["interview", "collaboration", "speaking", "other"];
 
 export async function submitContactInquiry(
   name: string,
   email: string,
-  inquiryType: string,
   message: string,
-  referralSource: string,
   locale: "en" | "zh",
 ): Promise<ActionResult> {
   const trimmedName = name.trim();
   const trimmedEmail = email.trim().toLowerCase();
   const trimmedMessage = message.trim();
-  const trimmedReferral = referralSource.trim() || null;
 
   if (!trimmedName) {
     return { success: false, error: "Name is required." };
@@ -30,10 +26,6 @@ export async function submitContactInquiry(
 
   if (!EMAIL_REGEX.test(trimmedEmail)) {
     return { success: false, error: "Invalid email address." };
-  }
-
-  if (!VALID_TYPES.includes(inquiryType as InquiryType)) {
-    return { success: false, error: "Invalid inquiry type." };
   }
 
   if (!trimmedMessage) {
@@ -49,9 +41,8 @@ export async function submitContactInquiry(
   const { error } = await supabase.from("contact_inquiries").insert({
     name: trimmedName,
     email: trimmedEmail,
-    inquiry_type: inquiryType,
+    inquiry_type: "other",
     message: trimmedMessage,
-    referral_source: trimmedReferral,
     locale,
   });
 
@@ -59,7 +50,7 @@ export async function submitContactInquiry(
     return { success: false, error: "Something went wrong. Please try again." };
   }
 
-  await sendNotificationEmail(trimmedName, trimmedEmail, inquiryType as InquiryType, trimmedMessage, trimmedReferral);
+  await sendNotificationEmail(trimmedName, trimmedEmail, trimmedMessage);
 
   return { success: true };
 }
@@ -67,9 +58,7 @@ export async function submitContactInquiry(
 async function sendNotificationEmail(
   name: string,
   email: string,
-  inquiryType: InquiryType,
   message: string,
-  referralSource: string | null,
 ): Promise<void> {
   if (!isEmailConfigured) {
     console.warn("RESEND_API_KEY not set — skipping contact notification email");
@@ -79,8 +68,8 @@ async function sendNotificationEmail(
     await resend.emails.send({
       from: EMAIL_FROM,
       to: "hello@hanmingchen.com",
-      subject: contactNotificationSubject(name, inquiryType),
-      html: contactNotificationHtml({ name, email, inquiryType, message, referralSource }),
+      subject: contactNotificationSubject(name),
+      html: contactNotificationHtml({ name, email, message }),
     });
   } catch (err) {
     console.error("Failed to send contact notification email:", err);
