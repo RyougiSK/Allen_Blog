@@ -8,10 +8,13 @@ import { ArticleHeader } from "@/components/features/article-header";
 import { ReadingProgress } from "@/components/features/reading-progress";
 import { StructuredData } from "@/components/seo/structured-data";
 import { ArticleBottomActions } from "@/components/features/article-bottom-actions";
+import { RelatedArticles } from "@/components/features/related-articles";
+import { TableOfContents } from "@/components/features/table-of-contents";
 import { SITE } from "@/lib/constants";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { buildBlogPostingSchema, buildBreadcrumbSchema } from "@/lib/seo/schemas";
 import { calculateReadingTime } from "@/lib/utils/reading-time";
+import { extractToc } from "@/lib/utils/toc";
 import type { Tag, Article, ContentLocale } from "@/lib/types";
 import type { Locale } from "@/lib/i18n/types";
 import type { Metadata } from "next";
@@ -121,6 +124,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
 
   const hasTranslation = otherLang?.completed;
   const readingTime = calculateReadingTime(lang.content);
+  const tocItems = extractToc(lang.content);
 
   const blogPostingSchema = buildBlogPostingSchema(article, contentLocale, readingTime);
   const breadcrumbSchema = buildBreadcrumbSchema(locale, [
@@ -163,12 +167,20 @@ export default async function ArticleDetailPage({ params }: PageProps) {
             locale={contentLocale}
             coverImage={article.cover_image}
           />
+          <TableOfContents items={tocItems} />
           <TiptapRenderer content={lang.content} />
         </article>
         <ArticleBottomActions
           title={lang.title}
           description={lang.excerpt}
           url={`${SITE.url}/${locale}/${slug}`}
+        />
+
+        <RelatedArticles
+          currentArticleId={article.id}
+          tagIds={article.tags.map((t) => t.id)}
+          locale={contentLocale}
+          dictionary={dictionary}
         />
 
         <StructuredData data={blogPostingSchema} />

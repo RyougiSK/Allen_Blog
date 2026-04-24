@@ -2,25 +2,29 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Eye, EyeOff, Plus } from "lucide-react";
+import { AnimatedCounter } from "@/components/features/animated-counter";
+import { FileText, Eye, EyeOff, Mail, Plus } from "lucide-react";
 import { format, parseISO } from "date-fns";
+import { fetchSubscriberStats } from "@/lib/actions/subscribers";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
 
-  const [totalResult, publishedResult, draftResult, recentResult] = await Promise.all([
+  const [totalResult, publishedResult, draftResult, recentResult, subscriberStats] = await Promise.all([
     supabase.from("articles").select("id", { count: "exact", head: true }),
     supabase.from("articles").select("id", { count: "exact", head: true }).eq("status", "published"),
     supabase.from("articles").select("id", { count: "exact", head: true }).eq("status", "draft"),
     supabase.from("articles").select("*").order("updated_at", { ascending: false }).limit(5),
+    fetchSubscriberStats(),
   ]);
 
   const stats = [
     { label: "Total Articles", count: totalResult.count ?? 0, icon: FileText },
     { label: "Published", count: publishedResult.count ?? 0, icon: Eye },
     { label: "Drafts", count: draftResult.count ?? 0, icon: EyeOff },
+    { label: "Subscribers", count: subscriberStats.active, icon: Mail },
   ];
 
   const recentArticles = recentResult.data ?? [];
@@ -37,14 +41,14 @@ export default async function AdminDashboard() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-10">
+      <div className="grid grid-cols-2 gap-4 mb-10 sm:grid-cols-4">
         {stats.map(({ label, count, icon: Icon }) => (
           <Card key={label} className="flex items-center gap-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-md bg-bg-primary">
               <Icon className="h-5 w-5 text-text-tertiary" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{count}</p>
+              <p className="text-2xl font-bold"><AnimatedCounter value={count} /></p>
               <p className="text-xs text-text-tertiary">{label}</p>
             </div>
           </Card>

@@ -558,6 +558,9 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
 
       {/* Action buttons */}
       <div className="flex items-center gap-3 border-t border-border pt-6">
+        <Button variant="ghost" onClick={() => router.back()}>
+          Cancel
+        </Button>
         <Button onClick={handleSaveDraft} disabled={state.saving} variant="outline">
           <Save className="h-4 w-4 mr-1.5" />
           Save Draft

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Rss } from "lucide-react";
 import { SITE } from "@/lib/constants";
 import type { Dictionary } from "@/lib/i18n/types";
 
@@ -38,6 +39,13 @@ export function Footer({ dictionary }: FooterProps) {
                 {label}
               </Link>
             ))}
+            <a
+              href="/feed.xml"
+              className="text-text-quaternary transition-colors duration-[var(--duration-fast)] hover:text-text-tertiary"
+              aria-label="RSS Feed"
+            >
+              <Rss className="h-3.5 w-3.5" />
+            </a>
           </nav>
         </div>
         <div className="mt-8 flex items-center justify-between text-[length:var(--text-micro)] text-text-quaternary">

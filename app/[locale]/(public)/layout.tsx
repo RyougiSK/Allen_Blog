@@ -1,6 +1,8 @@
 import { Navbar } from "@/components/features/navbar";
 import { Footer } from "@/components/features/footer";
 import { FloatingSubscribe } from "@/components/features/floating-subscribe";
+import { ScrollToTop } from "@/components/features/scroll-to-top";
+import { ImageLightbox } from "@/components/features/image-lightbox";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { fetchNavWritingTypes } from "@/lib/actions/writing-types";
 import type { Locale } from "@/lib/i18n/types";
@@ -27,6 +29,8 @@ export default async function PublicLayout({
       <main className="flex-1">{children}</main>
       <Footer dictionary={dictionary} />
       <FloatingSubscribe />
+      <ScrollToTop />
+      <ImageLightbox />
     </div>
   );
 }

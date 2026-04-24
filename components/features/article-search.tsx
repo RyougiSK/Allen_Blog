@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 
@@ -9,6 +9,24 @@ export function ArticleSearch() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [value, setValue] = useState(searchParams.get("q") ?? "");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (
+        e.key === "/" &&
+        !e.metaKey &&
+        !e.ctrlKey &&
+        !(e.target instanceof HTMLInputElement) &&
+        !(e.target instanceof HTMLTextAreaElement)
+      ) {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const updateSearch = useCallback(
     (query: string) => {
@@ -28,6 +46,7 @@ export function ArticleSearch() {
     <div className="relative">
       <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-quaternary" />
       <input
+        ref={inputRef}
         type="search"
         value={value}
         onChange={(e) => {

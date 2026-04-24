@@ -166,6 +166,10 @@ body {
   font-style: italic;
 }
 
+.prose-editorial img {
+  cursor: zoom-in;
+}
+
 /* ─── Reading progress bar ─── */
 .reading-progress {
   position: fixed;

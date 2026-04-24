@@ -6,7 +6,11 @@ import {
   welcomeEmailSubject,
   welcomeEmailHtml,
 } from "@/lib/email/templates/welcome";
-import type { ActionResult } from "@/lib/types";
+import {
+  confirmationEmailSubject,
+  confirmationEmailHtml,
+} from "@/lib/email/templates/confirmation";
+import type { ActionResult, Subscriber, SubscriberStatus } from "@/lib/types";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -150,6 +154,87 @@ export async function fetchSubscriberStats(): Promise<{
     active: active ?? 0,
     pending: pending ?? 0,
   };
+}
+
+export async function fetchSubscribers(opts: {
+  page?: number;
+  limit?: number;
+  status?: SubscriberStatus;
+  search?: string;
+}): Promise<{
+  subscribers: Subscriber[];
+  total: number;
+  page: number;
+  limit: number;
+}> {
+  const supabase = createServiceClient();
+  const page = opts.page ?? 1;
+  const limit = opts.limit ?? 20;
+  const offset = (page - 1) * limit;
+
+  let query = supabase
+    .from("subscribers")
+    .select("*", { count: "exact" });
+
+  if (opts.status) {
+    query = query.eq("status", opts.status);
+  }
+  if (opts.search) {
+    query = query.ilike("email", `%${opts.search}%`);
+  }
+
+  const { data, count } = await query
+    .order("created_at", { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  return {
+    subscribers: (data as Subscriber[]) ?? [],
+    total: count ?? 0,
+    page,
+    limit,
+  };
+}
+
+export async function deleteSubscriber(id: string): Promise<ActionResult> {
+  const supabase = createServiceClient();
+  const { error } = await supabase.from("subscribers").delete().eq("id", id);
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
+
+export async function resendConfirmation(id: string): Promise<ActionResult> {
+  if (!isEmailConfigured) {
+    return { success: false, error: "Email not configured." };
+  }
+
+  const supabase = createServiceClient();
+  const { data: subscriber } = await supabase
+    .from("subscribers")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (!subscriber) return { success: false, error: "Subscriber not found." };
+  if (subscriber.status !== "pending") {
+    return { success: false, error: "Only pending subscribers can be re-sent confirmation." };
+  }
+
+  try {
+    await resend.emails.send({
+      from: EMAIL_FROM,
+      to: subscriber.email,
+      subject: confirmationEmailSubject(subscriber.preferred_locale as "en" | "zh"),
+      html: confirmationEmailHtml({
+        token: subscriber.token,
+        locale: subscriber.preferred_locale as "en" | "zh",
+      }),
+    });
+  } catch (err) {
+    console.error("Failed to resend confirmation:", err);
+    return { success: false, error: "Failed to send email." };
+  }
+
+  return { success: true };
 }
 
 async function sendWelcomeEmail(

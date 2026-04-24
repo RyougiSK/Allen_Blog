@@ -11,6 +11,7 @@ import {
   FolderOpen,
   Tags,
   ImageIcon,
+  Mail,
   Plus,
   ArrowLeft,
   LogOut,
@@ -28,6 +29,7 @@ const navItems = [
   { href: "/admin/categories", label: "Categories", icon: FolderOpen, exact: false },
   { href: "/admin/tags", label: "Tags", icon: Tags, exact: false },
   { href: "/admin/media", label: "Media", icon: ImageIcon, exact: false },
+  { href: "/admin/subscribers", label: "Subscribers", icon: Mail, exact: false },
 ];
 
 export function AdminSidebar() {

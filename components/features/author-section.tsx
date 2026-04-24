@@ -21,7 +21,7 @@ export function AuthorSection({ dictionary, locale }: AuthorSectionProps) {
         </blockquote>
         <Link
           href={`/${locale}/about`}
-          className="inline-block mt-8 text-[length:var(--text-caption)] text-text-tertiary transition-colors duration-[var(--duration-fast)] hover:text-accent-warm"
+          className="inline-block mt-8 text-[length:var(--text-caption)] text-text-tertiary transition-colors duration-[var(--duration-fast)] hover:text-accent-warm whitespace-nowrap"
         >
           {dictionary["home.moreAbout"]} &rarr;
         </Link>
