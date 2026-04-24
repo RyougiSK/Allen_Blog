@@ -10,6 +10,12 @@ import type { Metadata } from "next";
 
 const LOCALE_MAP: Record<string, Locale> = { en: "en", zh: "zh-cn" };
 
+export const revalidate = 86400;
+
+export function generateStaticParams() {
+  return [{ locale: "en" }, { locale: "zh" }];
+}
+
 export async function generateMetadata({
   params,
 }: {

@@ -1,6 +1,7 @@
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import { FileText } from "lucide-react";
-import { createClient } from "@/utils/supabase/server";
+import { createStaticClient } from "@/utils/supabase/static";
 import { WritingCard } from "@/components/features/writing-card";
 import { Pagination } from "@/components/features/pagination";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -17,8 +18,23 @@ const LOCALE_MAP: Record<string, { content: ContentLocale; dict: Locale }> = {
 
 const PAGE_SIZE = 10;
 
-async function getColumn(slug: string) {
-  const supabase = await createClient();
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const supabase = createStaticClient();
+  const { data: types } = await supabase
+    .from("writing_types")
+    .select("slug")
+    .eq("is_default", false);
+
+  return (types ?? []).flatMap((t) => [
+    { locale: "en", slug: t.slug },
+    { locale: "zh", slug: t.slug },
+  ]);
+}
+
+const getColumn = cache(async (slug: string) => {
+  const supabase = createStaticClient();
   const { data } = await supabase
     .from("writing_types")
     .select("*")
@@ -26,7 +42,7 @@ async function getColumn(slug: string) {
     .eq("is_default", false)
     .single();
   return data as WritingType | null;
-}
+});
 
 export async function generateMetadata({
   params,
@@ -78,7 +94,7 @@ export default async function ColumnPage({
   const column = await getColumn(slug);
   if (!column) notFound();
 
-  const supabase = await createClient();
+  const supabase = createStaticClient();
 
   const { data: rawArticles, count } = await supabase
     .from("articles")

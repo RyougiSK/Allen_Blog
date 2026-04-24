@@ -14,7 +14,7 @@ interface SubscribeFormProps {
 
 export function SubscribeForm({ variant = "full", className = "" }: SubscribeFormProps) {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "check_email" | "already_subscribed" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "subscribed" | "already_subscribed" | "error">("idle");
   const { t, locale } = useLocale();
 
   async function handleSubmit(e: FormEvent) {
@@ -27,7 +27,7 @@ export function SubscribeForm({ variant = "full", className = "" }: SubscribeFor
     try {
       const result = await subscribeEmail(email.trim(), dbLocale as "en" | "zh");
       if (result.success) {
-        setStatus(result.message === "already_subscribed" ? "already_subscribed" : "check_email");
+        setStatus(result.message === "already_subscribed" ? "already_subscribed" : "subscribed");
       } else {
         setStatus("error");
       }
@@ -36,8 +36,8 @@ export function SubscribeForm({ variant = "full", className = "" }: SubscribeFor
     }
   }
 
-  const feedbackMessage = status === "check_email"
-    ? t("subscribe.checkEmail")
+  const feedbackMessage = status === "subscribed"
+    ? t("subscribe.subscribed")
     : status === "already_subscribed"
       ? t("subscribe.alreadySubscribed")
       : status === "error"
@@ -48,7 +48,7 @@ export function SubscribeForm({ variant = "full", className = "" }: SubscribeFor
     ? "text-[var(--color-danger)]"
     : "text-accent-warm";
 
-  const isSubmitted = status === "check_email" || status === "already_subscribed";
+  const isSubmitted = status === "subscribed" || status === "already_subscribed";
 
   if (variant === "inline") {
     return (

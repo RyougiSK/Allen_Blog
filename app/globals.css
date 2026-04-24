@@ -2,14 +2,14 @@
 @plugin "@tailwindcss/typography";
 
 @theme inline {
-  /* ─── Backgrounds ─── */
-  --color-bg-primary: #0C0C0E;
-  --color-bg-secondary: #141416;
-  --color-bg-tertiary: #1C1C20;
+  /* ─── Backgrounds (teal-inflected dark — depth, not void) ─── */
+  --color-bg-primary: #0B0D0F;
+  --color-bg-secondary: #121517;
+  --color-bg-tertiary: #1A1E21;
 
   /* ─── Surfaces ─── */
-  --color-surface: #18181C;
-  --color-surface-hover: #1E1E23;
+  --color-surface: #161A1D;
+  --color-surface-hover: #1C2124;
 
   /* ─── Text hierarchy ─── */
   --color-text-primary: #EDEDEF;
@@ -17,13 +17,14 @@
   --color-text-tertiary: #6B6B74;
   --color-text-quaternary: #45454D;
 
-  /* ─── Accents ─── */
-  --color-accent: #8A8F98;
+  /* ─── Accents (warm gold = yang/action, teal = yin/stillness) ─── */
+  --color-accent: #5B8A8C;
   --color-accent-warm: #C4A882;
+  --color-accent-deep: #2D5F5E;
 
-  /* ─── Borders ─── */
-  --color-border: #1E1E23;
-  --color-border-emphasis: #2A2A31;
+  /* ─── Borders (teal undertone) ─── */
+  --color-border: #1D2226;
+  --color-border-emphasis: #283034;
 
   /* ─── Semantic ─── */
   --color-success: #34D399;
@@ -267,7 +268,7 @@ body {
 .hero-ink-wash-bg::after {
   background: radial-gradient(
     ellipse at 70% 60%,
-    rgba(138, 143, 152, 0.05) 0%,
+    rgba(91, 138, 140, 0.06) 0%,
     transparent 55%
   );
   animation: ink-wash-2 55s ease-in-out infinite;
@@ -279,10 +280,10 @@ body {
   pointer-events: none;
   background: linear-gradient(
     to bottom,
-    rgba(12, 12, 14, 0.3) 0%,
-    rgba(12, 12, 14, 0.5) 40%,
-    rgba(12, 12, 14, 0.85) 80%,
-    rgba(12, 12, 14, 1) 100%
+    rgba(11, 13, 15, 0.3) 0%,
+    rgba(11, 13, 15, 0.5) 40%,
+    rgba(11, 13, 15, 0.85) 80%,
+    rgba(11, 13, 15, 1) 100%
   );
 }
 

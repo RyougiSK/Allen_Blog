@@ -42,7 +42,9 @@ export function Footer({ dictionary }: FooterProps) {
         </div>
         <div className="mt-8 flex items-center justify-between text-[length:var(--text-micro)] text-text-quaternary">
           <span>&copy; {new Date().getFullYear()} {SITE.name}</span>
-          <span>{dictionary["footer.builtWith"]}</span>
+          {dictionary["footer.builtWith"] && (
+            <span>{dictionary["footer.builtWith"]}</span>
+          )}
         </div>
       </div>
     </footer>

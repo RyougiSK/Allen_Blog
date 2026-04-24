@@ -1,7 +1,8 @@
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Globe } from "lucide-react";
-import { createClient } from "@/utils/supabase/server";
+import { createStaticClient } from "@/utils/supabase/static";
 import { TiptapRenderer } from "@/components/features/tiptap-renderer";
 import { ArticleHeader } from "@/components/features/article-header";
 import { ReadingProgress } from "@/components/features/reading-progress";
@@ -20,6 +21,35 @@ const LOCALE_MAP: Record<string, { content: ContentLocale; dict: Locale }> = {
   zh: { content: "zh", dict: "zh-cn" },
 };
 
+const getArticleBySlug = cache(async (slug: string) => {
+  const supabase = createStaticClient();
+  const { data } = await supabase
+    .from("articles")
+    .select("*, article_tags(tag_id, tags(*))")
+    .eq("status", "published")
+    .eq("en->>slug", slug)
+    .single();
+  return data;
+});
+
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const supabase = createStaticClient();
+  const { data: articles } = await supabase
+    .from("articles")
+    .select("en")
+    .eq("status", "published")
+    .neq("en->>slug", "")
+    .not("en->>slug", "is", null);
+
+  const slugs = (articles ?? []).map((a) => a.en?.slug).filter(Boolean);
+  return slugs.flatMap((slug) => [
+    { locale: "en", slug },
+    { locale: "zh", slug },
+  ]);
+}
+
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
 }
@@ -27,14 +57,8 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale, slug } = await params;
   const { content: contentLocale } = LOCALE_MAP[locale] ?? LOCALE_MAP.en;
-  const supabase = await createClient();
 
-  const { data: article } = await supabase
-    .from("articles")
-    .select("*")
-    .eq("status", "published")
-    .eq("en->>slug", slug)
-    .single();
+  const article = await getArticleBySlug(slug);
 
   if (!article) return { title: "Not Found" };
 
@@ -78,14 +102,8 @@ export default async function ArticleDetailPage({ params }: PageProps) {
   const { locale, slug } = await params;
   const { content: contentLocale, dict: dictLocale } = LOCALE_MAP[locale] ?? LOCALE_MAP.en;
   const dictionary = await getDictionary(dictLocale);
-  const supabase = await createClient();
 
-  const { data: rawArticle } = await supabase
-    .from("articles")
-    .select("*, article_tags(tag_id, tags(*))")
-    .eq("status", "published")
-    .eq("en->>slug", slug)
-    .single();
+  const rawArticle = await getArticleBySlug(slug);
 
   if (!rawArticle) notFound();
 

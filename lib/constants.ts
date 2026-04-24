@@ -13,16 +13,18 @@ export const SUPPORT = {
 } as const;
 
 export const SITE = {
-  name: "Hanming's Journal",
-  title: "Hanming's Journal",
+  name: "The Quiet Way",
+  nameZh: "静之道",
+  title: "The Quiet Way",
   description:
     "A personal journal on psychology, philosophy, and the questions that don't resolve.",
-  url: "https://hanmingchen.com",
+  url: "https://the-quiet-way.com",
   author: {
     name: "Hanming (Allen) Chen",
     nameZh: "陈翰明",
     bio: "BI analyst and consultant based in Australia. Writing on psychology, philosophy, and the inner life.",
   },
+  logo: `${STORAGE_BASE}/brand/logo.png`,
   hero: {
     video: `${STORAGE_BASE}/hero/hero.mp4`,
     poster: `${STORAGE_BASE}/hero/hero-poster.jpg`,

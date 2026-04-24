@@ -1,5 +1,3 @@
-"use client";
-
 import { isTiptapJson, tiptapJsonToHtml } from "@/lib/tiptap/generate-html";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";

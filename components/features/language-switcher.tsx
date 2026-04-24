@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 export function LanguageSwitcher() {
@@ -8,6 +9,12 @@ export function LanguageSwitcher() {
 
   const segments = pathname.split("/");
   const currentLocale = segments[1] === "zh" ? "zh" : "en";
+
+  useEffect(() => {
+    const altSegments = pathname.split("/");
+    altSegments[1] = currentLocale === "en" ? "zh" : "en";
+    router.prefetch(altSegments.join("/") || "/");
+  }, [pathname, currentLocale, router]);
 
   function switchLocale(next: "en" | "zh") {
     if (next === currentLocale) return;

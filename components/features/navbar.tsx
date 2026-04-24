@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { SITE } from "@/lib/constants";
@@ -50,9 +51,18 @@ export function Navbar({ writingTypes = [] }: NavbarProps) {
         <div className="mx-auto flex w-full max-w-[var(--width-page)] items-center justify-between px-6 h-16">
           <Link
             href={`/${routeLocale}`}
-            className="font-display text-lg text-text-primary transition-colors duration-[var(--duration-fast)] hover:text-accent-warm"
+            className="flex items-center gap-2.5 transition-colors duration-[var(--duration-fast)] hover:text-accent-warm"
           >
-            {SITE.name}
+            <Image
+              src="/logo.png"
+              alt=""
+              width={28}
+              height={28}
+              className="rounded-md"
+            />
+            <span className="font-display text-lg text-text-primary">
+              {SITE.name}
+            </span>
           </Link>
 
           <nav className="hidden sm:flex items-center gap-8">
@@ -104,9 +114,18 @@ export function Navbar({ writingTypes = [] }: NavbarProps) {
             <Link
               href={`/${routeLocale}`}
               onClick={() => setMobileOpen(false)}
-              className="font-display text-lg text-text-primary"
+              className="flex items-center gap-2.5"
             >
-              {SITE.name}
+              <Image
+                src="/logo.png"
+                alt=""
+                width={28}
+                height={28}
+                className="rounded-md"
+              />
+              <span className="font-display text-lg text-text-primary">
+                {SITE.name}
+              </span>
             </Link>
             <button
               onClick={() => setMobileOpen(false)}

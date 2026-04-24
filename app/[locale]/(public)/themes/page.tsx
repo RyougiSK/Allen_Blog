@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { MessageSquare } from "lucide-react";
-import { createClient } from "@/utils/supabase/server";
+import { createStaticClient } from "@/utils/supabase/static";
 import { fetchPublishedThreads } from "@/lib/actions/threads";
 import { ThreadCard } from "@/components/features/thread-card";
 import { Pagination } from "@/components/features/pagination";
@@ -64,7 +64,7 @@ export default async function ThreadsPage({
   const { content: contentLocale, dict: dictLocale } =
     LOCALE_MAP[locale] ?? LOCALE_MAP.en;
   const dictionary = await getDictionary(dictLocale);
-  const supabase = await createClient();
+  const supabase = createStaticClient();
 
   const { threads, total } = await fetchPublishedThreads({
     limit: pageSize,

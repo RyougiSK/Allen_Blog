@@ -1,5 +1,6 @@
+import { cache } from "react";
 import { notFound } from "next/navigation";
-import { createClient } from "@/utils/supabase/server";
+import { createStaticClient } from "@/utils/supabase/static";
 import { WritingCard } from "@/components/features/writing-card";
 import { Pagination } from "@/components/features/pagination";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -16,19 +17,36 @@ const LOCALE_MAP: Record<string, { content: ContentLocale; dict: Locale }> = {
 
 const PAGE_SIZE = 10;
 
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const supabase = createStaticClient();
+  const { data: tags } = await supabase.from("tags").select("slug");
+
+  return (tags ?? []).flatMap((t) => [
+    { locale: "en", slug: t.slug },
+    { locale: "zh", slug: t.slug },
+  ]);
+}
+
+const getTagBySlug = cache(async (slug: string) => {
+  const supabase = createStaticClient();
+  const { data } = await supabase
+    .from("tags")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+  return data;
+});
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const supabase = await createClient();
   const { content: contentLocale } = LOCALE_MAP[locale] ?? LOCALE_MAP.en;
-  const { data: tag } = await supabase
-    .from("tags")
-    .select("name, name_zh")
-    .eq("slug", slug)
-    .single();
+  const tag = await getTagBySlug(slug);
 
   if (!tag) return {};
 
@@ -61,15 +79,12 @@ export default async function TagArchivePage({
   const { content: contentLocale, dict: dictLocale } =
     LOCALE_MAP[locale] ?? LOCALE_MAP.en;
   const dictionary = await getDictionary(dictLocale);
-  const supabase = await createClient();
 
-  const { data: tag } = await supabase
-    .from("tags")
-    .select("*")
-    .eq("slug", slug)
-    .single();
+  const tag = await getTagBySlug(slug);
 
   if (!tag) notFound();
+
+  const supabase = createStaticClient();
 
   // Get article IDs for this tag
   const { data: articleTagRows } = await supabase

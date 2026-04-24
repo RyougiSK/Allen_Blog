@@ -3,9 +3,9 @@
 import { createServiceClient } from "@/utils/supabase/service";
 import { resend, EMAIL_FROM, isEmailConfigured } from "@/lib/email/resend";
 import {
-  confirmationEmailHtml,
-  confirmationEmailSubject,
-} from "@/lib/email/templates/confirmation";
+  welcomeEmailSubject,
+  welcomeEmailHtml,
+} from "@/lib/email/templates/welcome";
 import type { ActionResult } from "@/lib/types";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,30 +32,29 @@ export async function subscribeEmail(
       return { success: true, message: "already_subscribed" };
     }
 
-    // Re-subscribe or resend confirmation
-    const newToken = crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "");
     await supabase
       .from("subscribers")
       .update({
-        status: "pending",
-        token: newToken,
+        status: "active",
         preferred_locale: locale,
+        confirmed_at: new Date().toISOString(),
         unsubscribed_at: null,
       })
       .eq("id", existing.id);
 
-    await sendConfirmationEmail(trimmed, newToken, locale);
-    return { success: true, message: "check_email" };
+    await sendWelcomeEmail(trimmed, locale, existing.token);
+    return { success: true, message: "subscribed" };
   }
 
   const { error } = await supabase.from("subscribers").insert({
     email: trimmed,
     preferred_locale: locale,
+    status: "active",
+    confirmed_at: new Date().toISOString(),
   });
 
   if (error) return { success: false, error: "Something went wrong. Please try again." };
 
-  // Fetch the created subscriber to get the auto-generated token
   const { data: created } = await supabase
     .from("subscribers")
     .select("token")
@@ -63,10 +62,10 @@ export async function subscribeEmail(
     .single();
 
   if (created) {
-    await sendConfirmationEmail(trimmed, created.token, locale);
+    await sendWelcomeEmail(trimmed, locale, created.token);
   }
 
-  return { success: true, message: "check_email" };
+  return { success: true, message: "subscribed" };
 }
 
 export async function confirmSubscription(
@@ -76,7 +75,7 @@ export async function confirmSubscription(
 
   const { data: subscriber } = await supabase
     .from("subscribers")
-    .select("id, preferred_locale, status")
+    .select("id, email, preferred_locale, status, token")
     .eq("token", token)
     .single();
 
@@ -94,6 +93,8 @@ export async function confirmSubscription(
     .eq("id", subscriber.id);
 
   if (error) return { success: false, error: "Something went wrong." };
+
+  await sendWelcomeEmail(subscriber.email, subscriber.preferred_locale as "en" | "zh", subscriber.token);
 
   return { success: true, locale: subscriber.preferred_locale };
 }
@@ -151,23 +152,23 @@ export async function fetchSubscriberStats(): Promise<{
   };
 }
 
-async function sendConfirmationEmail(
+async function sendWelcomeEmail(
   email: string,
-  token: string,
   locale: "en" | "zh",
+  unsubscribeToken: string,
 ): Promise<void> {
   if (!isEmailConfigured) {
-    console.warn("RESEND_API_KEY not set — skipping confirmation email");
+    console.warn("RESEND_API_KEY not set — skipping welcome email");
     return;
   }
   try {
     await resend.emails.send({
       from: EMAIL_FROM,
       to: email,
-      subject: confirmationEmailSubject(locale),
-      html: confirmationEmailHtml({ token, locale }),
+      subject: welcomeEmailSubject(locale),
+      html: welcomeEmailHtml({ locale, unsubscribeToken }),
     });
   } catch (err) {
-    console.error("Failed to send confirmation email:", err);
+    console.error("Failed to send welcome email:", err);
   }
 }

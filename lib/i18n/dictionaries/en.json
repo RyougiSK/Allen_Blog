@@ -21,14 +21,14 @@
 
   "writing.title": "Writing",
   "writing.description": "Thoughts on technology, design, and the things worth thinking about.",
-  "writing.noArticles": "No articles found.",
+  "writing.noArticles": "Nothing here yet. The thinking continues.",
   "writing.noResults": "No articles matching your filters.",
   "writing.clearFilters": "Clear filters",
   "writing.backToWriting": "Back to writing",
 
   "themes.title": "Threads",
   "themes.description": "Short thoughts, reading notes, and daily observations.",
-  "themes.noThemes": "No threads yet.",
+  "themes.noThemes": "Quiet for now.",
 
   "about.tagline": "About",
   "about.whatIWrite": "What I write about",
@@ -45,10 +45,10 @@
   "subscribe.button": "Subscribe",
   "subscribe.thankyou": "Thank you for subscribing.",
   "subscribe.noSpam": "No spam, unsubscribe anytime.",
-  "subscribe.checkEmail": "Check your email to confirm your subscription.",
+  "subscribe.subscribed": "You're subscribed! Check your email for a welcome message.",
   "subscribe.alreadySubscribed": "You're already subscribed.",
   "subscribe.error": "Something went wrong. Please try again.",
-  "subscribe.confirmed": "Your subscription is confirmed. Welcome aboard.",
+  "subscribe.confirmed": "Your subscription is confirmed. Welcome to the quiet.",
   "subscribe.invalidToken": "This confirmation link is invalid or has expired.",
   "subscribe.pageHeading": "Stay with the thinking",
   "subscribe.pageDescription": "Receive new reflections by email, at a quiet pace. No spam, no noise.",
@@ -58,8 +58,8 @@
   "share.copied": "Copied!",
   "share.nativeShare": "Share",
 
-  "articleBottom.enjoyedThis": "Enjoyed this?",
-  "articleBottom.subscribeDescription": "Get notified when new articles are published.",
+  "articleBottom.enjoyedThis": "If this stayed with you",
+  "articleBottom.subscribeDescription": "Reflections by email, at a quiet pace.",
 
   "reading.minRead": "{count} min read",
   "reading.min": "{count} min",
@@ -85,7 +85,7 @@
   "pagination.previous": "Previous",
   "pagination.next": "Next",
 
-  "footer.builtWith": "Built with Next.js",
+  "footer.builtWith": "",
 
   "article.readInOther": "Read in Chinese",
 
@@ -146,7 +146,7 @@
   "about.supportWork": "Support this writing",
   "about.supportWorkDesc": "Help keep this space independent and ad-free.",
 
-  "articleBottom.supportPrompt": "Find this useful?",
+  "articleBottom.supportPrompt": "Did this mean something?",
   "articleBottom.supportLink": "Support this site",
 
   "floatingSubscribe.description": "New reflections, at a quiet pace.",

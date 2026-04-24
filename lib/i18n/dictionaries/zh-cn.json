@@ -21,14 +21,14 @@
 
   "writing.title": "文章",
   "writing.description": "关于技术、设计和那些值得思考之事的随想。",
-  "writing.noArticles": "暂无文章。",
+  "writing.noArticles": "这里还很安静。思考仍在继续。",
   "writing.noResults": "没有符合筛选条件的文章。",
   "writing.clearFilters": "清除筛选",
   "writing.backToWriting": "返回文章",
 
   "themes.title": "思绪",
   "themes.description": "简短的想法、阅读笔记和日常观察。",
-  "themes.noThemes": "暂无思绪。",
+  "themes.noThemes": "此刻安静。",
 
   "about.tagline": "关于",
   "about.whatIWrite": "我写些什么",
@@ -45,10 +45,10 @@
   "subscribe.button": "订阅",
   "subscribe.thankyou": "感谢您的订阅。",
   "subscribe.noSpam": "没有垃圾邮件，随时退订。",
-  "subscribe.checkEmail": "请查看您的邮箱以确认订阅。",
+  "subscribe.subscribed": "订阅成功！请查看您的邮箱，我们已发送一封欢迎邮件。",
   "subscribe.alreadySubscribed": "您已经订阅了。",
   "subscribe.error": "出了点问题，请重试。",
-  "subscribe.confirmed": "您的订阅已确认。欢迎加入。",
+  "subscribe.confirmed": "订阅已确认。欢迎来到这份安静。",
   "subscribe.invalidToken": "此确认链接无效或已过期。",
   "subscribe.pageHeading": "与思考同行",
   "subscribe.pageDescription": "以安静的节奏，通过邮件接收新的思考。没有垃圾邮件——只有好内容。",
@@ -58,8 +58,8 @@
   "share.copied": "已复制！",
   "share.nativeShare": "分享",
 
-  "articleBottom.enjoyedThis": "喜欢这篇文章？",
-  "articleBottom.subscribeDescription": "新文章发布时收到通知。",
+  "articleBottom.enjoyedThis": "若这篇文章留在了心里",
+  "articleBottom.subscribeDescription": "以安静的节奏，通过邮件接收新的思考。",
 
   "reading.minRead": "{count} 分钟阅读",
   "reading.min": "{count} 分钟",
@@ -85,7 +85,7 @@
   "pagination.previous": "上一页",
   "pagination.next": "下一页",
 
-  "footer.builtWith": "使用 Next.js 构建",
+  "footer.builtWith": "",
 
   "article.readInOther": "阅读英文版",
 
@@ -146,7 +146,7 @@
   "about.supportWork": "支持这份写作",
   "about.supportWorkDesc": "帮助保持这个空间的独立和无广告。",
 
-  "articleBottom.supportPrompt": "觉得有用？",
+  "articleBottom.supportPrompt": "这些文字对你有意义吗？",
   "articleBottom.supportLink": "支持本站",
 
   "floatingSubscribe.description": "以安静的节奏，接收新的思考。",

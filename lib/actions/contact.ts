@@ -6,6 +6,10 @@ import {
   contactNotificationSubject,
   contactNotificationHtml,
 } from "@/lib/email/templates/contact-notification";
+import {
+  contactAutoReplySubject,
+  contactAutoReplyHtml,
+} from "@/lib/email/templates/contact-auto-reply";
 import type { ActionResult } from "@/lib/types";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -50,7 +54,10 @@ export async function submitContactInquiry(
     return { success: false, error: "Something went wrong. Please try again." };
   }
 
-  await sendNotificationEmail(trimmedName, trimmedEmail, trimmedMessage);
+  await Promise.allSettled([
+    sendNotificationEmail(trimmedName, trimmedEmail, trimmedMessage),
+    sendAutoReplyEmail(trimmedName, trimmedEmail, trimmedMessage, locale),
+  ]);
 
   return { success: true };
 }
@@ -67,11 +74,33 @@ async function sendNotificationEmail(
   try {
     await resend.emails.send({
       from: EMAIL_FROM,
-      to: "hello@hanmingchen.com",
+      to: process.env.CONTACT_EMAIL || "chenhm03@gmail.com",
       subject: contactNotificationSubject(name),
       html: contactNotificationHtml({ name, email, message }),
     });
   } catch (err) {
     console.error("Failed to send contact notification email:", err);
+  }
+}
+
+async function sendAutoReplyEmail(
+  name: string,
+  email: string,
+  message: string,
+  locale: "en" | "zh",
+): Promise<void> {
+  if (!isEmailConfigured) {
+    console.warn("RESEND_API_KEY not set — skipping contact auto-reply email");
+    return;
+  }
+  try {
+    await resend.emails.send({
+      from: EMAIL_FROM,
+      to: email,
+      subject: contactAutoReplySubject(locale),
+      html: contactAutoReplyHtml({ name, message, locale }),
+    });
+  } catch (err) {
+    console.error("Failed to send contact auto-reply email:", err);
   }
 }

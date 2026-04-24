@@ -1,5 +1,6 @@
+import { cache } from "react";
 import { notFound } from "next/navigation";
-import { createClient } from "@/utils/supabase/server";
+import { createStaticClient } from "@/utils/supabase/static";
 import { WritingCard } from "@/components/features/writing-card";
 import { Pagination } from "@/components/features/pagination";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -16,19 +17,36 @@ const LOCALE_MAP: Record<string, { content: ContentLocale; dict: Locale }> = {
 
 const PAGE_SIZE = 10;
 
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const supabase = createStaticClient();
+  const { data: categories } = await supabase.from("categories").select("slug");
+
+  return (categories ?? []).flatMap((c) => [
+    { locale: "en", slug: c.slug },
+    { locale: "zh", slug: c.slug },
+  ]);
+}
+
+const getCategoryBySlug = cache(async (slug: string) => {
+  const supabase = createStaticClient();
+  const { data } = await supabase
+    .from("categories")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+  return data;
+});
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const supabase = await createClient();
   const { content: contentLocale } = LOCALE_MAP[locale] ?? LOCALE_MAP.en;
-  const { data: category } = await supabase
-    .from("categories")
-    .select("name, name_zh, description")
-    .eq("slug", slug)
-    .single();
+  const category = await getCategoryBySlug(slug);
 
   if (!category) return {};
 
@@ -61,15 +79,12 @@ export default async function CategoryArchivePage({
   const { content: contentLocale, dict: dictLocale } =
     LOCALE_MAP[locale] ?? LOCALE_MAP.en;
   const dictionary = await getDictionary(dictLocale);
-  const supabase = await createClient();
 
-  const { data: category } = await supabase
-    .from("categories")
-    .select("*")
-    .eq("slug", slug)
-    .single();
+  const category = await getCategoryBySlug(slug);
 
   if (!category) notFound();
+
+  const supabase = createStaticClient();
 
   const { data: rawArticles, count } = await supabase
     .from("articles")

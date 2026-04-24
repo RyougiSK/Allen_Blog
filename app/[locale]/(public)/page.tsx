@@ -1,13 +1,12 @@
 import Link from "next/link";
-import { createClient } from "@/utils/supabase/server";
+import { createStaticClient } from "@/utils/supabase/static";
 import { HeroSection } from "@/components/features/hero-section";
 import { SelectedWriting } from "@/components/features/selected-writing";
 import { AuthorSection } from "@/components/features/author-section";
 import { Reveal } from "@/components/features/reveal";
 import { Separator } from "@/components/ui/separator";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
-import { fetchRecentThreads } from "@/lib/actions/threads";
-import type { ArticleWithTags, Tag, ContentLocale } from "@/lib/types";
+import type { ArticleWithTags, Tag, ThreadWithTags, ContentLocale } from "@/lib/types";
 import type { Locale } from "@/lib/i18n/types";
 import type { Metadata } from "next";
 import { SITE } from "@/lib/constants";
@@ -16,6 +15,12 @@ const LOCALE_MAP: Record<string, { content: ContentLocale; dict: Locale }> = {
   en: { content: "en", dict: "en" },
   zh: { content: "zh", dict: "zh-cn" },
 };
+
+export const revalidate = 3600;
+
+export function generateStaticParams() {
+  return [{ locale: "en" }, { locale: "zh" }];
+}
 
 export async function generateMetadata({
   params,
@@ -48,7 +53,7 @@ export default async function Home({
   const { locale } = await params;
   const { content: contentLocale, dict: dictLocale } = LOCALE_MAP[locale] ?? LOCALE_MAP.en;
   const dictionary = await getDictionary(dictLocale);
-  const supabase = await createClient();
+  const supabase = createStaticClient();
 
   const { data: rawArticles } = await supabase
     .from("articles")
@@ -67,7 +72,22 @@ export default async function Home({
     article_tags: undefined,
   }));
 
-  const recentThreads = await fetchRecentThreads(3);
+  const { data: rawThreads } = await supabase
+    .from("threads")
+    .select("*, thread_tags(tag_id, tags(*))")
+    .eq("status", "published")
+    .order("created_at", { ascending: false })
+    .limit(3);
+
+  const recentThreads: ThreadWithTags[] = (rawThreads ?? []).map((t) => {
+    const { thread_tags, ...rest } = t as Record<string, unknown> & {
+      thread_tags?: { tag_id: string; tags: Tag }[];
+    };
+    return {
+      ...rest,
+      tags: (thread_tags ?? []).map((tt) => tt.tags),
+    } as ThreadWithTags;
+  });
 
   const featured = articles.slice(0, 2);
   const recent = articles.slice(2);

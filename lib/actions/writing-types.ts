@@ -1,7 +1,8 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
+import { createStaticClient } from "@/utils/supabase/static";
 import { slugify } from "@/lib/utils";
 import type { ActionResult, WritingType, WritingTypeWithCount } from "@/lib/types";
 
@@ -134,34 +135,33 @@ export async function fetchWritingTypesWithCounts(): Promise<WritingTypeWithCoun
 
   const { data: types } = await supabase
     .from("writing_types")
-    .select("*")
+    .select("*, articles(count)")
     .order("display_order");
 
   if (!types || types.length === 0) return [];
 
-  const result: WritingTypeWithCount[] = [];
-  for (const wt of types) {
-    const { count } = await supabase
-      .from("articles")
-      .select("id", { count: "exact", head: true })
-      .eq("writing_type_id", wt.id);
-
-    result.push({ ...(wt as WritingType), articleCount: count ?? 0 });
-  }
-
-  return result;
+  return types.map((wt) => {
+    const articleCount =
+      (wt.articles as unknown as { count: number }[])?.[0]?.count ?? 0;
+    const { articles: _articles, ...rest } = wt;
+    return { ...(rest as WritingType), articleCount };
+  });
 }
 
-export async function fetchNavWritingTypes(): Promise<WritingType[]> {
-  const supabase = await createClient();
+export const fetchNavWritingTypes = unstable_cache(
+  async (): Promise<WritingType[]> => {
+    const supabase = createStaticClient();
 
-  const { data } = await supabase
-    .from("writing_types")
-    .select("*")
-    .order("display_order");
+    const { data } = await supabase
+      .from("writing_types")
+      .select("*")
+      .order("display_order");
 
-  return (data ?? []) as WritingType[];
-}
+    return (data ?? []) as WritingType[];
+  },
+  ["nav-writing-types"],
+  { revalidate: 3600 },
+);
 
 function revalidateAll() {
   revalidatePath("/en", "layout");

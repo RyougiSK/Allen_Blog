@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { FileText } from "lucide-react";
-import { createClient } from "@/utils/supabase/server";
+import { createStaticClient } from "@/utils/supabase/static";
 import { WritingCard } from "@/components/features/writing-card";
 import { WritingHero } from "@/components/features/writing-hero";
 import { ArticleSearch } from "@/components/features/article-search";
@@ -75,7 +75,7 @@ export default async function WritingPage({
   const { content: contentLocale, dict: dictLocale } =
     LOCALE_MAP[locale] ?? LOCALE_MAP.en;
   const dictionary = await getDictionary(dictLocale);
-  const supabase = await createClient();
+  const supabase = createStaticClient();
 
   const hasFilters = !!(tagSlug || categorySlug || searchQuery);
   const isFirstPage = page === 1 && !hasFilters;
