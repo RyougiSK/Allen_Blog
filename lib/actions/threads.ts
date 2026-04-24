@@ -5,9 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import type { ActionResult, ThreadFormData, ThreadWithTags, Tag } from "@/lib/types";
 
 function revalidateAll() {
-  revalidatePath("/en", "layout");
-  revalidatePath("/zh", "layout");
-  revalidatePath("/admin", "layout");
+  revalidatePath("/", "layout");
 }
 
 export async function createThread(

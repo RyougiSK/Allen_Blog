@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import type { ArticleWithTags, Tag } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPostsPage() {
   const supabase = await createClient();
 

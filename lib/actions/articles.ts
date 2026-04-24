@@ -29,9 +29,7 @@ function buildLangJson(lang: ArticleLang) {
 }
 
 function revalidateAll() {
-  revalidatePath("/en", "layout");
-  revalidatePath("/zh", "layout");
-  revalidatePath("/admin", "layout");
+  revalidatePath("/", "layout");
 }
 
 export async function createArticle(

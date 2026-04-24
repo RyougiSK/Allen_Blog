@@ -16,7 +16,7 @@ const LOCALE_MAP: Record<string, { content: ContentLocale; dict: Locale }> = {
   zh: { content: "zh", dict: "zh-cn" },
 };
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export function generateStaticParams() {
   return [{ locale: "en" }, { locale: "zh" }];

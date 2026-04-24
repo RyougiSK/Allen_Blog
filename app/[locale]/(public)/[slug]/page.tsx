@@ -32,7 +32,7 @@ const getArticleBySlug = cache(async (slug: string) => {
   return data;
 });
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   const supabase = createStaticClient();

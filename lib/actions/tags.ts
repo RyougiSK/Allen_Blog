@@ -22,7 +22,7 @@ export async function createTag(
 
   if (error) return { success: false, error: error.message };
 
-  revalidatePath("/admin", "layout");
+  revalidatePath("/", "layout");
   return { success: true, tag };
 }
 
@@ -44,9 +44,7 @@ export async function updateTag(
 
   if (error) return { success: false, error: error.message };
 
-  revalidatePath("/admin", "layout");
-  revalidatePath("/en", "layout");
-  revalidatePath("/zh", "layout");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -55,9 +53,7 @@ export async function deleteTag(id: string): Promise<ActionResult> {
   const { error } = await supabase.from("tags").delete().eq("id", id);
   if (error) return { success: false, error: error.message };
 
-  revalidatePath("/admin", "layout");
-  revalidatePath("/en", "layout");
-  revalidatePath("/zh", "layout");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -66,20 +62,16 @@ export async function fetchAllTags(): Promise<TagWithCount[]> {
 
   const { data: tags } = await supabase
     .from("tags")
-    .select("*")
+    .select("*, article_tags(count)")
     .order("name");
 
   if (!tags || tags.length === 0) return [];
 
-  const result: TagWithCount[] = [];
-  for (const tag of tags) {
-    const { count } = await supabase
-      .from("article_tags")
-      .select("article_id", { count: "exact", head: true })
-      .eq("tag_id", tag.id);
-
-    result.push({ ...(tag as Tag), postCount: count ?? 0 });
-  }
-
-  return result;
+  return tags.map((tag) => {
+    const postCount =
+      (tag.article_tags as unknown as { count: number }[])?.[0]?.count ?? 0;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { article_tags: _at, ...rest } = tag;
+    return { ...(rest as Tag), postCount };
+  });
 }

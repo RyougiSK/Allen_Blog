@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { FileText, Eye, EyeOff, Plus } from "lucide-react";
 import { format, parseISO } from "date-fns";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboard() {
   const supabase = await createClient();
 

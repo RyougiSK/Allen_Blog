@@ -18,7 +18,7 @@ const LOCALE_MAP: Record<string, { content: ContentLocale; dict: Locale }> = {
 
 const PAGE_SIZE = 10;
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   const supabase = createStaticClient();

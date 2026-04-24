@@ -109,27 +109,20 @@ export async function fetchCategoriesWithCounts(): Promise<CategoryWithCount[]> 
 
   const { data: categories } = await supabase
     .from("categories")
-    .select("*")
+    .select("*, articles(count)")
     .order("display_order");
 
   if (!categories || categories.length === 0) return [];
 
-  const result: CategoryWithCount[] = [];
-  for (const cat of categories) {
-    const { count } = await supabase
-      .from("articles")
-      .select("id", { count: "exact", head: true })
-      .eq("category_id", cat.id)
-      .eq("status", "published");
-
-    result.push({ ...(cat as Category), articleCount: count ?? 0 });
-  }
-
-  return result;
+  return categories.map((cat) => {
+    const articleCount =
+      (cat.articles as unknown as { count: number }[])?.[0]?.count ?? 0;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { articles: _a, ...rest } = cat;
+    return { ...(rest as Category), articleCount };
+  });
 }
 
 function revalidateAll() {
-  revalidatePath("/en", "layout");
-  revalidatePath("/zh", "layout");
-  revalidatePath("/admin", "layout");
+  revalidatePath("/", "layout");
 }

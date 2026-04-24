@@ -2,6 +2,8 @@ import { fetchWritingTypesWithCounts } from "@/lib/actions/writing-types";
 import { WritingTypeTable } from "@/components/features/writing-type-table";
 import { NewWritingTypeForm } from "./new-type-form";
 
+export const dynamic = "force-dynamic";
+
 export default async function TypesPage() {
   const types = await fetchWritingTypesWithCounts();
 

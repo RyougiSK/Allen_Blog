@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, unstable_cache } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 import { createStaticClient } from "@/utils/supabase/static";
 import { slugify } from "@/lib/utils";
@@ -164,7 +164,6 @@ export const fetchNavWritingTypes = unstable_cache(
 );
 
 function revalidateAll() {
-  revalidatePath("/en", "layout");
-  revalidatePath("/zh", "layout");
-  revalidatePath("/admin", "layout");
+  revalidatePath("/", "layout");
+  revalidateTag("nav-writing-types", "default");
 }

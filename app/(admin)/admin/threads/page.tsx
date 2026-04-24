@@ -3,6 +3,8 @@ import { fetchAllTags } from "@/lib/actions/tags";
 import { ThreadTable } from "@/components/features/thread-table";
 import { ThreadComposer } from "./thread-composer";
 
+export const dynamic = "force-dynamic";
+
 export default async function ThreadsPage() {
   const [threads, tags] = await Promise.all([
     fetchAllThreads(),

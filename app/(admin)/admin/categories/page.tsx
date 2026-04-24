@@ -2,6 +2,8 @@ import { fetchCategoriesWithCounts } from "@/lib/actions/categories";
 import { CategoryTable } from "@/components/features/category-table";
 import { NewCategoryForm } from "./new-category-form";
 
+export const dynamic = "force-dynamic";
+
 export default async function CategoriesPage() {
   const categories = await fetchCategoriesWithCounts();
 

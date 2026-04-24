@@ -2,6 +2,8 @@ import { fetchAllTags } from "@/lib/actions/tags";
 import { TagTable } from "@/components/features/tag-table";
 import { NewTagForm } from "./new-tag-form";
 
+export const dynamic = "force-dynamic";
+
 export default async function TagsPage() {
   const tags = await fetchAllTags();
 
