@@ -50,24 +50,20 @@ export async function subscribeEmail(
     return { success: true, message: "subscribed" };
   }
 
-  const { error } = await supabase.from("subscribers").insert({
-    email: trimmed,
-    preferred_locale: locale,
-    status: "active",
-    confirmed_at: new Date().toISOString(),
-  });
+  const { data: created, error } = await supabase
+    .from("subscribers")
+    .insert({
+      email: trimmed,
+      preferred_locale: locale,
+      status: "active",
+      confirmed_at: new Date().toISOString(),
+    })
+    .select("token")
+    .single();
 
   if (error) return { success: false, error: "Something went wrong. Please try again." };
 
-  const { data: created } = await supabase
-    .from("subscribers")
-    .select("token")
-    .eq("email", trimmed)
-    .single();
-
-  if (created) {
-    await sendWelcomeEmail(trimmed, locale, created.token);
-  }
+  await sendWelcomeEmail(trimmed, locale, created.token);
 
   return { success: true, message: "subscribed" };
 }
