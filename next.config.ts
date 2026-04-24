@@ -14,14 +14,8 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/writing/:slug", destination: "/en/:slug", permanent: true },
-      { source: "/writing", destination: "/en/writing", permanent: true },
       { source: "/blog/:slug", destination: "/en/:slug", permanent: true },
       { source: "/blog", destination: "/en/writing", permanent: true },
-      { source: "/about", destination: "/en/about", permanent: true },
-      { source: "/themes", destination: "/en/themes", permanent: true },
-      { source: "/subscribe", destination: "/en/subscribe", permanent: true },
-      { source: "/contact", destination: "/en/contact", permanent: true },
-      { source: "/support", destination: "/en/support", permanent: true },
     ];
   },
 };
