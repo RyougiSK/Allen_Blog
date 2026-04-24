@@ -16,7 +16,7 @@ export async function generateMetadata({
   const { locale } = await params;
   return {
     title: "Subscribe",
-    description: `Subscribe to ${SITE.name} — occasional dispatches on technology, design, and the things worth thinking about.`,
+    description: `Subscribe to ${SITE.name} — new writing by email, when there's something to say.`,
     alternates: {
       canonical: `${SITE.url}/${locale}/subscribe`,
       languages: {

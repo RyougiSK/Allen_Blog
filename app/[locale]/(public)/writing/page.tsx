@@ -36,7 +36,7 @@ export async function generateMetadata({
   return {
     title: "Writing",
     description:
-      "Thoughts on technology, design, and the things worth thinking about.",
+      "Thoughts on psychology, philosophy, and the things that stay with me.",
     alternates: {
       canonical: `${SITE.url}/${locale}/writing`,
       languages: {

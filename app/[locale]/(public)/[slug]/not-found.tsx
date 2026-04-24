@@ -1,22 +1,27 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { getLocale } from "@/lib/i18n/get-locale";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
 
-export default function ArticleNotFound() {
+export default async function ArticleNotFound() {
+  const locale = await getLocale();
+  const dictionary = await getDictionary(locale);
+  const urlLocale = locale === "zh-cn" ? "zh" : "en";
+
   return (
     <div className="mx-auto w-full max-w-[var(--width-content)] px-6 py-20 text-center">
       <h1 className="font-display text-[length:var(--text-display-md)] text-text-primary mb-3">
-        Not found
+        {dictionary["notFound.title"]}
       </h1>
       <p className="text-text-secondary mb-8">
-        The article you&apos;re looking for doesn&apos;t exist or isn&apos;t
-        published yet.
+        {dictionary["notFound.description"]}
       </p>
       <Link
-        href="/en/writing"
+        href={`/${urlLocale}/writing`}
         className="inline-flex items-center gap-1.5 text-[length:var(--text-caption)] text-accent-warm hover:text-accent-warm/80 transition-colors duration-[var(--duration-fast)]"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
-        Back to writing
+        {dictionary["notFound.backLink"]}
       </Link>
     </div>
   );

@@ -8,21 +8,21 @@ interface ConfirmationEmailParams {
 
 const content = {
   en: {
-    subject: "Confirm your subscription",
-    preheader: "Confirm your email to start receiving articles",
-    greeting: "Thanks for subscribing.",
-    body: "Click the button below to confirm your email address and start receiving new articles.",
-    cta: "Confirm Subscription",
-    footer: "If you didn't subscribe, you can safely ignore this email.",
+    subject: "Confirm your email",
+    preheader: "One step to confirm",
+    greeting: "Thank you.",
+    body: "This link confirms your email address. After that, you'll hear from me when there's something new.",
+    cta: "Confirm",
+    footer: "If this wasn't you, no action needed.",
     context: `You subscribed at ${SITE.url.replace("https://", "")}`,
   },
   zh: {
-    subject: "确认您的订阅",
-    preheader: "请确认您的邮箱以接收文章通知",
-    greeting: "感谢您的订阅。",
-    body: "请点击下方按钮确认您的电子邮箱地址，以开始接收新文章通知。",
-    cta: "确认订阅",
-    footer: "如果您没有订阅，请忽略此邮件。",
+    subject: "确认你的邮箱",
+    preheader: "一步确认",
+    greeting: "谢谢你。",
+    body: "点击下方链接确认你的邮箱地址。之后有新文章时你会收到通知。",
+    cta: "确认",
+    footer: "如果这不是你的操作，无需理会。",
     context: `您在 ${SITE.url.replace("https://", "")} 订阅`,
   },
 };

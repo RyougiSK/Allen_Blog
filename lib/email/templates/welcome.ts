@@ -8,19 +8,19 @@ interface WelcomeEmailParams {
 
 const content = {
   en: {
-    subject: "Welcome to The Quiet Way",
-    preheader: "Welcome — here's what to expect",
+    subject: "Welcome",
+    preheader: "Thank you for subscribing",
     greeting: "Welcome.",
-    body: "You've subscribed to The Quiet Way. From here on, you'll receive a quiet note whenever I publish something new — reflections on psychology, philosophy, and the questions that stay with us.",
-    cta: "Visit The Quiet Way",
+    body: "You've joined the mailing list. I'll send a short note when there's something new — usually about psychology, philosophy, or whatever I've been thinking through.",
+    cta: "Visit the site",
     signoff: "Thank you for reading.",
   },
   zh: {
-    subject: "欢迎订阅静之道",
-    preheader: "欢迎——以下是您将收到的内容",
+    subject: "欢迎",
+    preheader: "感谢你的订阅",
     greeting: "欢迎。",
-    body: "您已订阅静之道。从现在起，每当有新文章发布时，您会收到一封简短的邮件通知——关于心理学、哲学，以及那些值得深思的问题。",
-    cta: "访问静之道",
+    body: "你已加入邮件列表。有新文章时我会发一封简短的通知——通常关于心理学、哲学，或者我最近在思考的事情。",
+    cta: "访问网站",
     signoff: "感谢您的阅读。",
   },
 };

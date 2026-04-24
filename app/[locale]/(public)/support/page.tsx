@@ -24,7 +24,7 @@ export async function generateMetadata({
   const { locale } = await params;
   return {
     title: "Support",
-    description: `Support ${SITE.author.name}'s writing — help keep this space independent and ad-free.`,
+    description: `Support ${SITE.author.name}'s writing — help this site stay independent.`,
     alternates: {
       canonical: `${SITE.url}/${locale}/support`,
       languages: {

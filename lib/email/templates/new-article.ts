@@ -11,11 +11,11 @@ interface NewArticleEmailParams {
 const content = {
   en: {
     subjectPrefix: "New article:",
-    cta: "Read Article",
+    cta: "Read",
   },
   zh: {
     subjectPrefix: "新文章：",
-    cta: "阅读文章",
+    cta: "阅读",
   },
 };
 

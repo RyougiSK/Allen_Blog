@@ -10,20 +10,20 @@ interface ContactAutoReplyParams {
 const content = {
   en: {
     subject: `Message received — ${SITE.name}`,
-    preheader: "Thank you for reaching out — I'll get back to you soon",
+    preheader: "Thank you for writing — I'll reply soon",
     greeting: (name: string) => `Hi ${name},`,
-    body: "Thank you for reaching out. I've received your message and will get back to you within a few business days.",
+    body: "Thank you for writing. I've received your message and will reply within a few days.",
     yourMessage: "Your message:",
-    signoff: "Best regards,",
+    signoff: "",
     author: "Allen Chen",
   },
   zh: {
     subject: `已收到您的消息 — ${SITE.name}`,
     preheader: "感谢您的来信——我会尽快回复",
     greeting: (name: string) => `${name}，你好，`,
-    body: "感谢您的来信。我已收到您的消息，将在几个工作日内回复您。",
+    body: "谢谢你的来信。我收到了，几天内会回复。",
     yourMessage: "您的消息：",
-    signoff: "此致，",
+    signoff: "",
     author: "Allen Chen",
   },
 };
@@ -44,7 +44,7 @@ export function contactAutoReplyHtml({ name, message, locale }: ContactAutoReply
         <p style="margin:0;color:#7a7a88;font-size:14px;line-height:1.7;white-space:pre-wrap;">${escapeHtml(message)}</p>
       </div>
     </div>
-    <p style="margin:0;color:#7a7a88;font-size:14px;line-height:1.6;">${t.signoff}</p>`;
+    ${t.signoff ? `<p style="margin:0;color:#7a7a88;font-size:14px;line-height:1.6;">${t.signoff}</p>` : ""}`;
 
   return baseLayout({
     locale,

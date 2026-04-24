@@ -21,7 +21,7 @@ export async function generateMetadata({
   const { locale } = await params;
   return {
     title: "Contact",
-    description: `Contact ${SITE.author.name} — for interviews, collaborations, speaking engagements, or professional inquiries.`,
+    description: `Contact ${SITE.author.name} — I'd be glad to hear from you.`,
     alternates: {
       canonical: `${SITE.url}/${locale}/contact`,
       languages: {
