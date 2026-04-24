@@ -4,11 +4,22 @@ import type { Dictionary } from "@/lib/i18n/types";
 
 interface SubscribeConfirmationProps {
   confirmed: boolean;
+  unsubscribed: boolean;
   error: boolean;
   dictionary: Dictionary;
 }
 
-export function SubscribeConfirmation({ confirmed, error, dictionary }: SubscribeConfirmationProps) {
+export function SubscribeConfirmation({ confirmed, unsubscribed, error, dictionary }: SubscribeConfirmationProps) {
+  if (unsubscribed) {
+    return (
+      <div className="mt-8 rounded-[var(--radius-lg)] border border-border bg-bg-secondary px-6 py-4 max-w-[28rem] mx-auto">
+        <p className="text-[length:var(--text-body-sm)] text-text-secondary">
+          {dictionary["subscribe.unsubscribed"]}
+        </p>
+      </div>
+    );
+  }
+
   if (confirmed) {
     return (
       <div className="mt-8 rounded-[var(--radius-lg)] border border-border bg-bg-secondary px-6 py-4 max-w-[28rem] mx-auto">

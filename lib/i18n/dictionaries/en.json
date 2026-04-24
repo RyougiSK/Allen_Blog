@@ -49,6 +49,7 @@
   "subscribe.alreadySubscribed": "You're already subscribed.",
   "subscribe.error": "Something went wrong. Please try again.",
   "subscribe.confirmed": "Your subscription is confirmed. Welcome to the quiet.",
+  "subscribe.unsubscribed": "You've been unsubscribed. You won't receive any more emails from us.",
   "subscribe.invalidToken": "This confirmation link is invalid or has expired.",
   "subscribe.pageHeading": "Stay with the thinking",
   "subscribe.pageDescription": "Receive new reflections by email, at a quiet pace. No spam, no noise.",

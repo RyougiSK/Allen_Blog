@@ -49,6 +49,7 @@
   "subscribe.alreadySubscribed": "您已经订阅了。",
   "subscribe.error": "出了点问题，请重试。",
   "subscribe.confirmed": "订阅已确认。欢迎来到这份安静。",
+  "subscribe.unsubscribed": "您已成功退订，将不再收到我们的邮件。",
   "subscribe.invalidToken": "此确认链接无效或已过期。",
   "subscribe.pageHeading": "与思考同行",
   "subscribe.pageDescription": "以安静的节奏，通过邮件接收新的思考。没有垃圾邮件——只有好内容。",

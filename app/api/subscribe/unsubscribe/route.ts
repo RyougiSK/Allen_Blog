@@ -13,8 +13,8 @@ export async function GET(request: NextRequest) {
   const locale = result.locale ?? "en";
 
   if (result.success) {
-    return NextResponse.redirect(`${SITE.url}/${locale}?unsubscribed=true`);
+    return NextResponse.redirect(`${SITE.url}/${locale}/subscribe?unsubscribed=true`);
   }
 
-  return NextResponse.redirect(`${SITE.url}/${locale}`);
+  return NextResponse.redirect(`${SITE.url}/${locale}/subscribe?error=invalid_token`);
 }

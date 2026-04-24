@@ -48,6 +48,28 @@ The Supabase CLI is linked to the remote project. Use it to run migrations and q
 - `echo "SQL" | npx supabase db query --linked` — Run arbitrary SQL against the remote database
 - Migrations live in `supabase/migrations/`
 
+## Bilingual System (English + Chinese)
+
+This site is fully bilingual. Every user-facing page, component, and feature **must** support both English (`en`) and Chinese (`zh-cn`). This is not optional — treat it as a hard requirement for all work.
+
+### How it works
+
+- **Routing:** All public pages live under `app/[locale]/(public)/`. The `[locale]` param is `en` or `zh`. The layout at `app/[locale]/layout.tsx` validates the locale and provides the dictionary via `LocaleProvider`.
+- **Middleware (`proxy.ts`):** Handles locale detection for bare URLs (no `/en` or `/zh` prefix). Detection order: (1) `locale` cookie set by language switcher, (2) browser `Accept-Language` header, (3) default `en`. Redirects to `/{locale}{path}`.
+- **Dictionary files:** `lib/i18n/dictionaries/en.json` and `zh-cn.json` contain all UI strings keyed identically. Client components access them via `useLocale()` → `t("key")`.
+- **Database content:** Articles store both `en` and `zh` versions with a `completed` boolean per locale. Templates and queries should respect the `completed` flag and fall back to the other locale when needed.
+- **Email templates:** Every email template in `lib/email/templates/` has a `content` object with `en` and `zh` keys. The locale is determined by `preferred_locale` stored in the subscribers table (set from the URL locale at subscribe time).
+
+### Rules for new features
+
+1. **Every new UI string** must be added to both `en.json` and `zh-cn.json` with the same key.
+2. **Every new page** under `app/[locale]/` must use the dictionary for all visible text — never hardcode English or Chinese strings in JSX.
+3. **Every new email template** must include both `en` and `zh` content objects and accept a `locale` parameter.
+4. **Server actions** that interact with user-facing locale should accept `locale: "en" | "zh"` as a parameter.
+5. **New database tables** with user-facing text content should include locale-specific columns or a `preferred_locale` field.
+6. **Static metadata** (page titles, descriptions, OG tags) must use the locale from params — see existing pages for the pattern.
+7. **Never rely on `next.config.ts` redirects for locale routing** — the `proxy.ts` middleware handles this with language detection. Only use `next.config.ts` redirects for legacy URL migrations (e.g., `/blog/:slug` → `/en/:slug`).
+
 ## Communication
 
 - The user may write requirements or clarifications in Chinese — this is expected. Always understand and incorporate Chinese input fully.

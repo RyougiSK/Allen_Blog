@@ -32,7 +32,7 @@ export default async function SubscribePage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ confirmed?: string; error?: string }>;
+  searchParams: Promise<{ confirmed?: string; error?: string; unsubscribed?: string }>;
 }) {
   const { locale } = await params;
   const query = await searchParams;
@@ -51,6 +51,7 @@ export default async function SubscribePage({
 
       <SubscribeConfirmation
         confirmed={query.confirmed === "true"}
+        unsubscribed={query.unsubscribed === "true"}
         error={query.error === "invalid_token"}
         dictionary={dictionary}
       />
