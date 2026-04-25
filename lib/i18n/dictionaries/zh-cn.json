@@ -3,9 +3,9 @@
   "nav.themes": "思绪",
   "nav.about": "关于",
 
-  "hero.tagline": "书写与思考",
-  "hero.title": "在生活中思考，在思考中生活。",
-  "hero.subtitle": "关于心理学、哲学，以及那些我反复回到的问题的札记。",
+  "hero.tagline": "书写与留意",
+  "hero.title": "在经历中留心，在留心中生活。",
+  "hero.subtitle": "关于我所留意的事物，以及那些留下来的问题的札记。",
 
   "home.heroCta": "看看这里",
   "home.heroMicro": "有值得说的事情时更新。",
@@ -16,12 +16,12 @@
   "home.themes": "思绪",
   "home.threads": "思绪",
   "home.authorLabel": "写作者",
-  "home.authorIntro": "白天我做数据与设计相关的工作。其余时间，我想的是那些表象之下把事物联结在一起的东西——关于人、关于系统、关于观念。这个网站是那些思考存在的地方。",
+  "home.authorIntro": "白天我做数据与设计相关的工作。其余时间，我留意的是表象之下正在发生的事——关于人、关于规律、关于那些我们习以为常的东西。我把这些写在这里。",
   "home.moreAbout": "更多关于我",
 
   "writing.title": "文章",
-  "writing.description": "关于心理学、哲学，以及那些留在心里的事物。",
-  "writing.noArticles": "这里还很安静。思考仍在继续。",
+  "writing.description": "关于我所留意的、所记住的，以及那些不肯离开的事。",
+  "writing.noArticles": "这里还很安静。",
   "writing.noResults": "没有匹配这些筛选条件的内容。",
   "writing.clearFilters": "清除筛选",
   "writing.backToWriting": "返回文章",
@@ -35,13 +35,13 @@
   "about.elsewhere": "更多内容",
   "about.browseThemes": "浏览思绪",
   "about.readWriting": "阅读文章",
-  "about.bio1": "我住在澳大利亚，日常工作与数据和设计有关。但真正占据我思绪的，是事物的另一面——那些发生在决策背后、模式深处、我们不自觉讲述的故事之下的东西。",
-  "about.bio2": "我被荣格、道家思想，以及那些不事张扬的哲学所吸引。最让我感兴趣的是那些没有干净答案的问题——我们如何成为自己，如何创造意义，如何与无法解决的事情共处。",
-  "about.whatIWriteBody": "这个网站是我自言自语的地方。写作涉及心理学、哲学，以及日常经验之下的结构。如果说有一条线索，那就是对真实发生着的事情的兴趣——在表象之下，在习惯之下。",
+  "about.bio1": "我住在澳大利亚，日常工作与数据和设计有关。但我一直在意的，是事物的另一面——那些发生在决策背后、规律深处、我们不自觉讲述的故事之下的东西。",
+  "about.bio2": "我喜欢那些不事张扬的思考方式——安静地在那里，形状不变。最让我感兴趣的是那些没有干净答案的问题：我们如何更像自己，如何找到真正重要的东西，如何与无法解决的事共处。",
+  "about.whatIWriteBody": "这个网站是我记下东西的地方。我写的是我所留意到的——日常之下藏着什么，显而易见的事退去之后留下什么。如果有一条线索，那就是对真实发生着的事的关注。",
   "about.quote": "比起成为有趣的人，我更想成为一个有好奇心的人。而我希望写得足够清楚，让那份好奇心多少能传递出去。",
 
-  "subscribe.title": "与思考同行",
-  "subscribe.description": "以安静的节奏，通过邮件接收新的思考。",
+  "subscribe.title": "继续阅读",
+  "subscribe.description": "以安静的节奏，通过邮件接收新文章。",
   "subscribe.button": "订阅",
   "subscribe.thankyou": "感谢您的订阅。",
   "subscribe.noSpam": "没有垃圾邮件，随时退订。",
@@ -51,7 +51,7 @@
   "subscribe.confirmed": "你已加入。谢谢你愿意一起阅读。",
   "subscribe.unsubscribed": "你已退订，不会再收到邮件了。",
   "subscribe.invalidToken": "这个链接已经失效了。如果你愿意，欢迎重新订阅。",
-  "subscribe.pageHeading": "与思考同行",
+  "subscribe.pageHeading": "继续阅读",
   "subscribe.pageDescription": "有新文章时通过邮件通知。仅此而已。",
 
   "share.title": "分享这篇文章",
@@ -60,14 +60,14 @@
   "share.nativeShare": "分享",
 
   "articleBottom.enjoyedThis": "若这篇文章留在了心里",
-  "articleBottom.subscribeDescription": "以安静的节奏，通过邮件接收新的思考。",
+  "articleBottom.subscribeDescription": "以安静的节奏，通过邮件接收新文章。",
 
   "reading.minRead": "{count} 分钟阅读",
   "reading.min": "{count} 分钟",
   "tags.all": "全部",
   "tags.label": "标签",
-  "tags.articles": "{count} 篇思考",
-  "tags.article": "{count} 篇思考",
+  "tags.articles": "{count} 篇",
+  "tags.article": "{count} 篇",
 
   "categories.all": "全部",
   "categories.label": "分类",
@@ -80,7 +80,7 @@
   "nav.writingDropdown.allWriting": "全部文章",
 
   "writing.blog.title": "博文",
-  "writing.blog.description": "感悟、札记，以及浮现在脑海中的东西。",
+  "writing.blog.description": "札记，以及浮现在脑海中的东西。",
   "writing.typeRequired": "选择写作类型并完成中英文内容后方可发布",
 
   "pagination.previous": "上一页",
@@ -93,8 +93,8 @@
   "nav.home": "首页",
   "toc.title": "目录",
 
-  "site.description": "关于心理学、哲学，以及那些我反复回到的问题的札记。",
-  "site.authorBio": "常驻澳大利亚。在心理学、哲学与内在生活的交汇处写作。",
+  "site.description": "关于我所留意的事物，以及那些留下来的问题的札记。",
+  "site.authorBio": "常驻澳大利亚。写那些表面之下我注意到的事。",
 
   "nav.contact": "联系",
   "nav.support": "支持",
@@ -141,7 +141,7 @@
   "articleBottom.supportPrompt": "这些文字对你有意义吗？",
   "articleBottom.supportLink": "支持本站",
 
-  "floatingSubscribe.description": "以安静的节奏，接收新的思考。",
+  "floatingSubscribe.description": "以安静的节奏，接收新文章。",
   "floatingSubscribe.dismiss": "关闭",
 
   "notFound.title": "未找到",

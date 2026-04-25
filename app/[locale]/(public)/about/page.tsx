@@ -21,7 +21,7 @@ export async function generateMetadata({
   const { locale } = await params;
   return {
     title: "About",
-    description: `About ${SITE.author.name} — based in Australia, writing on psychology, philosophy, and the inner life.`,
+    description: `About ${SITE.author.name} — based in Australia, writing about what I notice underneath.`,
     alternates: {
       canonical: `${SITE.url}/${locale}/about`,
       languages: {

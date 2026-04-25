@@ -8,7 +8,7 @@ interface AuthorSectionProps {
 
 export function AuthorSection({ dictionary, locale }: AuthorSectionProps) {
   return (
-    <section>
+    <section className="pb-[var(--spacing-section)]">
       <div className="mx-auto w-full max-w-[var(--width-content)] px-6">
         <p className="text-[length:var(--text-micro)] uppercase tracking-[var(--tracking-widest)] text-text-quaternary mb-8">
           {dictionary["home.authorLabel"]}

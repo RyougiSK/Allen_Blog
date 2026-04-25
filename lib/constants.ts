@@ -17,12 +17,12 @@ export const SITE = {
   nameZh: "静之道",
   title: "The Quiet Way",
   description:
-    "Notes on psychology, philosophy, and the questions I keep returning to.",
+    "Notes on what I notice and the questions that stay.",
   url: "https://the-quiet-way.com",
   author: {
     name: "Hanming (Allen) Chen",
     nameZh: "陈翰明",
-    bio: "Based in Australia. Writing on psychology, philosophy, and the inner life.",
+    bio: "Based in Australia. Writing about what I notice underneath.",
   },
   logo: `${STORAGE_BASE}/brand/logo.png`,
   hero: {
