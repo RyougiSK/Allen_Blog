@@ -1,9 +1,6 @@
-import Link from "next/link";
-import Image from "next/image";
-import { ExternalLink } from "lucide-react";
-import { SITE, SUPPORT } from "@/lib/constants";
+import { SITE } from "@/lib/constants";
 import { Separator } from "@/components/ui/separator";
-import { Card } from "@/components/ui/card";
+import { SupportModule } from "@/components/features/support-module";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import type { Locale } from "@/lib/i18n/types";
 import type { Metadata } from "next";
@@ -44,12 +41,6 @@ export default async function SupportPage({
   const dictLocale = LOCALE_MAP[locale] ?? "en";
   const d = await getDictionary(dictLocale);
 
-  const tiers = [
-    { label: d["support.coffeeLabel"], price: d["support.coffeePrice"], href: SUPPORT.stripe.coffee },
-    { label: d["support.mealLabel"], price: d["support.mealPrice"], href: SUPPORT.stripe.meal },
-    { label: d["support.patronLabel"], price: d["support.patronPrice"], href: SUPPORT.stripe.patron },
-  ];
-
   return (
     <div className="mx-auto w-full max-w-[var(--width-content)] px-6 py-16">
       <header className="mb-12">
@@ -77,55 +68,9 @@ export default async function SupportPage({
 
       <Separator ornament className="mt-12" />
 
-      <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <Card className="p-6">
-          <p className="text-[length:var(--text-micro)] uppercase tracking-[var(--tracking-widest)] text-text-quaternary mb-3">
-            {d["support.internationalTitle"]}
-          </p>
-          <p className="text-[length:var(--text-body-sm)] text-text-secondary mb-6">
-            {d["support.internationalDescription"]}
-          </p>
-          <div className="flex flex-col gap-3">
-            {tiers.map(({ label, price, href }) => (
-              <a
-                key={label}
-                href={href || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`flex items-center justify-between rounded-[var(--radius-md)] border border-border px-4 py-3 text-sm transition-all duration-[var(--duration-fast)] ${
-                  href
-                    ? "text-text-primary hover:border-accent-warm hover:text-accent-warm"
-                    : "text-text-quaternary pointer-events-none opacity-50"
-                }`}
-              >
-                <span>{label}</span>
-                <span className="flex items-center gap-2 text-text-tertiary">
-                  {price}
-                  {href && <ExternalLink className="h-3.5 w-3.5" />}
-                </span>
-              </a>
-            ))}
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <p className="text-[length:var(--text-micro)] uppercase tracking-[var(--tracking-widest)] text-text-quaternary mb-3">
-            {d["support.chinaTitle"]}
-          </p>
-          <p className="text-[length:var(--text-body-sm)] text-text-secondary mb-6">
-            {d["support.chinaDescription"]}
-          </p>
-          <div className="flex items-center justify-center rounded-[var(--radius-md)] border border-border bg-white p-4">
-            <Image
-              src={SUPPORT.alipay.qrCode}
-              alt="Alipay QR Code"
-              width={200}
-              height={200}
-              className="h-auto w-full max-w-[200px]"
-            />
-          </div>
-        </Card>
-      </div>
+      <section className="mt-12">
+        <SupportModule variant="full" />
+      </section>
 
       <Separator ornament className="mt-12" />
 

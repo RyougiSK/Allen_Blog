@@ -3,9 +3,7 @@ const STORAGE_BASE = `${SUPABASE_URL}/storage/v1/object/public/media`;
 
 export const SUPPORT = {
   stripe: {
-    coffee: process.env.NEXT_PUBLIC_STRIPE_LINK_COFFEE ?? "",
-    meal: process.env.NEXT_PUBLIC_STRIPE_LINK_MEAL ?? "",
-    patron: process.env.NEXT_PUBLIC_STRIPE_LINK_PATRON ?? "",
+    link: "https://buy.stripe.com/3cI14nambau13KF6Xh0oM00",
   },
   alipay: {
     qrCode: `${SUPABASE_URL}/storage/v1/object/public/media/support/alipay-qr.png`,

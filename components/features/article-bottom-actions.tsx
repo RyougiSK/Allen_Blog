@@ -1,11 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { ShareButtons } from "@/components/features/share-buttons";
 import { SubscribeForm } from "@/components/features/subscribe-form";
-import { useLocale } from "@/lib/i18n/locale-context";
+import { SupportModule } from "@/components/features/support-module";
 
 interface ArticleBottomActionsProps {
   title: string;
@@ -14,10 +12,6 @@ interface ArticleBottomActionsProps {
 }
 
 export function ArticleBottomActions({ title, description, url }: ArticleBottomActionsProps) {
-  const pathname = usePathname();
-  const routeLocale = pathname.split("/")[1] === "zh" ? "zh" : "en";
-  const { t } = useLocale();
-
   return (
     <section className="mt-12">
       <Separator ornament />
@@ -27,17 +21,7 @@ export function ArticleBottomActions({ title, description, url }: ArticleBottomA
       <Separator className="my-10" />
       <SubscribeForm variant="compact" />
       <Separator className="my-10" />
-      <div className="flex items-baseline gap-2">
-        <p className="text-[length:var(--text-body-sm)] text-text-secondary">
-          {t("articleBottom.supportPrompt")}
-        </p>
-        <Link
-          href={`/${routeLocale}/support`}
-          className="text-[length:var(--text-body-sm)] text-accent-warm transition-colors duration-[var(--duration-fast)] hover:text-text-primary"
-        >
-          {t("articleBottom.supportLink")} &rarr;
-        </Link>
-      </div>
+      <SupportModule variant="compact" />
     </section>
   );
 }
