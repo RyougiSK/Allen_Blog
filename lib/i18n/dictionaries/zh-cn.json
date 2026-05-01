@@ -40,8 +40,8 @@
   "about.whatIWriteBody": "这个网站是我记下东西的地方。我写的是我穿行时看见的——日常之下藏着什么，显而易见的事退去之后沉淀着什么。如果有一条线索，那就是在噪声中找到正在发生的事。",
   "about.quote": "比起成为有趣的人，我更想成为一个愿意深入其中的人。而我希望写得足够清楚，让沿途所见多少能被分享。",
 
-  "subscribe.title": "如果你愿意",
-  "subscribe.description": "偶尔会写一些东西，也许你会想看到。",
+  "subscribe.title": "留下邮箱",
+  "subscribe.description": "有新文章时我会写一封简短的通知。",
   "subscribe.button": "留下邮箱",
   "subscribe.thankyou": "感谢您的订阅。",
   "subscribe.noSpam": "没有垃圾邮件，随时退订。",
@@ -51,8 +51,8 @@
   "subscribe.confirmed": "你已加入。谢谢你愿意一起阅读。",
   "subscribe.unsubscribed": "你已退订，不会再收到邮件了。",
   "subscribe.invalidToken": "这个链接已经失效了。如果你愿意，欢迎重新订阅。",
-  "subscribe.pageHeading": "如果你愿意",
-  "subscribe.pageDescription": "有新的文字时，我会写一封短信寄给你。仅此而已。",
+  "subscribe.pageHeading": "留下邮箱",
+  "subscribe.pageDescription": "有新的文字时，我会写一封短信寄给你。",
 
   "share.title": "分享这篇文章",
   "share.copyLink": "复制链接",
@@ -60,7 +60,7 @@
   "share.nativeShare": "分享",
 
   "articleBottom.enjoyedThis": "若这篇文字留在了心里",
-  "articleBottom.subscribeDescription": "如果你愿意，可以留下邮箱，偶尔收到新的文字。",
+  "articleBottom.subscribeDescription": "可以留下邮箱，有新文章时会收到通知。",
 
   "reading.minRead": "{count} 分钟阅读",
   "reading.min": "{count} 分钟",
