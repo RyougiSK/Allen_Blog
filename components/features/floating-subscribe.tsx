@@ -67,7 +67,7 @@ export function FloatingSubscribe() {
   if (dismissed || isSubscribePage || !visible) return null;
 
   return (
-    <div data-focus-hide className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[min(32rem,calc(100vw-2rem))] rounded-[var(--radius-lg)] border border-border bg-bg-secondary shadow-[var(--shadow-lg)] backdrop-blur-md animate-[fade-in-up_var(--duration-normal)_var(--ease-out-expo)]">
+    <div data-focus-hide className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[min(40rem,calc(100vw-2rem))] rounded-[var(--radius-lg)] border border-border bg-bg-secondary shadow-[var(--shadow-lg)] backdrop-blur-md animate-[fade-in-up_var(--duration-normal)_var(--ease-out-expo)]">
       <div className="flex items-center gap-3 px-5 py-3">
         {status === "success" ? (
           <p className="flex-1 text-[length:var(--text-micro)] text-accent-warm">
@@ -75,19 +75,19 @@ export function FloatingSubscribe() {
           </p>
         ) : (
           <>
-            <p className="hidden sm:block flex-shrink-0 text-[length:var(--text-micro)] text-text-tertiary">
+            <p className="hidden sm:block flex-shrink text-[length:var(--text-micro)] text-text-tertiary">
               {t("floatingSubscribe.description")}
             </p>
-            <form onSubmit={handleSubmit} className="flex flex-1 items-center gap-2">
+            <form onSubmit={handleSubmit} className="flex items-center gap-2 min-w-0 sm:flex-shrink-0">
               <Input
                 type="email"
                 placeholder="your@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="text-[length:var(--text-micro)] h-8 bg-bg-tertiary border-border-emphasis"
+                className="text-[length:var(--text-micro)] h-8 w-44 bg-bg-tertiary border-border-emphasis"
               />
-              <Button type="submit" size="sm" loading={status === "loading"} className="flex-shrink-0">
+              <Button type="submit" size="sm" loading={status === "loading"} className="flex-shrink-0 whitespace-nowrap">
                 {t("subscribe.button")}
               </Button>
             </form>
