@@ -17,6 +17,9 @@ import {
   LogOut,
   Menu,
   X,
+  Search,
+  CalendarDays,
+  BarChart3,
 } from "lucide-react";
 import { signOut } from "@/app/(auth)/login/actions";
 import { SITE } from "@/lib/constants";
@@ -28,8 +31,10 @@ const navItems = [
   { href: "/admin/types", label: "Types", icon: Layers, exact: false },
   { href: "/admin/categories", label: "Categories", icon: FolderOpen, exact: false },
   { href: "/admin/tags", label: "Tags", icon: Tags, exact: false },
+  { href: "/admin/calendar", label: "Calendar", icon: CalendarDays, exact: false },
   { href: "/admin/media", label: "Media", icon: ImageIcon, exact: false },
   { href: "/admin/subscribers", label: "Subscribers", icon: Mail, exact: false },
+  { href: "/admin/newsletters", label: "Newsletters", icon: BarChart3, exact: false },
 ];
 
 export function AdminSidebar() {
@@ -86,7 +91,18 @@ export function AdminSidebar() {
           </Link>
         </div>
 
-        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <div className="px-3 pt-4 pb-2">
+          <button
+            onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}
+            className="flex w-full items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 text-sm text-text-quaternary hover:text-text-secondary hover:bg-surface/50 border border-border transition-colors duration-[var(--duration-fast)]"
+          >
+            <Search className="h-4 w-4 shrink-0" />
+            <span className="flex-1 text-left">Search...</span>
+            <kbd className="text-[10px] px-1.5 py-0.5 rounded border border-border">⌘K</kbd>
+          </button>
+        </div>
+
+        <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
           {navContent}
         </nav>
 

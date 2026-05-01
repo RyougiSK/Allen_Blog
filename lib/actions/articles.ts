@@ -196,6 +196,95 @@ export async function deleteArticle(id: string): Promise<ActionResult> {
   return { success: true };
 }
 
+// --- Quick inline update ---
+
+export async function quickUpdateTitle(
+  id: string,
+  locale: "en" | "zh",
+  title: string,
+): Promise<ActionResult> {
+  const supabase = await createClient();
+
+  const { data: article, error: fetchError } = await supabase
+    .from("articles")
+    .select("en, zh")
+    .eq("id", id)
+    .single();
+
+  if (fetchError) return { success: false, error: fetchError.message };
+
+  const langData = (locale === "en" ? article.en : article.zh) as ArticleLang;
+  const updated = { ...langData, title };
+
+  const { error } = await supabase
+    .from("articles")
+    .update({ [locale]: updated, updated_at: new Date().toISOString() })
+    .eq("id", id);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidateAll();
+  return { success: true };
+}
+
+// --- Bulk operations ---
+
+export async function bulkPublish(ids: string[]): Promise<ActionResult & { published: number; skipped: number }> {
+  const supabase = await createClient();
+  let published = 0;
+  let skipped = 0;
+
+  for (const id of ids) {
+    const result = await publishArticle(id);
+    if (result.success) published++;
+    else skipped++;
+  }
+
+  revalidateAll();
+  return { success: true, published, skipped };
+}
+
+export async function bulkUnpublish(ids: string[]): Promise<ActionResult> {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("articles")
+    .update({ status: "draft", updated_at: new Date().toISOString() })
+    .in("id", ids);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidateAll();
+  return { success: true };
+}
+
+export async function bulkDelete(ids: string[]): Promise<ActionResult> {
+  const supabase = await createClient();
+
+  await supabase.from("article_tags").delete().in("article_id", ids);
+  const { error } = await supabase.from("articles").delete().in("id", ids);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidateAll();
+  return { success: true };
+}
+
+export async function bulkAddTag(ids: string[], tagId: string): Promise<ActionResult> {
+  const supabase = await createClient();
+
+  const inserts = ids.map((article_id) => ({ article_id, tag_id: tagId }));
+  const { error } = await supabase.from("article_tags").upsert(inserts, {
+    onConflict: "article_id,tag_id",
+    ignoreDuplicates: true,
+  });
+
+  if (error) return { success: false, error: error.message };
+
+  revalidateAll();
+  return { success: true };
+}
+
 // --- Query helpers (used by server components) ---
 
 export async function fetchArticleBySlug(

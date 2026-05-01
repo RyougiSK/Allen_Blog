@@ -19,7 +19,7 @@ const content = {
     subject: "欢迎",
     preheader: "感谢你的订阅",
     greeting: "欢迎。",
-    body: "你已加入邮件列表。有新文章时我会发一封简短的通知——通常是关于我最近留意到的事，或一些安静的观察。",
+    body: "你已加入邮件列表。有新文章时我会发一封简短的通知——通常是关于我最近穿行时看见的事，或一些沉淀下来的观察。",
     cta: "访问网站",
     signoff: "感谢您的阅读。",
   },
@@ -36,10 +36,10 @@ export function welcomeEmailHtml({ locale, unsubscribeToken }: WelcomeEmailParam
   const unsubscribeUrl = `${SITE.url}/api/subscribe/unsubscribe?token=${unsubscribeToken}`;
 
   const inner = `
-    <p style="margin:0 0 16px;color:#EDEDEF;font-size:18px;line-height:1.5;">${t.greeting}</p>
-    <p style="margin:0 0 32px;color:#A0A0A8;font-size:15px;line-height:1.7;">${t.body}</p>
-    <a href="${journalUrl}" style="display:inline-block;background-color:#C4A882;color:#0B0D0F;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:14px;font-weight:500;letter-spacing:0.02em;">${t.cta}</a>
-    <p style="margin:32px 0 0;color:#7a7a88;font-size:14px;line-height:1.6;">${t.signoff}</p>`;
+    <p style="margin:0 0 16px;color:#111827;font-size:18px;line-height:1.5;">${t.greeting}</p>
+    <p style="margin:0 0 32px;color:#4b5563;font-size:15px;line-height:1.7;">${t.body}</p>
+    <a href="${journalUrl}" style="display:inline-block;background-color:#111827;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:14px;font-weight:500;letter-spacing:0.02em;">${t.cta}</a>
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t.signoff}</p>`;
 
   return baseLayout({
     locale,

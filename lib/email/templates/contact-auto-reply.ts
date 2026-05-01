@@ -36,15 +36,15 @@ export function contactAutoReplyHtml({ name, message, locale }: ContactAutoReply
   const t = content[locale];
 
   const inner = `
-    <p style="margin:0 0 16px;color:#EDEDEF;font-size:18px;line-height:1.5;">${t.greeting(escapeHtml(name))}</p>
-    <p style="margin:0 0 32px;color:#A0A0A8;font-size:15px;line-height:1.7;">${t.body}</p>
+    <p style="margin:0 0 16px;color:#111827;font-size:18px;line-height:1.5;">${t.greeting(escapeHtml(name))}</p>
+    <p style="margin:0 0 32px;color:#4b5563;font-size:15px;line-height:1.7;">${t.body}</p>
     <div style="margin-bottom:32px;">
-      <p style="margin:0 0 12px;color:#7a7a88;font-size:13px;">${t.yourMessage}</p>
-      <div style="border-left:2px solid #2a2a35;padding-left:16px;">
-        <p style="margin:0;color:#7a7a88;font-size:14px;line-height:1.7;white-space:pre-wrap;">${escapeHtml(message)}</p>
+      <p style="margin:0 0 12px;color:#6b7280;font-size:13px;">${t.yourMessage}</p>
+      <div style="border-left:2px solid #e5e7eb;padding-left:16px;">
+        <p style="margin:0;color:#4b5563;font-size:14px;line-height:1.7;white-space:pre-wrap;">${escapeHtml(message)}</p>
       </div>
     </div>
-    ${t.signoff ? `<p style="margin:0;color:#7a7a88;font-size:14px;line-height:1.6;">${t.signoff}</p>` : ""}`;
+    ${t.signoff ? `<p style="margin:0;color:#6b7280;font-size:14px;line-height:1.6;">${t.signoff}</p>` : ""}`;
 
   return baseLayout({
     locale,

@@ -41,20 +41,20 @@ export function newArticleEmailHtml({ article, locale, unsubscribeToken }: NewAr
     : "";
 
   const subtitleHtml = lang.subtitle
-    ? `<p style="margin:0 0 12px;color:#A0A0A8;font-size:15px;line-height:1.5;">${lang.subtitle}</p>`
+    ? `<p style="margin:0 0 12px;color:#4b5563;font-size:15px;line-height:1.5;">${lang.subtitle}</p>`
     : "";
 
   const inner = `
-    <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #2a2a35;border-radius:8px;overflow:hidden;mso-table-lspace:0pt;mso-table-rspace:0pt;">
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;mso-table-lspace:0pt;mso-table-rspace:0pt;">
       ${coverImageHtml ? `<tr><td>${coverImageHtml}</td></tr>` : ""}
       <tr><td style="padding:24px;">
-        <h1 style="margin:0 0 8px;color:#EDEDEF;font-size:22px;font-weight:400;line-height:1.3;">${lang.title}</h1>
+        <h1 style="margin:0 0 8px;color:#111827;font-size:22px;font-weight:400;line-height:1.3;">${lang.title}</h1>
         ${subtitleHtml}
-        <p style="margin:0;color:#7a7a88;font-size:14px;line-height:1.7;">${excerpt}</p>
+        <p style="margin:0;color:#6b7280;font-size:14px;line-height:1.7;">${excerpt}</p>
       </td></tr>
     </table>
     <div style="padding-top:28px;">
-      <a href="${articleUrl}" style="display:inline-block;background-color:#C4A882;color:#0B0D0F;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:14px;font-weight:500;letter-spacing:0.02em;">${t.cta}</a>
+      <a href="${articleUrl}" style="display:inline-block;background-color:#111827;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:14px;font-weight:500;letter-spacing:0.02em;">${t.cta}</a>
     </div>`;
 
   return baseLayout({

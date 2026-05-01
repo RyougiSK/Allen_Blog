@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { AdminSidebar } from "@/components/features/admin-sidebar";
+import { CommandPalette } from "@/components/features/command-palette";
+import { KeyboardShortcutsProvider } from "@/components/features/keyboard-shortcuts";
 import { getLocale } from "@/lib/i18n/get-locale";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { LocaleProvider } from "@/lib/i18n/locale-context";
@@ -24,6 +26,8 @@ export default async function AdminLayout({
   return (
     <LocaleProvider locale={locale} dictionary={dictionary}>
       <ToastProvider>
+        <CommandPalette />
+        <KeyboardShortcutsProvider />
         <div className="flex min-h-screen">
           <AdminSidebar />
           <main className="flex-1 min-w-0 overflow-y-auto">{children}</main>

@@ -36,11 +36,11 @@ export function confirmationEmailHtml({ token, locale }: ConfirmationEmailParams
   const confirmUrl = `${SITE.url}/api/subscribe/confirm?token=${token}`;
 
   const inner = `
-    <p style="margin:0 0 16px;color:#EDEDEF;font-size:18px;line-height:1.5;">${t.greeting}</p>
-    <p style="margin:0 0 32px;color:#A0A0A8;font-size:15px;line-height:1.7;">${t.body}</p>
-    <a href="${confirmUrl}" style="display:inline-block;background-color:#C4A882;color:#0B0D0F;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:14px;font-weight:500;letter-spacing:0.02em;">${t.cta}</a>
-    <p style="margin:24px 0 0;color:#55556a;font-size:12px;line-height:1.6;">${t.footer}</p>
-    <p style="margin:8px 0 0;color:#3a3a48;font-size:11px;">${t.context}</p>`;
+    <p style="margin:0 0 16px;color:#111827;font-size:18px;line-height:1.5;">${t.greeting}</p>
+    <p style="margin:0 0 32px;color:#4b5563;font-size:15px;line-height:1.7;">${t.body}</p>
+    <a href="${confirmUrl}" style="display:inline-block;background-color:#111827;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:14px;font-weight:500;letter-spacing:0.02em;">${t.cta}</a>
+    <p style="margin:24px 0 0;color:#6b7280;font-size:12px;line-height:1.6;">${t.footer}</p>
+    <p style="margin:8px 0 0;color:#9ca3af;font-size:11px;">${t.context}</p>`;
 
   return baseLayout({
     locale,

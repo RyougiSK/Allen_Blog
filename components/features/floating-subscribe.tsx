@@ -30,7 +30,7 @@ export function FloatingSubscribe() {
 
     function handleScroll() {
       const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-      setVisible(scrollPercent > 0.3);
+      setVisible(scrollPercent > 0.5);
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -53,7 +53,12 @@ export function FloatingSubscribe() {
 
     try {
       const result = await subscribeEmail(email.trim(), dbLocale as "en" | "zh");
-      setStatus(result.success ? "success" : "error");
+      if (result.success) {
+        setStatus("success");
+        setTimeout(handleDismiss, 3000);
+      } else {
+        setStatus("error");
+      }
     } catch {
       setStatus("error");
     }
@@ -62,41 +67,39 @@ export function FloatingSubscribe() {
   if (dismissed || isSubscribePage || !visible) return null;
 
   return (
-    <div className="fixed bottom-6 right-20 z-40 w-80 rounded-[var(--radius-lg)] border border-border bg-bg-secondary/90 shadow-[var(--shadow-lg)] backdrop-blur-md animate-[fade-in-up_var(--duration-normal)_var(--ease-out-expo)]">
-      <div className="flex flex-col gap-3 p-4">
-        <div className="flex items-start justify-between gap-2">
-          {status === "success" ? (
-            <p className="text-[length:var(--text-caption)] text-accent-warm">
-              {t("subscribe.checkEmail")}
-            </p>
-          ) : (
-            <p className="text-[length:var(--text-caption)] text-text-tertiary">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[min(28rem,calc(100vw-2rem))] rounded-full border border-border bg-bg-primary/95 shadow-[var(--shadow-lg)] backdrop-blur-md animate-[fade-in-up_var(--duration-normal)_var(--ease-out-expo)]">
+      <div className="flex items-center gap-3 px-5 py-3">
+        {status === "success" ? (
+          <p className="flex-1 text-[length:var(--text-micro)] text-accent-warm">
+            {t("subscribe.thankyou")}
+          </p>
+        ) : (
+          <>
+            <p className="hidden sm:block flex-shrink-0 text-[length:var(--text-micro)] text-text-tertiary">
               {t("floatingSubscribe.description")}
             </p>
-          )}
-          <button
-            onClick={handleDismiss}
-            className="flex-shrink-0 p-0.5 text-text-quaternary hover:text-text-tertiary transition-colors duration-[var(--duration-fast)]"
-            aria-label={t("floatingSubscribe.dismiss")}
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        </div>
-        {status !== "success" && (
-          <form onSubmit={handleSubmit} className="flex items-center gap-2">
-            <Input
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="text-[length:var(--text-micro)] h-8"
-            />
-            <Button type="submit" size="sm" loading={status === "loading"} className="flex-shrink-0">
-              {t("subscribe.button")}
-            </Button>
-          </form>
+            <form onSubmit={handleSubmit} className="flex flex-1 items-center gap-2">
+              <Input
+                type="email"
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="text-[length:var(--text-micro)] h-7 rounded-full"
+              />
+              <Button type="submit" size="sm" loading={status === "loading"} className="flex-shrink-0 rounded-full h-7 px-3">
+                {t("subscribe.button")}
+              </Button>
+            </form>
+          </>
         )}
+        <button
+          onClick={handleDismiss}
+          className="flex-shrink-0 p-1 text-text-quaternary hover:text-text-tertiary transition-colors duration-[var(--duration-fast)]"
+          aria-label={t("floatingSubscribe.dismiss")}
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
       </div>
     </div>
   );

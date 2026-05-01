@@ -3,21 +3,33 @@ import { createClient } from "@/utils/supabase/server";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AnimatedCounter } from "@/components/features/animated-counter";
-import { FileText, Eye, EyeOff, Mail, Plus } from "lucide-react";
+import { Sparkline } from "@/components/features/sparkline";
+import { FileText, Eye, EyeOff, Mail, Plus, TrendingUp } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { fetchSubscriberStats } from "@/lib/actions/subscribers";
+import { fetchSubscriberGrowth, fetchPublishingActivity } from "@/lib/actions/analytics";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
 
-  const [totalResult, publishedResult, draftResult, recentResult, subscriberStats] = await Promise.all([
+  const [
+    totalResult,
+    publishedResult,
+    draftResult,
+    recentResult,
+    subscriberStats,
+    subscriberGrowth,
+    publishingActivity,
+  ] = await Promise.all([
     supabase.from("articles").select("id", { count: "exact", head: true }),
     supabase.from("articles").select("id", { count: "exact", head: true }).eq("status", "published"),
     supabase.from("articles").select("id", { count: "exact", head: true }).eq("status", "draft"),
     supabase.from("articles").select("*").order("updated_at", { ascending: false }).limit(5),
     fetchSubscriberStats(),
+    fetchSubscriberGrowth(30),
+    fetchPublishingActivity(30),
   ]);
 
   const stats = [
@@ -28,6 +40,10 @@ export default async function AdminDashboard() {
   ];
 
   const recentArticles = recentResult.data ?? [];
+  const subscriberData = subscriberGrowth.map((d) => d.count);
+  const publishData = publishingActivity.map((d) => d.count);
+  const totalNewSubscribers = subscriberData.reduce((a, b) => a + b, 0);
+  const totalPublished30d = publishData.reduce((a, b) => a + b, 0);
 
   return (
     <div className="w-full max-w-6xl px-8 py-10">
@@ -41,7 +57,7 @@ export default async function AdminDashboard() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-10 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 mb-8 sm:grid-cols-4">
         {stats.map(({ label, count, icon: Icon }) => (
           <Card key={label} className="flex items-center gap-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-md bg-bg-primary">
@@ -53,6 +69,35 @@ export default async function AdminDashboard() {
             </div>
           </Card>
         ))}
+      </div>
+
+      {/* Analytics Charts */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+        <Card>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-text-tertiary" />
+              <h3 className="text-sm font-medium text-text-secondary">Subscriber Growth</h3>
+            </div>
+            <span className="text-xs text-text-quaternary">
+              +{totalNewSubscribers} last 30 days
+            </span>
+          </div>
+          <Sparkline data={subscriberData} width={400} height={48} />
+        </Card>
+
+        <Card>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <FileText className="h-4 w-4 text-text-tertiary" />
+              <h3 className="text-sm font-medium text-text-secondary">Publishing Activity</h3>
+            </div>
+            <span className="text-xs text-text-quaternary">
+              {totalPublished30d} articles in 30 days
+            </span>
+          </div>
+          <Sparkline data={publishData} width={400} height={48} color="var(--color-success)" fillColor="var(--color-success)" />
+        </Card>
       </div>
 
       <div>

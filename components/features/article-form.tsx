@@ -3,7 +3,7 @@
 import { useReducer, useCallback, useRef, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Save, Send, Copy, X, ImageIcon } from "lucide-react";
+import { Save, Send, Copy, X, ImageIcon, History, Maximize2, Minimize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,6 +19,8 @@ import {
   publishArticle,
   unpublishArticle,
 } from "@/lib/actions/articles";
+import { saveVersion } from "@/lib/actions/versions";
+import { VersionHistory } from "@/components/features/version-history";
 import { EMPTY_LANG } from "@/lib/types";
 import type {
   ArticleWithTags,
@@ -36,6 +38,29 @@ function slugify(text: string): string {
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-")
     .trim();
+}
+
+function countWords(content: string): number {
+  if (!content) return 0;
+  try {
+    const json = JSON.parse(content);
+    const text = extractText(json);
+    return text.split(/\s+/).filter(Boolean).length;
+  } catch {
+    return content.split(/\s+/).filter(Boolean).length;
+  }
+}
+
+function extractText(node: Record<string, unknown>): string {
+  if (node.type === "text") return (node.text as string) || "";
+  const children = node.content as Record<string, unknown>[] | undefined;
+  if (!children) return "";
+  return children.map(extractText).join(" ");
+}
+
+function estimateReadingTime(words: number): string {
+  const minutes = Math.max(1, Math.round(words / 200));
+  return `${minutes} min read`;
 }
 
 interface State {
@@ -145,6 +170,8 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
   const slugEdited = useRef(false);
   const editorRef = useRef<TiptapEditorHandle>(null);
   const [editorMediaPickerOpen, setEditorMediaPickerOpen] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [focusMode, setFocusMode] = useState(false);
 
   const [state, dispatch] = useReducer(reducer, {
     en: article?.en ?? { ...EMPTY_LANG },
@@ -170,6 +197,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
 
     autoSaveTimer.current = setTimeout(async () => {
       dispatch({ type: "SET_SAVING", saving: true });
+      await saveVersion(article.id, state.en, state.zh, "auto_save");
       const result = await autoSaveArticle(article.id, {
         en: state.en,
         zh: state.zh,
@@ -219,6 +247,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
     };
 
     if (isEditing) {
+      await saveVersion(article!.id, state.en, state.zh, "manual");
       const result = await updateArticle(article!.id, data);
       if (!result.success) dispatch({ type: "SET_ERROR", error: result.error ?? "Save failed" });
     } else {
@@ -274,21 +303,35 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
     }
   }
 
+
   function completionDot(lang: ArticleLang) {
     if (lang.completed) return "bg-emerald-400";
     if (lang.title || lang.content) return "bg-amber-400";
     return "bg-text-quaternary";
   }
 
+  const wordCount = countWords(activeLang.content);
+
   return (
-    <div className="w-full max-w-5xl px-8 py-10">
+    <div className={`w-full px-8 py-10 ${focusMode ? "max-w-3xl mx-auto" : "max-w-5xl"}`}>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">
+        <h1 className={`text-2xl font-bold tracking-tight ${focusMode ? "hidden" : ""}`}>
           {isEditing ? "Edit Article" : "New Article"}
         </h1>
-        <div className="flex items-center gap-2 text-xs text-text-tertiary">
-          {state.saving && <span>Saving...</span>}
-          {state.lastSaved && !state.saving && <span>Saved {state.lastSaved}</span>}
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => setFocusMode(!focusMode)} title={focusMode ? "Exit focus mode" : "Focus mode"}>
+            {focusMode ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+          </Button>
+          {isEditing && !focusMode && (
+            <Button variant="ghost" size="sm" onClick={() => setShowHistory(true)}>
+              <History className="h-3.5 w-3.5 mr-1.5" />
+              History
+            </Button>
+          )}
+          <span className="text-xs text-text-tertiary">
+            {state.saving && "Saving..."}
+            {state.lastSaved && !state.saving && `Saved ${state.lastSaved}`}
+          </span>
         </div>
       </div>
 
@@ -397,8 +440,14 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
         />
       </div>
 
+      {/* Word count bar */}
+      <div className="flex items-center gap-4 mb-4 text-[11px] text-text-quaternary">
+        <span>{wordCount} words</span>
+        <span>{estimateReadingTime(wordCount)}</span>
+      </div>
+
       {/* Excerpt */}
-      <div className="mb-6">
+      <div className={`mb-6 ${focusMode ? "hidden" : ""}`}>
         <label className="block text-xs font-medium text-text-tertiary mb-1.5">Excerpt</label>
         <Textarea
           value={activeLang.excerpt}
@@ -420,7 +469,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
       </div>
 
       {/* SEO Meta Section */}
-      <details className="mb-6 border border-border rounded-[var(--radius-md)] overflow-hidden">
+      <details className={`mb-6 border border-border rounded-[var(--radius-md)] overflow-hidden ${focusMode ? "hidden" : ""}`}>
         <summary className="px-4 py-3 text-sm font-medium text-text-secondary cursor-pointer hover:bg-surface/50 transition-colors">
           SEO Metadata ({state.activeLocale === "en" ? "English" : "中文"})
         </summary>
@@ -496,7 +545,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
       </details>
 
       {/* Shared fields */}
-      <div className="space-y-4 mb-6 border-t border-border pt-6">
+      <div className={`space-y-4 mb-6 border-t border-border pt-6 ${focusMode ? "hidden" : ""}`}>
         <div>
           <label className="block text-xs font-medium text-text-tertiary mb-1.5">Tags</label>
           <TagPicker
@@ -583,6 +632,15 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
           Publish
         </Button>
       </div>
+
+      {isEditing && (
+        <VersionHistory
+          articleId={article!.id}
+          isOpen={showHistory}
+          onClose={() => setShowHistory(false)}
+          onRestore={() => router.refresh()}
+        />
+      )}
     </div>
   );
 }

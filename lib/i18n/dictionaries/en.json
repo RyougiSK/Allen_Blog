@@ -28,7 +28,7 @@
 
   "themes.title": "Threads",
   "themes.description": "Short thoughts, reading notes, and daily observations.",
-  "themes.noThemes": "Quiet for now.",
+  "themes.noThemes": "On the way.",
 
   "about.tagline": "About",
   "about.whatIWrite": "What I write about",
@@ -40,9 +40,9 @@
   "about.whatIWriteBody": "This site is where I put things down. The writing is about what I notice — what's underneath the ordinary, what stays after the obvious falls away. If there's a thread, it's attention to what's actually happening.",
   "about.quote": "I'd rather be interested than interesting. And I'd like to write clearly enough that some of that interest comes through.",
 
-  "subscribe.title": "Keep reading",
-  "subscribe.description": "New writing by email, at a quiet pace.",
-  "subscribe.button": "Subscribe",
+  "subscribe.title": "If you'd like",
+  "subscribe.description": "I write from time to time. You might want to see it.",
+  "subscribe.button": "Leave your email",
   "subscribe.thankyou": "Thank you for subscribing.",
   "subscribe.noSpam": "No spam, unsubscribe anytime.",
   "subscribe.subscribed": "Thank you. Check your email for a welcome note.",
@@ -51,8 +51,8 @@
   "subscribe.confirmed": "You're on the list now. Thank you for wanting to read along.",
   "subscribe.unsubscribed": "You've been removed from the list. No more emails.",
   "subscribe.invalidToken": "This link is no longer valid. You're welcome to subscribe again if you'd like.",
-  "subscribe.pageHeading": "Keep reading",
-  "subscribe.pageDescription": "New writing by email, when there's something to say. Nothing else.",
+  "subscribe.pageHeading": "If you'd like",
+  "subscribe.pageDescription": "When there's something new, I'll send a short note. That's all.",
 
   "share.title": "Share this article",
   "share.copyLink": "Copy link",
@@ -60,7 +60,7 @@
   "share.nativeShare": "Share",
 
   "articleBottom.enjoyedThis": "If this stayed with you",
-  "articleBottom.subscribeDescription": "New writing by email, at a quiet pace.",
+  "articleBottom.subscribeDescription": "You're welcome to leave your email. I'll write when there's something to share.",
 
   "reading.minRead": "{count} min read",
   "reading.min": "{count} min",
@@ -141,7 +141,7 @@
   "articleBottom.supportPrompt": "Did this mean something?",
   "articleBottom.supportLink": "Support this site",
 
-  "floatingSubscribe.description": "New writing, at a quiet pace.",
+  "floatingSubscribe.description": "You might want to hear when there's something new.",
   "floatingSubscribe.dismiss": "Dismiss",
 
   "notFound.title": "Not here",

@@ -14,7 +14,7 @@ export const SUPPORT = {
 
 export const SITE = {
   name: "The Quiet Way",
-  nameZh: "静之道",
+  nameZh: "行于静中",
   title: "The Quiet Way",
   description:
     "Notes on what I notice and the questions that stay.",
