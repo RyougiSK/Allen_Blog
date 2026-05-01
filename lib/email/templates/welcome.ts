@@ -31,8 +31,7 @@ export function welcomeEmailSubject(locale: "en" | "zh"): string {
 
 export function welcomeEmailHtml({ locale, unsubscribeToken }: WelcomeEmailParams): string {
   const t = content[locale];
-  const siteLocale = locale === "zh" ? "zh-cn" : "en";
-  const journalUrl = `${SITE.url}/${siteLocale}`;
+  const journalUrl = `${SITE.url}/${locale}`;
   const unsubscribeUrl = `${SITE.url}/api/subscribe/unsubscribe?token=${unsubscribeToken}`;
 
   const inner = `
