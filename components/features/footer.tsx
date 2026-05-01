@@ -50,9 +50,21 @@ export function Footer({ dictionary }: FooterProps) {
         </div>
         <div className="mt-8 flex items-center justify-between text-[length:var(--text-micro)] text-text-quaternary">
           <span>&copy; {new Date().getFullYear()} {SITE.name}</span>
-          {dictionary["footer.builtWith"] && (
-            <span>{dictionary["footer.builtWith"]}</span>
-          )}
+          <div className="flex items-center gap-3">
+            <Link
+              href={`/${locale}/terms`}
+              className="transition-colors duration-[var(--duration-fast)] hover:text-text-tertiary"
+            >
+              {dictionary["nav.terms"]}
+            </Link>
+            <span className="text-border">&middot;</span>
+            <Link
+              href={`/${locale}/privacy`}
+              className="transition-colors duration-[var(--duration-fast)] hover:text-text-tertiary"
+            >
+              {dictionary["nav.privacy"]}
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
