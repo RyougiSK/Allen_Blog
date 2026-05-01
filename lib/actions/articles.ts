@@ -61,7 +61,7 @@ export async function createArticle(
   }
 
   if (data.status === "published") {
-    notifySubscribersOfNewArticle(article.id).catch(console.error);
+    await notifySubscribersOfNewArticle(article.id).catch(console.error);
   }
 
   revalidateAll();
@@ -166,7 +166,7 @@ export async function publishArticle(id: string): Promise<ActionResult> {
 
   if (error) return { success: false, error: error.message };
 
-  notifySubscribersOfNewArticle(id).catch(console.error);
+  await notifySubscribersOfNewArticle(id).catch(console.error);
 
   revalidateAll();
   return { success: true };
