@@ -6,6 +6,7 @@ import { createStaticClient } from "@/utils/supabase/static";
 import { TiptapRenderer } from "@/components/features/tiptap-renderer";
 import { ArticleHeader } from "@/components/features/article-header";
 import { ReadingProgress } from "@/components/features/reading-progress";
+import { FocusModeToggle } from "@/components/features/focus-mode-toggle";
 import { StructuredData } from "@/components/seo/structured-data";
 import { ArticleBottomActions } from "@/components/features/article-bottom-actions";
 import { RelatedArticles } from "@/components/features/related-articles";
@@ -145,15 +146,18 @@ export default async function ArticleDetailPage({ params }: PageProps) {
             <ArrowLeft className="h-3.5 w-3.5" />
             {dictionary["writing.backToWriting"]}
           </Link>
-          {hasTranslation && (
-            <Link
-              href={`/${otherUrlLocale}/${slug}`}
-              className="inline-flex items-center gap-1.5 text-[length:var(--text-caption)] text-text-tertiary hover:text-accent-warm transition-colors duration-[var(--duration-fast)]"
-            >
-              <Globe className="h-3.5 w-3.5" />
-              {dictionary["article.readInOther"]}
-            </Link>
-          )}
+          <div className="flex items-center gap-4">
+            <FocusModeToggle />
+            {hasTranslation && (
+              <Link
+                href={`/${otherUrlLocale}/${slug}`}
+                className="inline-flex items-center gap-1.5 text-[length:var(--text-caption)] text-text-tertiary hover:text-accent-warm transition-colors duration-[var(--duration-fast)]"
+              >
+                <Globe className="h-3.5 w-3.5" />
+                {dictionary["article.readInOther"]}
+              </Link>
+            )}
+          </div>
         </div>
 
         <article>

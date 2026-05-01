@@ -67,7 +67,7 @@ export function FloatingSubscribe() {
   if (dismissed || isSubscribePage || !visible) return null;
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[min(28rem,calc(100vw-2rem))] rounded-full border border-border bg-bg-primary/95 shadow-[var(--shadow-lg)] backdrop-blur-md animate-[fade-in-up_var(--duration-normal)_var(--ease-out-expo)]">
+    <div data-focus-hide className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[min(32rem,calc(100vw-2rem))] rounded-[var(--radius-lg)] border border-border bg-bg-secondary shadow-[var(--shadow-lg)] backdrop-blur-md animate-[fade-in-up_var(--duration-normal)_var(--ease-out-expo)]">
       <div className="flex items-center gap-3 px-5 py-3">
         {status === "success" ? (
           <p className="flex-1 text-[length:var(--text-micro)] text-accent-warm">
@@ -85,9 +85,9 @@ export function FloatingSubscribe() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="text-[length:var(--text-micro)] h-7 rounded-full"
+                className="text-[length:var(--text-micro)] h-8 bg-bg-tertiary border-border-emphasis"
               />
-              <Button type="submit" size="sm" loading={status === "loading"} className="flex-shrink-0 rounded-full h-7 px-3">
+              <Button type="submit" size="sm" loading={status === "loading"} className="flex-shrink-0">
                 {t("subscribe.button")}
               </Button>
             </form>

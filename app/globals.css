@@ -477,3 +477,51 @@ body {
   margin-bottom: 1rem;
   line-height: var(--leading-body);
 }
+
+/* ─── Focus Mode ─── */
+html[data-focus-mode="true"] {
+  --color-bg-primary: #0F1210;
+  --leading-body: 1.85;
+}
+
+html[data-focus-mode="true"] .prose-editorial {
+  --tw-prose-body: #D0CFC8;
+}
+
+html[data-focus-mode="true"] header.sticky {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+html[data-focus-mode="true"] [data-focus-hide] {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+}
+
+header.sticky,
+[data-focus-hide] {
+  transition: transform var(--duration-slow) var(--ease-out-expo),
+              opacity var(--duration-slow) var(--ease-out-expo);
+}
+
+body {
+  transition: background-color var(--duration-slow) var(--ease-out-expo);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  header.sticky,
+  [data-focus-hide] {
+    transition: opacity var(--duration-fast) ease;
+    transform: none !important;
+  }
+
+  html[data-focus-mode="true"] header.sticky {
+    transform: none;
+  }
+
+  html[data-focus-mode="true"] [data-focus-hide] {
+    transform: none;
+  }
+}

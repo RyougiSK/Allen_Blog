@@ -16,7 +16,7 @@ export function SubscribeStrip() {
         </p>
         <Link
           href={`/${urlLocale}/subscribe`}
-          className="inline-flex items-center gap-2 flex-shrink-0 rounded-[var(--radius-md)] bg-text-primary text-bg-primary px-4 py-2 text-[length:var(--text-micro)] font-medium transition-opacity duration-[var(--duration-fast)] hover:opacity-80"
+          className="inline-flex items-center gap-2 flex-shrink-0 rounded-[var(--radius-md)] bg-accent-warm text-bg-primary px-4 py-2 text-[length:var(--text-micro)] font-medium transition-colors duration-[var(--duration-fast)] hover:bg-accent-warm/90"
         >
           <Mail className="h-3.5 w-3.5" />
           {t("subscribe.title")}

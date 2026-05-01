@@ -149,5 +149,8 @@
   "notFound.backLink": "Back to writing",
 
   "article.relatedArticles": "Keep reading",
-  "scrollToTop.label": "Back to top"
+  "scrollToTop.label": "Back to top",
+
+  "focusMode.enter": "Focus",
+  "focusMode.exit": "Exit focus"
 }

@@ -29,7 +29,7 @@ export function Navbar({ writingTypes = [] }: NavbarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileWritingOpen, setMobileWritingOpen] = useState(false);
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const routeLocale = useRouteLocale();
 
   const defaultType = writingTypes.find((wt) => wt.is_default);
@@ -61,7 +61,7 @@ export function Navbar({ writingTypes = [] }: NavbarProps) {
               className="rounded-md"
             />
             <span className="font-display text-lg text-text-primary">
-              {SITE.name}
+              {locale === "zh-cn" ? SITE.nameZh : SITE.name}
             </span>
           </Link>
 

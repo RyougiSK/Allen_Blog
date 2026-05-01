@@ -149,5 +149,8 @@
   "notFound.backLink": "返回文章",
 
   "article.relatedArticles": "继续阅读",
-  "scrollToTop.label": "回到顶部"
+  "scrollToTop.label": "回到顶部",
+
+  "focusMode.enter": "专注",
+  "focusMode.exit": "退出专注"
 }
