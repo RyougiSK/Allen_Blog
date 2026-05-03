@@ -5,7 +5,7 @@
 
   "hero.tagline": "Writing & noticing",
   "hero.title": "What I notice, living it.",
-  "hero.subtitle": "Notes on what I notice and the questions that stay.",
+  "hero.subtitle": "Notes on what I observe and the questions that emerge.",
 
   "home.heroCta": "See what's here",
   "home.heroMicro": "Updated when there is something worth saying.",
@@ -35,10 +35,10 @@
   "about.elsewhere": "Elsewhere",
   "about.browseThemes": "Browse threads",
   "about.readWriting": "Read the writing",
-  "about.bio1": "I live in Australia, and I work with data and design. That's the day job. But what I keep coming back to is the other side of things — what goes on beneath decisions, beneath patterns, beneath the stories we tell ourselves without noticing.",
-  "about.bio2": "I'm drawn to the kind of thinking that doesn't announce itself — the questions that sit quietly and keep their shape. The ones that interest me most have no clean answers: how we become more ourselves, how we find what matters, how we live with what we can't resolve.",
-  "about.whatIWriteBody": "This site is where I put things down. The writing is about what I notice — what's underneath the ordinary, what stays after the obvious falls away. If there's a thread, it's attention to what's actually happening.",
-  "about.quote": "I'd rather be interested than interesting. And I'd like to write clearly enough that some of that interest comes through.",
+  "about.bio1": "My day job involves data and consulting. But what I keep coming back to is the other side of things — what goes on beneath decisions, beneath patterns, beneath the stories we tell ourselves without noticing.",
+  "about.bio2": "I'm drawn to the kind of thinking that doesn't announce itself — growing quietly outside the noise, taking on different shapes. The questions that interest me most have no absolute answers: how we become more \"ourselves,\" how we find what truly matters, how we walk alongside problems that seem unsolvable on the surface.",
+  "about.whatIWriteBody": "This site is where I record my thinking and learning. I write about what I see as I move through the world — what hides beneath everyday life, what settles after the obvious falls away. If there's a thread, it's finding patterns and through-lines in all the noise.",
+  "about.quote": "I'd rather be someone who approaches essence from different angles than someone known for being interesting. I hope my writing offers enough insight that what I see and think along the way can be shared with the world.",
 
   "subscribe.title": "If you'd like",
   "subscribe.description": "I write from time to time. You might want to see it.",
@@ -93,8 +93,8 @@
   "nav.home": "Home",
   "toc.title": "Table of Contents",
 
-  "site.description": "Notes on what I notice and the questions that stay.",
-  "site.authorBio": "Based in Australia. Writing about what I notice underneath.",
+  "site.description": "Notes on what I observe and the questions that emerge.",
+  "site.authorBio": "Based in Australia. Writing about what I try to go deeper into.",
 
   "nav.contact": "Contact",
   "nav.support": "Support",

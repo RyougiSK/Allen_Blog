@@ -5,7 +5,7 @@
 
   "hero.tagline": "书写与行走",
   "hero.title": "在喧嚣中行走，在行走中看见。",
-  "hero.subtitle": "关于我所穿行的事物，以及那些沉淀下来的问题的札记。",
+  "hero.subtitle": "关于我所观察的事物，以及那些呈现出来的问题的札记。",
 
   "home.heroCta": "看看这里",
   "home.heroMicro": "有值得说的事情时更新。",
@@ -16,7 +16,7 @@
   "home.themes": "思绪",
   "home.threads": "思绪",
   "home.authorLabel": "写作者",
-  "home.authorIntro": "白天我做数据与设计相关的工作。其余时间，我在表象之下行走——穿过人的纹理、规律的深处、那些我们习以为常却未曾真正看见的东西。我把这些写在这里。",
+  "home.authorIntro": "白天我做数据与设计相关的工作。其余时间，我在观察表象之下的东西——人的行为模式、事物运作的规律、那些我们习以为常却未曾真正看见的事。我把这些写在这里。",
   "home.moreAbout": "更多关于我",
 
   "writing.title": "文章",
@@ -35,14 +35,14 @@
   "about.elsewhere": "更多内容",
   "about.browseThemes": "浏览思绪",
   "about.readWriting": "阅读文章",
-  "about.bio1": "我住在澳大利亚，日常工作与数据和设计有关。但我一直走向的，是事物的另一面——那些藏在决策背后、规律深处、我们不自觉讲述的故事之下的东西。",
-  "about.bio2": "我喜欢那些不事张扬的思考方式——在喧嚣之外自行生长，形状不变。最让我感兴趣的是那些没有干净答案的问题：我们如何更像自己，如何抵达真正重要的东西，如何与无法解决的事同行。",
-  "about.whatIWriteBody": "这个网站是我记下东西的地方。我写的是我穿行时看见的——日常之下藏着什么，显而易见的事退去之后沉淀着什么。如果有一条线索，那就是在噪声中找到正在发生的事。",
-  "about.quote": "比起成为有趣的人，我更想成为一个愿意深入其中的人。而我希望写得足够清楚，让沿途所见多少能被分享。",
+  "about.bio1": "我的日常工作与数据和咨询有关。但我一直走向的，是事物的另一面——那些藏在决策背后、规律深处、我们不自觉讲述的故事之下的东西。",
+  "about.bio2": "我喜欢那些不事张扬的思考方式——在喧嚣之外自行生长，形状百变。最让我感兴趣的是那些没有绝对解析答案的问题：我们如何更像"自己"，如何寻找真正重要的东西，如何与表面上无法解决的问题同行。",
+  "about.whatIWriteBody": "这个网站是我记录我的思考以及学习的地方。我写的是我行走在世界中看见的——日常生活之下藏着的，显而易见的事退去之后沉淀的。如果有一条线索，那就是在嘈杂的声音中找到事物的规律和脉络。",
+  "about.quote": "比起成为人们所熟知的有趣的人，我更想成为一个愿意从不同角度深入本质的人。我希望我的写作能提供一些见解，让我沿途的所见所想能为世界所知。",
 
-  "subscribe.title": "留下邮箱",
-  "subscribe.description": "有新文章时我会写一封简短的通知。",
-  "subscribe.button": "留下邮箱",
+  "subscribe.title": "保持联系",
+  "subscribe.description": "有新文章时，我会写一封简短的通知。",
+  "subscribe.button": "订阅",
   "subscribe.thankyou": "感谢您的订阅。",
   "subscribe.noSpam": "没有垃圾邮件，随时退订。",
   "subscribe.subscribed": "谢谢你。请查看邮箱里的欢迎邮件。",
@@ -51,8 +51,8 @@
   "subscribe.confirmed": "你已加入。谢谢你愿意一起阅读。",
   "subscribe.unsubscribed": "你已退订，不会再收到邮件了。",
   "subscribe.invalidToken": "这个链接已经失效了。如果你愿意，欢迎重新订阅。",
-  "subscribe.pageHeading": "留下邮箱",
-  "subscribe.pageDescription": "有新的文字时，我会写一封短信寄给你。",
+  "subscribe.pageHeading": "保持联系",
+  "subscribe.pageDescription": "有新的文字时，我会写一封简短的邮件通知你。仅此而已。",
 
   "share.title": "分享这篇文章",
   "share.copyLink": "复制链接",
@@ -93,8 +93,8 @@
   "nav.home": "首页",
   "toc.title": "目录",
 
-  "site.description": "关于我所穿行的事物，以及那些沉淀下来的问题的札记。",
-  "site.authorBio": "常驻澳大利亚。写那些我深入表象之下所看见的事。",
+  "site.description": "关于我所观察的事物，以及那些呈现出来的问题的札记。",
+  "site.authorBio": "生活在澳大利亚。写那些我尝试深入其中的事。",
 
   "nav.contact": "联系",
   "nav.support": "支持",

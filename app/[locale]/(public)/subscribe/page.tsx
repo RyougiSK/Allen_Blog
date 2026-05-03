@@ -57,8 +57,11 @@ export default async function SubscribePage({
       />
 
       <div className="mt-10">
-        <SubscribeForm variant="full" className="bg-transparent py-0" />
+        <SubscribeForm variant="inline" className="max-w-[24rem] mx-auto" />
       </div>
+      <p className="text-[length:var(--text-micro)] text-text-quaternary mt-4">
+        {dictionary["subscribe.noSpam"]}
+      </p>
     </div>
   );
 }
