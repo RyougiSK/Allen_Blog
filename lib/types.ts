@@ -197,6 +197,85 @@ export const EMPTY_LANG: ArticleLang = {
   meta: { ...EMPTY_META },
 };
 
+// --- Narrative Analysis ---
+
+export type WorkType = "movie" | "series" | "book" | "anime";
+export type Archetype =
+  | "Hero"
+  | "Parent"
+  | "Child"
+  | "Inferior"
+  | "Opposing"
+  | "Senex"
+  | "Trickster"
+  | "Demon";
+export type MbtiFunction =
+  | ""
+  | "Ne"
+  | "Ni"
+  | "Fe"
+  | "Fi"
+  | "Te"
+  | "Ti"
+  | "Se"
+  | "Si";
+
+export interface AnalysisCharacter {
+  id: string;
+  analysis_id: string;
+  character_name: string;
+  archetype: Archetype;
+  mbti_function: MbtiFunction;
+  notes: string;
+  sort_order: number;
+}
+
+export interface AnalysisEntry {
+  id: string;
+  title: string;
+  work_name: string;
+  work_type: WorkType;
+  author_director: string;
+  cover_image_url: string;
+  thesis: string;
+  conflict_internal: string;
+  conflict_external: string;
+  shadow: string;
+  projection: string;
+  development_start: string;
+  development_crisis: string;
+  development_end: string;
+  reflection_scenario: string;
+  reflection_insight: string;
+  closing: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AnalysisEntryWithCharacters extends AnalysisEntry {
+  characters: AnalysisCharacter[];
+}
+
+export interface AnalysisFormData {
+  title: string;
+  work_name: string;
+  work_type: WorkType;
+  author_director: string;
+  cover_image_url: string;
+  thesis: string;
+  conflict_internal: string;
+  conflict_external: string;
+  shadow: string;
+  projection: string;
+  development_start: string;
+  development_crisis: string;
+  development_end: string;
+  reflection_scenario: string;
+  reflection_insight: string;
+  closing: string;
+  characters: Omit<AnalysisCharacter, "id" | "analysis_id">[];
+}
+
 // --- Legacy (keep until migration cleanup) ---
 
 export interface Post {
