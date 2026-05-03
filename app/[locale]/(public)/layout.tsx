@@ -1,7 +1,6 @@
 import { Navbar } from "@/components/features/navbar";
 import { Footer } from "@/components/features/footer";
 import { SubscribeStrip } from "@/components/features/subscribe-strip";
-import { FloatingSubscribe } from "@/components/features/floating-subscribe";
 import { ScrollToTop } from "@/components/features/scroll-to-top";
 import { ImageLightbox } from "@/components/features/image-lightbox";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -30,7 +29,6 @@ export default async function PublicLayout({
       <main className="flex-1">{children}</main>
       <SubscribeStrip />
       <Footer dictionary={dictionary} />
-      <FloatingSubscribe />
       <ScrollToTop />
       <ImageLightbox />
     </div>
