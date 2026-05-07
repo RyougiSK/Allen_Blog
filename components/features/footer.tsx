@@ -42,6 +42,8 @@ export function Footer({ dictionary }: FooterProps) {
             ))}
             <a
               href="/feed.xml"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-text-quaternary transition-colors duration-[var(--duration-fast)] hover:text-text-tertiary"
               aria-label="RSS Feed"
             >
