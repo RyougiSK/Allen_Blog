@@ -193,7 +193,7 @@ body {
 @keyframes fade-in-up {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -206,11 +206,11 @@ body {
 }
 
 .stagger-1 { animation-delay: 0ms; }
-.stagger-2 { animation-delay: 120ms; }
-.stagger-3 { animation-delay: 240ms; }
-.stagger-4 { animation-delay: 360ms; }
-.stagger-5 { animation-delay: 480ms; }
-.stagger-6 { animation-delay: 600ms; }
+.stagger-2 { animation-delay: 80ms; }
+.stagger-3 { animation-delay: 160ms; }
+.stagger-4 { animation-delay: 240ms; }
+.stagger-5 { animation-delay: 320ms; }
+.stagger-6 { animation-delay: 400ms; }
 
 /* ─── Ornament dot separator ─── */
 .ornament-dot::after {
@@ -271,19 +271,19 @@ body {
 .hero-ink-wash-bg::before {
   background: radial-gradient(
     ellipse at 30% 40%,
-    rgba(201, 183, 156, 0.06) 0%,
+    rgba(201, 183, 156, 0.1) 0%,
     transparent 60%
   );
-  animation: ink-wash-1 60s ease-in-out infinite;
+  animation: ink-wash-1 40s ease-in-out infinite;
 }
 
 .hero-ink-wash-bg::after {
   background: radial-gradient(
     ellipse at 70% 60%,
-    rgba(90, 92, 122, 0.05) 0%,
+    rgba(90, 92, 122, 0.08) 0%,
     transparent 55%
   );
-  animation: ink-wash-2 80s ease-in-out infinite;
+  animation: ink-wash-2 55s ease-in-out infinite;
 }
 
 /* Dark overlay — bottom-heavy for readability + seamless bg transition */
@@ -292,9 +292,9 @@ body {
   pointer-events: none;
   background: linear-gradient(
     to bottom,
-    rgba(18, 18, 18, 0.3) 0%,
-    rgba(18, 18, 18, 0.5) 40%,
-    rgba(18, 18, 18, 0.85) 80%,
+    rgba(18, 18, 18, 0.25) 0%,
+    rgba(18, 18, 18, 0.45) 40%,
+    rgba(18, 18, 18, 0.8) 80%,
     rgba(18, 18, 18, 1) 100%
   );
 }
@@ -313,14 +313,14 @@ body {
 
 .hero-entrance {
   opacity: 0;
-  animation: hero-fade-in-up 1200ms var(--ease-out-expo) forwards;
+  animation: hero-fade-in-up 800ms var(--ease-out-expo) forwards;
 }
 
-.hero-stagger-1 { animation-delay: 300ms; }
-.hero-stagger-2 { animation-delay: 600ms; }
-.hero-stagger-3 { animation-delay: 900ms; }
-.hero-stagger-4 { animation-delay: 1200ms; }
-.hero-stagger-5 { animation-delay: 1500ms; }
+.hero-stagger-1 { animation-delay: 200ms; }
+.hero-stagger-2 { animation-delay: 400ms; }
+.hero-stagger-3 { animation-delay: 600ms; }
+.hero-stagger-4 { animation-delay: 800ms; }
+.hero-stagger-5 { animation-delay: 1000ms; }
 
 @media (prefers-reduced-motion: reduce) {
   .hero-entrance {
