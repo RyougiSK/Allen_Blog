@@ -4,7 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
+  Compass,
+  BarChart3,
   FileText,
   MessageSquare,
   Brain,
@@ -20,13 +21,13 @@ import {
   X,
   Search,
   CalendarDays,
-  BarChart3,
 } from "lucide-react";
 import { signOut } from "@/app/(auth)/login/actions";
 import { SITE } from "@/lib/constants";
 
 const navItems = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/admin", label: "Compass", icon: Compass, exact: true },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3, exact: true },
   { href: "/admin/posts", label: "Articles", icon: FileText, exact: false },
   { href: "/admin/threads", label: "Threads", icon: MessageSquare, exact: false },
   { href: "/admin/analysis", label: "叙事分析", icon: Brain, exact: false },
@@ -36,7 +37,6 @@ const navItems = [
   { href: "/admin/calendar", label: "Calendar", icon: CalendarDays, exact: false },
   { href: "/admin/media", label: "Media", icon: ImageIcon, exact: false },
   { href: "/admin/subscribers", label: "Subscribers", icon: Mail, exact: false },
-  { href: "/admin/newsletters", label: "Newsletters", icon: BarChart3, exact: false },
 ];
 
 export function AdminSidebar() {

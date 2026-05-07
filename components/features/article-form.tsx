@@ -22,6 +22,7 @@ import {
 import { saveVersion } from "@/lib/actions/versions";
 import { VersionHistory } from "@/components/features/version-history";
 import { EMPTY_LANG } from "@/lib/types";
+import { PILLARS } from "@/lib/constants";
 import type {
   ArticleWithTags,
   ArticleLang,
@@ -29,6 +30,7 @@ import type {
   ArticleFormData,
   Tag,
   ArticleMeta,
+  Pillar,
 } from "@/lib/types";
 
 function slugify(text: string): string {
@@ -67,6 +69,7 @@ interface State {
   en: ArticleLang;
   zh: ArticleLang;
   activeLocale: ContentLocale;
+  pillar: Pillar;
   tagIds: string[];
   categoryId: string | null;
   writingTypeId: string | null;
@@ -82,6 +85,7 @@ type Action =
   | { type: "SET_LANG_FIELD"; locale: ContentLocale; field: keyof ArticleLang; value: unknown }
   | { type: "SET_META_FIELD"; locale: ContentLocale; field: keyof ArticleMeta; value: unknown }
   | { type: "SET_ACTIVE_LOCALE"; locale: ContentLocale }
+  | { type: "SET_PILLAR"; pillar: Pillar }
   | { type: "SET_TAGS"; ids: string[] }
   | { type: "SET_CATEGORY"; id: string | null }
   | { type: "SET_WRITING_TYPE"; id: string | null }
@@ -115,6 +119,8 @@ function reducer(state: State, action: Action): State {
     }
     case "SET_ACTIVE_LOCALE":
       return { ...state, activeLocale: action.locale };
+    case "SET_PILLAR":
+      return { ...state, pillar: action.pillar };
     case "SET_TAGS":
       return { ...state, tagIds: action.ids };
     case "SET_CATEGORY":
@@ -177,6 +183,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
     en: article?.en ?? { ...EMPTY_LANG },
     zh: article?.zh ?? { ...EMPTY_LANG },
     activeLocale: "en",
+    pillar: article?.pillar ?? "self",
     tagIds: article?.tags?.map((t) => t.id) ?? [],
     categoryId: article?.category_id ?? null,
     writingTypeId: article?.writing_type_id ?? null,
@@ -201,6 +208,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
       const result = await autoSaveArticle(article.id, {
         en: state.en,
         zh: state.zh,
+        pillar: state.pillar,
         tag_ids: state.tagIds,
         category_id: state.categoryId,
         writing_type_id: state.writingTypeId,
@@ -215,7 +223,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
     return () => {
       if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     };
-  }, [state.en, state.zh, state.tagIds, state.categoryId, state.writingTypeId, state.coverImage]);
+  }, [state.en, state.zh, state.pillar, state.tagIds, state.categoryId, state.writingTypeId, state.coverImage]);
 
   const handleTitleChange = useCallback(
     (value: string) => {
@@ -239,6 +247,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
     const data: ArticleFormData = {
       en: state.en,
       zh: state.zh,
+      pillar: state.pillar,
       tag_ids: state.tagIds,
       category_id: state.categoryId,
       writing_type_id: state.writingTypeId,
@@ -264,6 +273,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
       const data: ArticleFormData = {
         en: state.en,
         zh: state.zh,
+        pillar: state.pillar,
         tag_ids: state.tagIds,
         category_id: state.categoryId,
         writing_type_id: state.writingTypeId,
@@ -279,6 +289,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
       const data: ArticleFormData = {
         en: state.en,
         zh: state.zh,
+        pillar: state.pillar,
         tag_ids: state.tagIds,
         category_id: state.categoryId,
         writing_type_id: state.writingTypeId,
@@ -546,6 +557,21 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
 
       {/* Shared fields */}
       <div className={`space-y-4 mb-6 border-t border-border pt-6 ${focusMode ? "hidden" : ""}`}>
+        <div>
+          <label className="block text-xs font-medium text-text-tertiary mb-1.5">Pillar</label>
+          <select
+            value={state.pillar}
+            onChange={(e) => dispatch({ type: "SET_PILLAR", pillar: e.target.value as Pillar })}
+            className="w-full h-9 rounded-[var(--radius-lg)] border border-border bg-bg-secondary px-3 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-warm/50"
+          >
+            {Object.entries(PILLARS).map(([key, p]) => (
+              <option key={key} value={key}>
+                {p.en} / {p.zh}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div>
           <label className="block text-xs font-medium text-text-tertiary mb-1.5">Tags</label>
           <TagPicker

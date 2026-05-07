@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { instrumentSerif, inter, geistMono } from "@/lib/fonts";
+import { cormorantGaramond, inter, geistMono, notoSerifSC, notoSansSC } from "@/lib/fonts";
 import { SITE } from "@/lib/constants";
 import "./globals.css";
 
@@ -42,7 +42,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${instrumentSerif.variable} ${inter.variable} ${geistMono.variable} dark h-full antialiased`}
+      className={`${cormorantGaramond.variable} ${inter.variable} ${geistMono.variable} ${notoSerifSC.variable} ${notoSansSC.variable} dark h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bg-primary text-text-primary">
         {children}

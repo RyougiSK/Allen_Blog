@@ -3,8 +3,14 @@ import Image from "next/image";
 import { format, parseISO } from "date-fns";
 import { calculateReadingTime } from "@/lib/utils/reading-time";
 import { getLocalizedName } from "@/lib/utils/localized-name";
-import type { ArticleWithTags, ContentLocale } from "@/lib/types";
+import type { ArticleWithTags, ContentLocale, Pillar } from "@/lib/types";
 import type { Dictionary } from "@/lib/i18n/types";
+
+const pillarBorderClass: Record<Pillar, string> = {
+  self: "border-l-accent-self",
+  nature: "border-l-accent-nature-light",
+  living: "border-l-accent-living",
+};
 
 interface WritingCardProps {
   article: ArticleWithTags;
@@ -31,26 +37,28 @@ export function WritingCard({
 
   const readTime = calculateReadingTime(lang.content);
 
+  const pillarAccent = pillarBorderClass[article.pillar ?? "self"];
+
   if (featured) {
     return (
       <Link href={`/${urlLocale}/${lang.slug}`} className="block group">
-        <article className="overflow-hidden rounded-[var(--radius-lg)] border border-border border-l-2 border-l-transparent bg-bg-secondary shadow-[var(--shadow-sm)] transition-all duration-[var(--duration-normal)] hover:border-border-emphasis hover:border-l-accent-warm hover:shadow-[var(--shadow-md)] hover:-translate-y-1">
+        <article className={`overflow-hidden rounded-[var(--radius-lg)] border border-border/60 border-l-2 ${pillarAccent} bg-bg-secondary transition-all duration-[var(--duration-normal)] hover:border-border-emphasis`}>
           {article.cover_image && (
             <div className="relative aspect-[16/9] w-full overflow-hidden">
               <Image
                 src={article.cover_image}
                 alt={lang.title}
                 fill
-                className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
+                className="object-cover transition-opacity duration-[var(--duration-slow)] group-hover:opacity-90"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
           )}
-          <div className="p-8">
+          <div className="p-10">
             <div className="flex items-center gap-2">
               {article.category && (
                 <>
-                  <span className="text-[length:var(--text-micro)] font-medium text-accent-warm uppercase tracking-[var(--tracking-widest)]">
+                  <span className="text-[length:var(--text-micro)] font-medium text-accent-living uppercase tracking-[var(--tracking-widest)]">
                     {getLocalizedName(article.category, locale)}
                   </span>
                   <span className="text-text-quaternary">&middot;</span>
@@ -72,7 +80,7 @@ export function WritingCard({
                   : `${readTime} min read`}
               </span>
             </div>
-            <h2 className="font-display text-[length:var(--text-display-sm)] leading-[var(--leading-tight)] text-text-primary mt-3 transition-colors duration-[var(--duration-fast)] group-hover:text-accent-warm">
+            <h2 className="font-display text-[length:var(--text-display-sm)] leading-[var(--leading-tight)] text-text-primary mt-3 transition-colors duration-[var(--duration-normal)] group-hover:text-accent-living-light">
               {lang.title}
             </h2>
             <p className="text-[length:var(--text-body)] text-text-secondary mt-4 line-clamp-3 leading-[var(--leading-body)]">
@@ -99,14 +107,14 @@ export function WritingCard({
   return (
     <Link
       href={`/${urlLocale}/${lang.slug}`}
-      className="block group py-6 border-b border-border last:border-b-0 transition-colors hover:bg-surface/30 -mx-4 px-4 rounded-[var(--radius-md)]"
+      className={`block group py-6 border-b border-border/60 border-l-2 ${pillarAccent} last:border-b-0 transition-colors -mx-4 px-4 pl-6 rounded-[var(--radius-sm)]`}
     >
       <article className="flex justify-between items-start gap-4">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             {article.category && (
               <>
-                <span className="text-[length:var(--text-micro)] font-medium text-accent-warm uppercase tracking-[var(--tracking-widest)]">
+                <span className="text-[length:var(--text-micro)] font-medium text-accent-living uppercase tracking-[var(--tracking-widest)]">
                   {getLocalizedName(article.category, locale)}
                 </span>
                 <span className="text-text-quaternary">&middot;</span>
@@ -128,7 +136,7 @@ export function WritingCard({
                 : `${readTime} min`}
             </span>
           </div>
-          <h3 className="font-display text-[length:var(--text-display-sm)] leading-[var(--leading-tight)] text-text-primary mt-1 transition-colors duration-[var(--duration-fast)] group-hover:text-accent-warm">
+          <h3 className="font-display text-[length:var(--text-display-sm)] leading-[var(--leading-tight)] text-text-primary mt-1 transition-colors duration-[var(--duration-normal)] group-hover:text-accent-living-light">
             {lang.title}
           </h3>
           <p className="text-[length:var(--text-body-sm)] text-text-secondary mt-2 line-clamp-2 leading-relaxed">
@@ -153,7 +161,7 @@ export function WritingCard({
               src={article.cover_image}
               alt={lang.title}
               fill
-              className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-out-expo)] group-hover:scale-[1.08]"
+              className="object-cover transition-opacity duration-[var(--duration-slow)] group-hover:opacity-85"
               sizes="64px"
             />
           </div>

@@ -1,3 +1,7 @@
+// --- Pillar ---
+
+export type Pillar = "self" | "nature" | "living";
+
 // --- Article (unified bilingual model) ---
 
 export type ArticleStatus = "draft" | "published" | "archived";
@@ -22,6 +26,7 @@ export interface ArticleLang {
 export interface Article {
   id: string;
   status: ArticleStatus;
+  pillar: Pillar;
   cover_image: string | null;
   category_id: string | null;
   writing_type_id: string | null;
@@ -41,6 +46,7 @@ export interface ArticleWithTags extends Article {
 export interface ArticleFormData {
   en: ArticleLang;
   zh: ArticleLang;
+  pillar: Pillar;
   tag_ids: string[];
   category_id: string | null;
   writing_type_id: string | null;
@@ -119,6 +125,7 @@ export interface Thread {
   id: string;
   content_en: string;
   content_zh: string;
+  pillar: Pillar;
   status: ThreadStatus;
   author_id: string | null;
   created_at: string;
@@ -132,6 +139,7 @@ export interface ThreadWithTags extends Thread {
 export interface ThreadFormData {
   content_en: string;
   content_zh: string;
+  pillar: Pillar;
   tag_ids: string[];
   status: ThreadStatus;
 }

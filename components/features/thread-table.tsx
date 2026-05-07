@@ -24,7 +24,8 @@ import {
   publishThread,
   unpublishThread,
 } from "@/lib/actions/threads";
-import type { ThreadWithTags, Tag, ThreadStatus } from "@/lib/types";
+import { PILLARS } from "@/lib/constants";
+import type { ThreadWithTags, Tag, ThreadStatus, Pillar } from "@/lib/types";
 
 interface ThreadTableProps {
   threads: ThreadWithTags[];
@@ -37,6 +38,7 @@ export function ThreadTable({ threads, allTags }: ThreadTableProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editEn, setEditEn] = useState("");
   const [editZh, setEditZh] = useState("");
+  const [editPillar, setEditPillar] = useState<Pillar>("self");
   const [editTagIds, setEditTagIds] = useState<string[]>([]);
   const [editStatus, setEditStatus] = useState<ThreadStatus>("draft");
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; preview: string } | null>(null);
@@ -46,6 +48,7 @@ export function ThreadTable({ threads, allTags }: ThreadTableProps) {
     setEditingId(thread.id);
     setEditEn(thread.content_en);
     setEditZh(thread.content_zh);
+    setEditPillar(thread.pillar ?? "self");
     setEditTagIds(thread.tags.map((t) => t.id));
     setEditStatus(thread.status);
   }
@@ -54,6 +57,7 @@ export function ThreadTable({ threads, allTags }: ThreadTableProps) {
     await updateThread(id, {
       content_en: editEn,
       content_zh: editZh,
+      pillar: editPillar,
       tag_ids: editTagIds,
       status: editStatus,
     });

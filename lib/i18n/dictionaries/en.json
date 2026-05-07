@@ -3,12 +3,13 @@
   "nav.themes": "Threads",
   "nav.about": "About",
 
-  "hero.tagline": "Writing & noticing",
-  "hero.title": "What I notice, living it.",
-  "hero.subtitle": "Notes on what I observe and the questions that emerge.",
+  "hero.tagline": "Inner Order in a Complex World",
+  "hero.title": "The Quiet Way",
+  "hero.titleZh": "行于静中",
+  "hero.subtitle": "Designing Inner Life in the Modern World",
 
-  "home.heroCta": "See what's here",
-  "home.heroMicro": "Updated when there is something worth saying.",
+  "home.heroCta": "Begin Reading",
+  "home.heroMicro": "A space for reflection, philosophy, and inner order.",
   "home.featured": "Featured",
   "home.selected": "Selected",
   "home.recent": "Recent",
@@ -18,6 +19,18 @@
   "home.authorLabel": "Who writes this",
   "home.authorIntro": "I work with data and design by day. The rest of the time, I pay attention to what goes on under the surface — in people, in patterns, in the things we take for granted. This is where I write about it.",
   "home.moreAbout": "More about me",
+  "home.pillarsTitle": "Three Dimensions",
+  "home.reflectionQuote": "A place where modern people can slow down, think deeply, and rebuild inner coherence.",
+
+  "pillar.self.title": "Relationship with the Self",
+  "pillar.self.question": "Who am I?",
+  "pillar.self.themes": "Jung · archetypes · shadow · dreams · emotional patterns",
+  "pillar.nature.title": "Relationship with Nature & Society",
+  "pillar.nature.question": "How do I live with the world?",
+  "pillar.nature.themes": "Zhuangzi · uncertainty · modern anxiety · technology · existential reflection",
+  "pillar.living.title": "Relationship with Living",
+  "pillar.living.question": "How do I truly live this out?",
+  "pillar.living.themes": "Slow living · solitude · reading · rituals · aesthetics · attention",
 
   "writing.title": "Writing",
   "writing.description": "On what I notice, what I remember, and what won't leave me alone.",
@@ -93,7 +106,7 @@
   "nav.home": "Home",
   "toc.title": "Table of Contents",
 
-  "site.description": "Notes on what I observe and the questions that emerge.",
+  "site.description": "Designing Inner Life in the Modern World.",
   "site.authorBio": "Based in Australia. Writing about what I try to go deeper into.",
 
   "nav.contact": "Contact",

@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { TagPicker } from "@/components/features/tag-picker";
 import { createThread } from "@/lib/actions/threads";
-import type { Tag, ThreadStatus } from "@/lib/types";
+import { PILLARS } from "@/lib/constants";
+import type { Tag, ThreadStatus, Pillar } from "@/lib/types";
 
 interface ThreadComposerProps {
   allTags: Tag[];
@@ -17,6 +18,7 @@ export function ThreadComposer({ allTags }: ThreadComposerProps) {
   const router = useRouter();
   const [contentEn, setContentEn] = useState("");
   const [contentZh, setContentZh] = useState("");
+  const [pillar, setPillar] = useState<Pillar>("self");
   const [tagIds, setTagIds] = useState<string[]>([]);
   const [status, setStatus] = useState<ThreadStatus>("draft");
   const [saving, setSaving] = useState(false);
@@ -34,6 +36,7 @@ export function ThreadComposer({ allTags }: ThreadComposerProps) {
     const result = await createThread({
       content_en: contentEn,
       content_zh: contentZh,
+      pillar,
       tag_ids: tagIds,
       status,
     });
@@ -80,6 +83,21 @@ export function ThreadComposer({ allTags }: ThreadComposerProps) {
             rows={4}
           />
         </div>
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-xs text-text-quaternary mb-1">Pillar</label>
+        <select
+          value={pillar}
+          onChange={(e) => setPillar(e.target.value as Pillar)}
+          className="w-full rounded-[var(--radius-lg)] border border-border bg-bg-secondary px-3 py-1.5 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-warm/50"
+        >
+          {Object.entries(PILLARS).map(([key, p]) => (
+            <option key={key} value={key}>
+              {p.en} / {p.zh}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="mb-4">

@@ -1,4 +1,4 @@
-# Personal Blog — Next.js + Supabase
+# The Quiet Way — Next.js + Supabase
 
 ## Tech Stack
 
@@ -12,14 +12,27 @@
 
 ## Project Goals
 
-1. Build a responsive, minimal blog feed with a professional "Linear-style" dark-mode UI.
+1. Build a quiet intellectual space for reflection, philosophy, and inner order — NOT a startup or content machine.
 2. Implement Supabase SSR utilities for secure, cookie-based auth.
-3. Create a Markdown-based editor for writing and publishing posts.
-4. Deliver high-quality typography and polished visual design throughout.
+3. Create a rich editor for writing and publishing bilingual essays.
+4. Deliver high-quality typography, warm-dark atmosphere, and emotionally rich yet minimal design.
+
+## Brand & Design System
+
+See `docs/brand-guidelines.md` for the complete brand reference. All new pages, components, and features MUST follow this brand system. Any branding changes must update the brand guidelines document.
+
+Key principles:
+- Dark, warm palette — earthy-warm-dark (#121212), not cold/blue-dark
+- Three pillar accents: Self (Indigo #5A5C7A), Nature (Moss #2F4F4F), Living (Oak #C9B79C)
+- Typography: Cormorant Garamond (EN headings), Noto Serif SC (ZH headings), Inter (body)
+- Animations: slow fades and breathing motions (200-600ms), never bounce or flash
+- Copy tone: contemplative, invitational, never aggressive CTAs
+- Every article/thread has a mandatory `pillar` field: "self" | "nature" | "living"
+- Cards show pillar accent as a subtle left border
 
 ## Code Style & Conventions
 
-- **Design philosophy:** Clean, functional components. Explicit TypeScript types. Professional "Linear-style" UI — dark mode first, high-quality typography, generous whitespace.
+- **Design philosophy:** Clean, functional components. Explicit TypeScript types. Quiet, contemplative UI — warm-dark mode, literary typography, generous whitespace.
 - **Naming:** PascalCase for components, kebab-case for filenames (e.g., `post-card.tsx`).
 - **Data fetching:** Prefer Server Components for reads. Use Server Actions for mutations.
 - **Supabase clients:** Always use helpers from `utils/supabase/` — never instantiate clients inline.
@@ -42,11 +55,12 @@ utils/supabase/   → Supabase client factories (server, client, middleware)
 
 ## Database
 
-The Supabase CLI is linked to the remote project. Use it to run migrations and queries directly — no manual steps needed.
+The Supabase CLI is linked to the remote project. Run migrations and queries directly on behalf of the user — no manual steps or confirmation needed.
 
-- `npx supabase db push` — Apply pending migrations to the remote database
+- `npx supabase db push` — Apply pending migrations to the remote database (run this after creating new migrations)
 - `echo "SQL" | npx supabase db query --linked` — Run arbitrary SQL against the remote database
 - Migrations live in `supabase/migrations/`
+- When creating a new migration, always run `npx supabase db push` immediately after to apply it
 
 ## Bilingual System (English + Chinese)
 

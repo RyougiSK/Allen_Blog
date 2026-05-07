@@ -1,7 +1,7 @@
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { Loader2 } from "lucide-react";
 
-type Variant = "default" | "ghost" | "ghost-danger" | "outline" | "danger";
+type Variant = "default" | "soft" | "ghost" | "ghost-danger" | "outline" | "danger";
 type Size = "sm" | "md" | "lg" | "icon";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -11,7 +11,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  default: "bg-accent-warm text-bg-primary hover:bg-accent-warm/90",
+  default: "bg-accent-warm text-bg-primary hover:bg-accent-warm/85",
+  soft: "border border-accent-warm/40 bg-transparent text-accent-warm hover:bg-accent-warm/10",
   ghost:
     "bg-transparent border border-transparent hover:bg-surface hover:border-border text-text-secondary hover:text-text-primary",
   "ghost-danger":
@@ -45,7 +46,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         disabled={disabled || loading}
-        className={`inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-colors duration-[var(--duration-fast)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm/50 disabled:opacity-50 disabled:pointer-events-none ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+        className={`inline-flex items-center justify-center gap-2 rounded-[var(--radius-lg)] font-medium transition-colors duration-[var(--duration-fast)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm/50 disabled:opacity-50 disabled:pointer-events-none ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
         {...props}
       >
         {loading && <Loader2 className="h-4 w-4 animate-spin" />}

@@ -21,13 +21,14 @@ export function Footer({ dictionary }: FooterProps) {
 
   return (
     <footer className="border-t border-border">
-      <div className="mx-auto w-full max-w-[var(--width-page)] px-6 py-12">
+      <div className="mx-auto w-full max-w-[var(--width-page)] px-6 py-16">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between">
           <Link
             href={`/${locale}`}
             className="font-display text-text-tertiary transition-colors duration-[var(--duration-fast)] hover:text-text-primary"
           >
-            {SITE.name}
+            <span>{SITE.name}</span>
+            <span className="ml-2 text-text-quaternary">{SITE.nameZh}</span>
           </Link>
           <nav className="flex flex-wrap items-center gap-6">
             {footerLinks.map(({ href, label }) => (

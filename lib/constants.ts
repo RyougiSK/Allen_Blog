@@ -10,12 +10,34 @@ export const SUPPORT = {
   },
 } as const;
 
+export type Pillar = "self" | "nature" | "living";
+
+export const PILLARS = {
+  self: {
+    id: "self" as const,
+    en: "Relationship with the Self",
+    zh: "人与自己的关系",
+    question: { en: "Who am I?", zh: "我是谁？" },
+  },
+  nature: {
+    id: "nature" as const,
+    en: "Relationship with Nature & Society",
+    zh: "人与自然（包括人类社会）的关系",
+    question: { en: "How do I live with the world?", zh: "我如何与世界相处？" },
+  },
+  living: {
+    id: "living" as const,
+    en: "Relationship with Living",
+    zh: "人与生活的关系",
+    question: { en: "How do I truly live this out?", zh: "我如何真正地活出来？" },
+  },
+} as const;
+
 export const SITE = {
   name: "The Quiet Way",
   nameZh: "行于静中",
   title: "The Quiet Way",
-  description:
-    "Notes on what I notice and the questions that stay.",
+  description: "Designing Inner Life in the Modern World",
   url: "https://the-quiet-way.com",
   author: {
     name: "Hanming (Allen) Chen",

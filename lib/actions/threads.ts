@@ -18,6 +18,7 @@ export async function createThread(
     .insert({
       content_en: data.content_en,
       content_zh: data.content_zh,
+      pillar: data.pillar,
       status: data.status,
     })
     .select("id")
@@ -46,6 +47,7 @@ export async function updateThread(
     .update({
       content_en: data.content_en,
       content_zh: data.content_zh,
+      pillar: data.pillar,
       status: data.status,
       updated_at: new Date().toISOString(),
     })

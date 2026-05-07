@@ -41,6 +41,7 @@ export async function createArticle(
     .from("articles")
     .insert({
       status: data.status,
+      pillar: data.pillar,
       cover_image: data.cover_image,
       category_id: data.category_id,
       writing_type_id: data.writing_type_id,
@@ -78,6 +79,7 @@ export async function updateArticle(
     .from("articles")
     .update({
       status: data.status,
+      pillar: data.pillar,
       cover_image: data.cover_image,
       category_id: data.category_id,
       writing_type_id: data.writing_type_id,
@@ -112,6 +114,7 @@ export async function autoSaveArticle(
 
   if (data.en) updatePayload.en = buildLangJson(data.en);
   if (data.zh) updatePayload.zh = buildLangJson(data.zh);
+  if (data.pillar) updatePayload.pillar = data.pillar;
   if (data.cover_image !== undefined)
     updatePayload.cover_image = data.cover_image;
   if (data.category_id !== undefined)

@@ -51,7 +51,7 @@ export function Navbar({ writingTypes = [] }: NavbarProps) {
         <div className="mx-auto flex w-full max-w-[var(--width-page)] items-center justify-between px-6 h-16">
           <Link
             href={`/${routeLocale}`}
-            className="flex items-center gap-2.5 transition-colors duration-[var(--duration-fast)] hover:text-accent-warm"
+            className="flex items-center gap-2.5 transition-colors duration-[var(--duration-fast)] hover:text-accent-living"
           >
             <Image
               src="/logo.png"
@@ -90,7 +90,7 @@ export function Navbar({ writingTypes = [] }: NavbarProps) {
                 >
                   {label}
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent-warm rounded-full" />
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent-living rounded-full" />
                   )}
                 </Link>
               );
@@ -142,7 +142,7 @@ export function Navbar({ writingTypes = [] }: NavbarProps) {
                 onClick={() => setMobileWritingOpen((v) => !v)}
                 className={`flex items-center gap-2 font-display text-[length:var(--text-display-sm)] transition-colors duration-[var(--duration-fast)] ${
                   writingActive
-                    ? "text-accent-warm"
+                    ? "text-accent-living"
                     : "text-text-tertiary hover:text-text-primary"
                 }`}
               >
@@ -195,7 +195,7 @@ export function Navbar({ writingTypes = [] }: NavbarProps) {
                   onClick={() => setMobileOpen(false)}
                   className={`font-display text-[length:var(--text-display-sm)] transition-colors duration-[var(--duration-fast)] ${
                     isActive
-                      ? "text-accent-warm"
+                      ? "text-accent-living"
                       : "text-text-tertiary hover:text-text-primary"
                   }`}
                 >
@@ -288,7 +288,7 @@ function WritingDropdown({
           }`}
         />
         {active && (
-          <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent-warm rounded-full" />
+          <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent-living rounded-full" />
         )}
       </Link>
 

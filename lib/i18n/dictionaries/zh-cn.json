@@ -3,12 +3,13 @@
   "nav.themes": "思绪",
   "nav.about": "关于",
 
-  "hero.tagline": "书写与行走",
-  "hero.title": "在喧嚣中行走，在行走中看见。",
-  "hero.subtitle": "关于我所观察的事物，以及那些呈现出来的问题的札记。",
+  "hero.tagline": "在复杂世界中的内在秩序",
+  "hero.title": "行于静中",
+  "hero.titleZh": "行于静中",
+  "hero.subtitle": "在现代世界中设计内在生活",
 
-  "home.heroCta": "看看这里",
-  "home.heroMicro": "有值得说的事情时更新。",
+  "home.heroCta": "开始阅读",
+  "home.heroMicro": "一个关于反思、哲学与内在秩序的空间。",
   "home.featured": "精选",
   "home.selected": "精选",
   "home.recent": "最近",
@@ -18,6 +19,18 @@
   "home.authorLabel": "写作者",
   "home.authorIntro": "白天我做数据与设计相关的工作。其余时间，我在观察表象之下的东西——人的行为模式、事物运作的规律、那些我们习以为常却未曾真正看见的事。我把这些写在这里。",
   "home.moreAbout": "更多关于我",
+  "home.pillarsTitle": "三个维度",
+  "home.reflectionQuote": "让现代人慢下来、深入思考、重建内在秩序的空间。",
+
+  "pillar.self.title": "人与自己的关系",
+  "pillar.self.question": "我是谁？",
+  "pillar.self.themes": "荣格 · 原型 · 阴影 · 梦境 · 情感模式",
+  "pillar.nature.title": "人与自然（包括人类社会）的关系",
+  "pillar.nature.question": "我如何与世界相处？",
+  "pillar.nature.themes": "庄子 · 不确定性 · 现代焦虑 · 科技 · 存在性反思",
+  "pillar.living.title": "人与生活的关系",
+  "pillar.living.question": "我如何真正地活出来？",
+  "pillar.living.themes": "慢生活 · 独处 · 阅读 · 仪式 · 美学 · 注意力",
 
   "writing.title": "文章",
   "writing.description": "关于我所穿行的、所沉淀的，以及那些不肯消散的事。",
@@ -93,7 +106,7 @@
   "nav.home": "首页",
   "toc.title": "目录",
 
-  "site.description": "关于我所观察的事物，以及那些呈现出来的问题的札记。",
+  "site.description": "在现代世界中设计内在生活。",
   "site.authorBio": "生活在澳大利亚。写那些我尝试深入其中的事。",
 
   "nav.contact": "联系",
