@@ -10,8 +10,8 @@ interface HeroSectionProps {
 
 export function HeroSection({ dictionary, locale }: HeroSectionProps) {
   return (
-    <section className="hero-cinematic relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-      {/* Layer 0: Background video (extremely subtle texture) */}
+    <section className="hero-cinematic relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Layer 0: Background video (hidden on mobile for bandwidth) */}
       <video
         autoPlay
         muted
@@ -19,7 +19,7 @@ export function HeroSection({ dictionary, locale }: HeroSectionProps) {
         playsInline
         preload="auto"
         poster={SITE.hero.poster}
-        className="hero-video absolute inset-0 h-full w-full object-cover opacity-15 hidden sm:block"
+        className="hero-video absolute inset-0 h-full w-full object-cover hidden sm:block"
       >
         <source src={SITE.hero.video} type="video/mp4" />
       </video>
