@@ -3,7 +3,7 @@
 import { useReducer, useCallback, useRef, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Save, Send, Copy, X, ImageIcon, History, Maximize2, Minimize2 } from "lucide-react";
+import { Save, Send, Copy, X, ImageIcon, History, Maximize2, Minimize2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -178,6 +178,7 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
   const [editorMediaPickerOpen, setEditorMediaPickerOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
+  const [generatingSeo, setGeneratingSeo] = useState(false);
 
   const [state, dispatch] = useReducer(reducer, {
     en: article?.en ?? { ...EMPTY_LANG },
@@ -314,6 +315,62 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
     }
   }
 
+
+  async function handleGenerateSeo() {
+    setGeneratingSeo(true);
+    try {
+      let textContent = activeLang.content;
+      try {
+        const json = JSON.parse(activeLang.content);
+        textContent = extractText(json);
+      } catch {
+        // content is already plain text
+      }
+
+      const res = await fetch("/api/ai/seo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: activeLang.title,
+          content: textContent,
+          excerpt: activeLang.excerpt,
+          locale: state.activeLocale,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Generation failed");
+
+      const { data } = await res.json();
+      if (data.meta_title) {
+        dispatch({
+          type: "SET_META_FIELD",
+          locale: state.activeLocale,
+          field: "meta_title",
+          value: data.meta_title,
+        });
+      }
+      if (data.meta_description) {
+        dispatch({
+          type: "SET_META_FIELD",
+          locale: state.activeLocale,
+          field: "meta_description",
+          value: data.meta_description,
+        });
+      }
+      if (data.keywords) {
+        dispatch({
+          type: "SET_META_FIELD",
+          locale: state.activeLocale,
+          field: "keywords",
+          value: data.keywords,
+        });
+      }
+    } catch {
+      dispatch({ type: "SET_ERROR", error: "SEO generation failed" });
+    } finally {
+      setGeneratingSeo(false);
+    }
+  }
 
   function completionDot(lang: ArticleLang) {
     if (lang.completed) return "bg-emerald-400";
@@ -485,6 +542,18 @@ export function ArticleForm({ article, tags }: ArticleFormProps) {
           SEO Metadata ({state.activeLocale === "en" ? "English" : "中文"})
         </summary>
         <div className="px-4 py-4 space-y-3 border-t border-border">
+          <div className="flex justify-end mb-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleGenerateSeo}
+              loading={generatingSeo}
+              disabled={!activeLang.title && !activeLang.content}
+            >
+              <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+              Generate SEO
+            </Button>
+          </div>
           <div>
             <label className="block text-xs font-medium text-text-tertiary mb-1">
               Meta Title

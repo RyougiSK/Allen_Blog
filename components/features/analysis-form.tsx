@@ -2,7 +2,7 @@
 
 import { useReducer, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, Copy, Eye, EyeOff, Save } from "lucide-react";
+import { Plus, Trash2, Copy, Eye, EyeOff, Save, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -61,6 +61,8 @@ interface CharacterRow {
   sort_order: number;
 }
 
+type RightPanel = "none" | "preview" | "assessment";
+
 interface State {
   title: string;
   work_name: string;
@@ -82,7 +84,9 @@ interface State {
   saving: boolean;
   lastSaved: string | null;
   error: string | null;
-  showPreview: boolean;
+  rightPanel: RightPanel;
+  assessmentContent: string;
+  assessmentLoading: boolean;
 }
 
 type Action =
@@ -98,7 +102,10 @@ type Action =
   | { type: "SET_SAVING"; saving: boolean }
   | { type: "SET_SAVED"; time: string }
   | { type: "SET_ERROR"; error: string | null }
-  | { type: "TOGGLE_PREVIEW" };
+  | { type: "SET_RIGHT_PANEL"; panel: RightPanel }
+  | { type: "SET_ASSESSMENT"; content: string }
+  | { type: "APPEND_ASSESSMENT"; text: string }
+  | { type: "SET_ASSESSMENT_LOADING"; loading: boolean };
 
 function createCharacterRow(): CharacterRow {
   return {
@@ -138,8 +145,20 @@ function reducer(state: State, action: Action): State {
       return { ...state, saving: false, lastSaved: action.time, error: null };
     case "SET_ERROR":
       return { ...state, saving: false, error: action.error };
-    case "TOGGLE_PREVIEW":
-      return { ...state, showPreview: !state.showPreview };
+    case "SET_RIGHT_PANEL":
+      return {
+        ...state,
+        rightPanel: state.rightPanel === action.panel ? "none" : action.panel,
+      };
+    case "SET_ASSESSMENT":
+      return { ...state, assessmentContent: action.content };
+    case "APPEND_ASSESSMENT":
+      return {
+        ...state,
+        assessmentContent: state.assessmentContent + action.text,
+      };
+    case "SET_ASSESSMENT_LOADING":
+      return { ...state, assessmentLoading: action.loading };
     default:
       return state;
   }
@@ -175,7 +194,9 @@ function initState(analysis?: AnalysisEntryWithCharacters): State {
       saving: false,
       lastSaved: null,
       error: null,
-      showPreview: false,
+      rightPanel: "none",
+      assessmentContent: "",
+      assessmentLoading: false,
     };
   }
 
@@ -200,7 +221,9 @@ function initState(analysis?: AnalysisEntryWithCharacters): State {
     saving: false,
     lastSaved: null,
     error: null,
-    showPreview: false,
+    rightPanel: "none",
+    assessmentContent: "",
+    assessmentLoading: false,
   };
 }
 
@@ -299,13 +322,48 @@ export function AnalysisForm({ analysis }: Props) {
     addToast({ message: "Markdown 已复制到剪贴板", variant: "success" });
   }
 
+  async function handleRequestAssessment() {
+    dispatch({ type: "SET_ASSESSMENT_LOADING", loading: true });
+    dispatch({ type: "SET_ASSESSMENT", content: "" });
+    dispatch({ type: "SET_RIGHT_PANEL", panel: "assessment" });
+    if (state.rightPanel === "assessment") {
+      dispatch({ type: "SET_RIGHT_PANEL", panel: "assessment" });
+    }
+
+    try {
+      const response = await fetch("/api/ai/assessment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) throw new Error("请求失败");
+
+      const reader = response.body!.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const text = decoder.decode(value, { stream: true });
+        dispatch({ type: "APPEND_ASSESSMENT", text });
+      }
+    } catch {
+      addToast({ message: "AI 评估请求失败，请重试", variant: "error" });
+    } finally {
+      dispatch({ type: "SET_ASSESSMENT_LOADING", loading: false });
+    }
+  }
+
   function setField(field: string, value: string) {
     dispatch({ type: "SET_FIELD", field, value });
   }
 
+  const panelOpen = state.rightPanel !== "none";
+
   return (
     <div className="flex gap-6">
-      <div className={`flex-1 space-y-8 ${state.showPreview ? "max-w-[50%]" : ""}`}>
+      <div className={`flex-1 space-y-8 ${panelOpen ? "max-w-[50%]" : ""}`}>
         {/* Header bar */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -325,9 +383,19 @@ export function AnalysisForm({ analysis }: Props) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => dispatch({ type: "TOGGLE_PREVIEW" })}
+              onClick={handleRequestAssessment}
+              loading={state.assessmentLoading}
+              disabled={!state.thesis && !state.shadow}
             >
-              {state.showPreview ? (
+              <Sparkles className="h-4 w-4 mr-1.5" />
+              AI 评估
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => dispatch({ type: "SET_RIGHT_PANEL", panel: "preview" })}
+            >
+              {state.rightPanel === "preview" ? (
                 <EyeOff className="h-4 w-4 mr-1.5" />
               ) : (
                 <Eye className="h-4 w-4 mr-1.5" />
@@ -648,10 +716,31 @@ export function AnalysisForm({ analysis }: Props) {
         </section>
       </div>
 
-      {/* Preview panel */}
-      {state.showPreview && (
+      {/* Right panel (preview or assessment) */}
+      {state.rightPanel === "preview" && (
         <div className="flex-1 max-w-[50%] border border-border rounded-[var(--radius-lg)] bg-surface/30 p-6 overflow-y-auto max-h-[calc(100vh-8rem)] sticky top-8">
           <MarkdownPreview content={markdown} />
+        </div>
+      )}
+      {state.rightPanel === "assessment" && (
+        <div className="flex-1 max-w-[50%] border border-border rounded-[var(--radius-lg)] bg-surface/30 p-6 overflow-y-auto max-h-[calc(100vh-8rem)] sticky top-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-medium text-text-primary">AI 评估</h3>
+            {state.assessmentLoading && (
+              <span className="text-xs text-text-tertiary animate-pulse">
+                分析中...
+              </span>
+            )}
+          </div>
+          {state.assessmentContent ? (
+            <MarkdownPreview content={state.assessmentContent} />
+          ) : (
+            !state.assessmentLoading && (
+              <p className="text-sm text-text-tertiary">
+                点击「AI 评估」生成心理学分析评估。
+              </p>
+            )
+          )}
         </div>
       )}
     </div>
