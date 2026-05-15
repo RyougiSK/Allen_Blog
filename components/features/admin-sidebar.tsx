@@ -30,7 +30,7 @@ const navItems = [
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3, exact: true },
   { href: "/admin/posts", label: "Articles", icon: FileText, exact: false },
   { href: "/admin/threads", label: "Threads", icon: MessageSquare, exact: false },
-  { href: "/admin/analysis", label: "叙事分析", icon: Brain, exact: false },
+  { href: "/admin/film-psyche", label: "作品解析", icon: Brain, exact: false },
   { href: "/admin/types", label: "Types", icon: Layers, exact: false },
   { href: "/admin/categories", label: "Categories", icon: FolderOpen, exact: false },
   { href: "/admin/tags", label: "Tags", icon: Tags, exact: false },
