@@ -172,14 +172,14 @@ export const BEEBE_POSITIONS = [
 export type BeebePositionKey = (typeof BEEBE_POSITIONS)[number]["key"];
 
 export const DIALOGICAL_PAIRS: [BeebePositionKey, BeebePositionKey, string][] = [
-  ["hero", "anima", "英雄与灵魂意象的对话"],
-  ["good_parent", "puer", "养育者与永恒少年的张力"],
-  ["senex", "trickster", "老者权威与骗师混乱的对抗"],
-  ["hero", "opposing", "英雄与对立人格的交锋"],
-  ["anima", "demon", "灵魂意象与魔魅的搏斗"],
-  ["puer", "trickster", "永恒少年与骗师的冲突"],
-  ["good_parent", "senex", "好父母与惩罚性权威的对立"],
-  ["opposing", "demon", "对立人格与魔魅的互补"],
+  ["hero", "anima", "Hero ↔ Soul Image"],
+  ["good_parent", "puer", "Nurturer ↔ Eternal Youth"],
+  ["senex", "trickster", "Authority ↔ Chaos"],
+  ["hero", "opposing", "Hero ↔ Opposing Self"],
+  ["anima", "demon", "Soul Image ↔ Daimon"],
+  ["puer", "trickster", "Youth ↔ Trickster"],
+  ["good_parent", "senex", "Good Parent ↔ Punisher"],
+  ["opposing", "demon", "Opposing ↔ Daimon"],
 ];
 
 export const FA_OPTIONS = [

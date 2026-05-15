@@ -72,8 +72,8 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
   const assignments = new Map<BeebePositionKey, { name: string; fa: string; index: number }>();
   characters.forEach((c, i) => {
     const pos = BEEBE_POSITIONS.find((p) => p.key === c.archetype_guess);
-    if (pos && c.name) {
-      assignments.set(pos.key, { name: c.name, fa: c.function_attitude_guess, index: i });
+    if (pos) {
+      assignments.set(pos.key, { name: c.name || `Character #${i + 1}`, fa: c.function_attitude_guess, index: i });
     }
   });
 
@@ -85,8 +85,8 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
   );
 
   const unassignedCharacters = characters
-    .map((c, i) => ({ ...c, index: i }))
-    .filter((c) => c.name && !BEEBE_POSITIONS.some((p) => p.key === c.archetype_guess));
+    .map((c, i) => ({ ...c, index: i, displayName: c.name || `Character #${i + 1}` }))
+    .filter((c) => !BEEBE_POSITIONS.some((p) => p.key === c.archetype_guess));
 
   function isEgoPosition(key: BeebePositionKey) {
     return BEEBE_POSITIONS.find((p) => p.key === key)?.cross === "ego";
@@ -318,9 +318,7 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
                       )}
                       {unassignedCharacters.length === 0 && !assigned && (
                         <p className="px-3 py-2 text-xs text-text-quaternary">
-                          {characters.some((c) => !c.name)
-                            ? "Name your characters first"
-                            : "No unassigned characters"}
+                          No unassigned characters
                         </p>
                       )}
                       {unassignedCharacters.map((c) => (
@@ -333,7 +331,7 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
                           }}
                           className="flex w-full items-center px-3 py-2 text-xs text-text-secondary hover:bg-surface/50 transition-colors"
                         >
-                          {c.name}
+                          {c.displayName}
                         </button>
                       ))}
                       {characters
