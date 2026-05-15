@@ -12,14 +12,14 @@ interface Props {
 }
 
 const NODE_COORDS: Record<BeebePositionKey, { x: number; y: number }> = {
-  hero: { x: 50, y: 8 },
-  good_parent: { x: 15, y: 32 },
-  puer: { x: 85, y: 32 },
-  anima: { x: 50, y: 52 },
-  opposing: { x: 50, y: 68 },
-  senex: { x: 15, y: 85 },
-  trickster: { x: 85, y: 85 },
-  demon: { x: 50, y: 97 },
+  hero: { x: 50, y: 10 },
+  good_parent: { x: 15, y: 30 },
+  puer: { x: 85, y: 30 },
+  anima: { x: 50, y: 50 },
+  opposing: { x: 50, y: 66 },
+  senex: { x: 15, y: 82 },
+  trickster: { x: 85, y: 82 },
+  demon: { x: 50, y: 95 },
 };
 
 const CROSS_ARMS: [BeebePositionKey, BeebePositionKey][] = [
@@ -34,6 +34,35 @@ const CROSS_ARMS: [BeebePositionKey, BeebePositionKey][] = [
   ["senex", "demon"],
   ["trickster", "demon"],
 ];
+
+const ARCHETYPE_ICONS: Record<BeebePositionKey, string> = {
+  hero: "M12 3L4 7v5c0 4.5 3.5 8.5 8 10 4.5-1.5 8-5.5 8-10V7l-8-4z",
+  good_parent: "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z",
+  puer: "M12 2l2.4 5.2H20l-4.5 3.5 1.7 5.3L12 13l-5.2 3 1.7-5.3L4 7.2h5.6z",
+  anima: "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z",
+  opposing: "M6 4l12 16M18 4L6 20M3 12h4M17 12h4",
+  senex: "M6 4h12M6 20h12M8 4l4 8-4 8M16 4l-4 8 4 8",
+  trickster: "M12 12m0 0a1.5 1.5 0 1 0 2.5 1 3.5 3.5 0 1 1-5-1.5 5.5 5.5 0 1 0 8 2 7.5 7.5 0 1 1-11-3",
+  demon: "M5 5h14l-7 14zM12 5c0-1.5 1-2.5 1.5-3S12 1 12 1s-1 .5-1.5 1.5S12 3.5 12 5",
+};
+
+function ArchetypeIcon({ archetype, size = 20, className = "" }: { archetype: BeebePositionKey; size?: number; className?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d={ARCHETYPE_ICONS[archetype]} />
+    </svg>
+  );
+}
 
 export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
   const [open, setOpen] = useState(true);
@@ -79,15 +108,37 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
       {open && (
         <div className="border-t border-border px-4 py-6 md:px-8 md:py-8">
           <div
-            className="relative mx-auto w-full max-w-[560px]"
-            style={{ aspectRatio: "1 / 1.15" }}
+            className="relative mx-auto w-full max-w-[600px]"
+            style={{ aspectRatio: "1 / 1.2" }}
           >
-            {/* Radial gradient background glow */}
-            <div className="absolute inset-0 rounded-lg overflow-hidden pointer-events-none">
+            {/* Consciousness background (top half) */}
+            <div
+              className="absolute inset-x-0 top-0 rounded-t-lg overflow-hidden pointer-events-none"
+              style={{ height: "58%" }}
+            >
               <div
                 className="absolute inset-0"
                 style={{
-                  background: `radial-gradient(ellipse at 50% 50%, rgba(201,183,156,0.03) 0%, transparent 60%)`,
+                  background: `radial-gradient(ellipse at 50% 60%, rgba(90, 92, 122, 0.06) 0%, rgba(90, 92, 122, 0.02) 40%, transparent 70%)`,
+                }}
+              />
+              <div
+                className="absolute inset-x-0 bottom-0 h-px"
+                style={{
+                  background: `linear-gradient(to right, transparent, rgba(90, 92, 122, 0.15), transparent)`,
+                }}
+              />
+            </div>
+
+            {/* Unconsciousness background (bottom half) */}
+            <div
+              className="absolute inset-x-0 bottom-0 rounded-b-lg overflow-hidden pointer-events-none"
+              style={{ height: "42%" }}
+            >
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: `radial-gradient(ellipse at 50% 30%, rgba(47, 79, 79, 0.08) 0%, rgba(47, 79, 79, 0.03) 40%, transparent 70%)`,
                 }}
               />
             </div>
@@ -137,36 +188,36 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
 
               {/* Threshold line */}
               <line
-                x1="10%"
-                y1="60%"
-                x2="90%"
-                y2="60%"
+                x1="8%"
+                y1="58%"
+                x2="92%"
+                y2="58%"
                 stroke="var(--color-border-emphasis)"
                 strokeWidth="1"
                 strokeDasharray="2 6"
-                opacity="0.5"
+                opacity="0.4"
               />
             </svg>
 
             {/* Threshold label */}
             <div
-              className="absolute left-1/2 -translate-x-1/2 px-3 py-0.5 bg-bg-primary z-10"
-              style={{ top: "58.5%" }}
+              className="absolute left-1/2 -translate-x-1/2 px-4 py-1 bg-bg-primary z-10"
+              style={{ top: "56.5%" }}
             >
-              <span className="text-[11px] tracking-widest uppercase text-text-quaternary">
+              <span className="text-[11px] tracking-[0.15em] uppercase text-text-quaternary font-medium">
                 — Threshold —
               </span>
             </div>
 
-            {/* Cross labels */}
-            <div className="absolute left-1/2 -translate-x-1/2 top-[1%] z-10">
-              <span className="text-[10px] tracking-widest uppercase text-accent-self-light/60">
-                Ego-syntonic
+            {/* Realm labels */}
+            <div className="absolute left-4 top-[2%] z-10">
+              <span className="text-[10px] tracking-widest uppercase text-accent-self-light/50 font-medium">
+                Consciousness
               </span>
             </div>
-            <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "63%" }}>
-              <span className="text-[10px] tracking-widest uppercase text-accent-nature-light/60">
-                Ego-dystonic
+            <div className="absolute left-4 z-10" style={{ top: "61%" }}>
+              <span className="text-[10px] tracking-widest uppercase text-accent-nature-light/50 font-medium">
+                Unconscious
               </span>
             </div>
 
@@ -189,12 +240,14 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
                 >
                   <button
                     onClick={() => setSelecting(isSelecting_ ? null : pos.key)}
-                    className={`relative flex flex-col items-center justify-center w-[88px] h-[88px] rounded-full border-2 transition-all duration-200 ${
+                    className={`relative flex flex-col items-center justify-center w-[96px] h-[96px] rounded-full border-2 transition-all duration-200 ${
                       assigned
                         ? isEgo
-                          ? "border-accent-warm/60 bg-accent-warm/5"
-                          : "border-accent-nature/60 bg-accent-nature/5"
-                        : "border-dashed border-border/50 bg-transparent"
+                          ? "border-accent-self/50 bg-accent-self/5"
+                          : "border-accent-nature/50 bg-accent-nature/5"
+                        : isEgo
+                          ? "border-dashed border-accent-self/20 bg-accent-self/[0.02]"
+                          : "border-dashed border-accent-nature/20 bg-accent-nature/[0.02]"
                     } ${isHovered || isPartner ? "scale-105" : ""} ${
                       isSelecting_ ? "ring-2 ring-accent-warm/40" : ""
                     }`}
@@ -216,19 +269,30 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
                       />
                     )}
 
+                    {/* Archetype icon */}
+                    <ArchetypeIcon
+                      archetype={pos.key}
+                      size={22}
+                      className={
+                        assigned
+                          ? isEgo
+                            ? "text-accent-warm/80"
+                            : "text-accent-nature-light/80"
+                          : "text-text-quaternary/40"
+                      }
+                    />
+
                     {/* Position label */}
-                    <span className="text-[9px] font-medium uppercase tracking-wider text-text-quaternary leading-none text-center px-1">
+                    <span className="mt-1 text-[9px] font-medium uppercase tracking-wider text-text-quaternary leading-none text-center px-1">
                       {pos.label.split(" / ")[0]}
                     </span>
 
                     {/* Character name */}
                     {assigned ? (
-                      <span className="mt-1 text-xs font-medium text-accent-warm truncate max-w-[76px] text-center leading-tight">
+                      <span className="mt-0.5 text-[11px] font-medium text-accent-warm truncate max-w-[80px] text-center leading-tight">
                         {assigned.name}
                       </span>
-                    ) : (
-                      <span className="mt-1 text-[11px] text-text-quaternary/50 italic">○</span>
-                    )}
+                    ) : null}
 
                     {/* FA badge */}
                     {assigned?.fa && (
@@ -304,7 +368,7 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
           </div>
 
           {/* Dialogical pairs legend */}
-          <div className="mt-8 border-t border-border/30 pt-5 max-w-[560px] mx-auto">
+          <div className="mt-8 border-t border-border/30 pt-5 max-w-[600px] mx-auto">
             <p className="text-[11px] font-medium text-text-quaternary uppercase tracking-wider mb-3">
               Dialogical Tension Pairs
             </p>
