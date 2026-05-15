@@ -142,21 +142,45 @@ export const STATUS_BADGE_VARIANT: Record<
 };
 
 export const ARCHETYPE_OPTIONS = [
-  { value: "ego_hero", label: "Ego / Hero" },
-  { value: "parent_mentor", label: "Parent / Mentor" },
-  { value: "child", label: "Child" },
-  { value: "inferior", label: "Inferior" },
-  { value: "shadow", label: "Shadow" },
-  { value: "anima_animus", label: "Anima / Animus" },
-  { value: "wise_old", label: "Wise Old Man / Woman" },
-  { value: "trickster", label: "Trickster" },
-  { value: "senex_witch", label: "Senex / Witch" },
-  { value: "demon", label: "Demon" },
-  { value: "self", label: "Self" },
-  { value: "threshold_guardian", label: "Threshold Guardian" },
-  { value: "messenger", label: "Messenger" },
-  { value: "companion", label: "Companion" },
+  { value: "hero", label: "Hero / Heroine", beebe: true },
+  { value: "good_parent", label: "Good Parent", beebe: true },
+  { value: "puer", label: "Puer / Puella", beebe: true },
+  { value: "anima", label: "Anima / Animus", beebe: true },
+  { value: "opposing", label: "Opposing Personality", beebe: true },
+  { value: "senex", label: "Senex / Witch", beebe: true },
+  { value: "trickster", label: "Trickster", beebe: true },
+  { value: "demon", label: "Demon / Daimon", beebe: true },
+  { value: "self", label: "Self", beebe: false },
+  { value: "threshold_guardian", label: "Threshold Guardian", beebe: false },
+  { value: "messenger", label: "Messenger", beebe: false },
+  { value: "companion", label: "Companion", beebe: false },
 ] as const;
+
+// --- Beebe Double-Cross Model ---
+
+export const BEEBE_POSITIONS = [
+  { key: "hero", label: "Hero / Heroine", cross: "ego" as const, row: 0, col: 1 },
+  { key: "good_parent", label: "Good Parent", cross: "ego" as const, row: 1, col: 0 },
+  { key: "puer", label: "Puer / Puella", cross: "ego" as const, row: 1, col: 2 },
+  { key: "anima", label: "Anima / Animus", cross: "ego" as const, row: 2, col: 1 },
+  { key: "opposing", label: "Opposing Personality", cross: "shadow" as const, row: 0, col: 1 },
+  { key: "senex", label: "Senex / Witch", cross: "shadow" as const, row: 1, col: 0 },
+  { key: "trickster", label: "Trickster", cross: "shadow" as const, row: 1, col: 2 },
+  { key: "demon", label: "Demon / Daimon", cross: "shadow" as const, row: 2, col: 1 },
+] as const;
+
+export type BeebePositionKey = (typeof BEEBE_POSITIONS)[number]["key"];
+
+export const DIALOGICAL_PAIRS: [BeebePositionKey, BeebePositionKey, string][] = [
+  ["hero", "anima", "英雄与灵魂意象的对话"],
+  ["good_parent", "puer", "养育者与永恒少年的张力"],
+  ["senex", "trickster", "老者权威与骗师混乱的对抗"],
+  ["hero", "opposing", "英雄与对立人格的交锋"],
+  ["anima", "demon", "灵魂意象与魔魅的搏斗"],
+  ["puer", "trickster", "永恒少年与骗师的冲突"],
+  ["good_parent", "senex", "好父母与惩罚性权威的对立"],
+  ["opposing", "demon", "对立人格与魔魅的互补"],
+];
 
 export const FA_OPTIONS = [
   { value: "Se", label: "Se — 外倾感觉" },

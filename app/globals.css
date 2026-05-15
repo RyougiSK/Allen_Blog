@@ -396,6 +396,27 @@ body {
   to { opacity: 0; transform: translateX(1rem); }
 }
 
+/* ─── Beebe Cross (sacred geometry) ─── */
+@keyframes node-breathe {
+  0%, 100% { box-shadow: 0 0 8px rgba(201, 183, 156, 0.15); }
+  50% { box-shadow: 0 0 20px rgba(201, 183, 156, 0.35); }
+}
+
+@keyframes node-breathe-shadow {
+  0%, 100% { box-shadow: 0 0 8px rgba(47, 79, 79, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(47, 79, 79, 0.4); }
+}
+
+@keyframes ring-rotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes line-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
 /* ─── TipTap / ProseMirror editor ─── */
 .tiptap-editor.ProseMirror {
   outline: none;
