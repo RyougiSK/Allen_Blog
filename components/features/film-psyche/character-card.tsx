@@ -8,6 +8,7 @@ import { ARCHETYPE_OPTIONS, FA_OPTIONS } from "@/lib/types/film-psyche";
 interface Props {
   data: CharacterData;
   index: number;
+  defaultCollapsed?: boolean;
   onChange: (data: CharacterData) => void;
   onDuplicate: () => void;
   onRemove: () => void;
@@ -16,11 +17,12 @@ interface Props {
 export function CharacterCard({
   data,
   index,
+  defaultCollapsed = false,
   onChange,
   onDuplicate,
   onRemove,
 }: Props) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(defaultCollapsed);
 
   function setField(field: keyof CharacterData, value: string) {
     onChange({ ...data, [field]: value });
