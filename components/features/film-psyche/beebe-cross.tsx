@@ -70,10 +70,9 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
         className="flex w-full items-center gap-2 px-5 py-3.5 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
       >
         {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-        <span className="font-display tracking-wide">双十字原型结构</span>
-        <span className="text-xs text-text-quaternary ml-1">(Beebe Model)</span>
+        <span className="font-display tracking-wide text-base">Beebe Double-Cross</span>
         <span className="ml-auto text-xs text-text-quaternary">
-          {assignments.size}/8 已分配
+          {assignments.size}/8 assigned
         </span>
       </button>
 
@@ -154,19 +153,19 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
               className="absolute left-1/2 -translate-x-1/2 px-3 py-0.5 bg-bg-primary z-10"
               style={{ top: "58.5%" }}
             >
-              <span className="text-[10px] tracking-widest uppercase text-text-quaternary">
-                — 阈限 Threshold —
+              <span className="text-[11px] tracking-widest uppercase text-text-quaternary">
+                — Threshold —
               </span>
             </div>
 
             {/* Cross labels */}
             <div className="absolute left-1/2 -translate-x-1/2 top-[1%] z-10">
-              <span className="text-[9px] tracking-widest uppercase text-accent-self-light/60">
+              <span className="text-[10px] tracking-widest uppercase text-accent-self-light/60">
                 Ego-syntonic
               </span>
             </div>
             <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "63%" }}>
-              <span className="text-[9px] tracking-widest uppercase text-accent-nature-light/60">
+              <span className="text-[10px] tracking-widest uppercase text-accent-nature-light/60">
                 Ego-dystonic
               </span>
             </div>
@@ -190,7 +189,7 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
                 >
                   <button
                     onClick={() => setSelecting(isSelecting_ ? null : pos.key)}
-                    className={`relative flex flex-col items-center justify-center w-[72px] h-[72px] rounded-full border-2 transition-all duration-200 ${
+                    className={`relative flex flex-col items-center justify-center w-[88px] h-[88px] rounded-full border-2 transition-all duration-200 ${
                       assigned
                         ? isEgo
                           ? "border-accent-warm/60 bg-accent-warm/5"
@@ -218,22 +217,22 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
                     )}
 
                     {/* Position label */}
-                    <span className="text-[8px] font-medium uppercase tracking-wider text-text-quaternary leading-none text-center px-1">
+                    <span className="text-[9px] font-medium uppercase tracking-wider text-text-quaternary leading-none text-center px-1">
                       {pos.label.split(" / ")[0]}
                     </span>
 
                     {/* Character name */}
                     {assigned ? (
-                      <span className="mt-0.5 text-[11px] font-medium text-accent-warm truncate max-w-[64px] text-center leading-tight">
+                      <span className="mt-1 text-xs font-medium text-accent-warm truncate max-w-[76px] text-center leading-tight">
                         {assigned.name}
                       </span>
                     ) : (
-                      <span className="mt-0.5 text-[10px] text-text-quaternary/50 italic">○</span>
+                      <span className="mt-1 text-[11px] text-text-quaternary/50 italic">○</span>
                     )}
 
                     {/* FA badge */}
                     {assigned?.fa && (
-                      <span className="mt-0.5 text-[8px] text-text-tertiary">{assigned.fa}</span>
+                      <span className="mt-0.5 text-[9px] text-text-tertiary">{assigned.fa}</span>
                     )}
                   </button>
 
@@ -250,11 +249,15 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
                           className="flex w-full items-center gap-2 px-3 py-2 text-xs text-danger hover:bg-danger/10 border-b border-border/50"
                         >
                           <X className="h-3 w-3" />
-                          移除 {assigned.name}
+                          Remove {assigned.name}
                         </button>
                       )}
                       {unassignedCharacters.length === 0 && !assigned && (
-                        <p className="px-3 py-2 text-xs text-text-quaternary">没有可分配的角色</p>
+                        <p className="px-3 py-2 text-xs text-text-quaternary">
+                          {characters.some((c) => !c.name)
+                            ? "Name your characters first"
+                            : "No unassigned characters"}
+                        </p>
                       )}
                       {unassignedCharacters.map((c) => (
                         <button
@@ -289,7 +292,7 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
                           >
                             {c.name}
                             <span className="ml-auto text-[10px]">
-                              (从{BEEBE_POSITIONS.find((p) => p.key === c.archetype_guess)?.label}移来)
+                              (from {BEEBE_POSITIONS.find((p) => p.key === c.archetype_guess)?.label})
                             </span>
                           </button>
                         ))}
@@ -302,8 +305,8 @@ export function BeebeCross({ characters, onAssign, onUnassign }: Props) {
 
           {/* Dialogical pairs legend */}
           <div className="mt-8 border-t border-border/30 pt-5 max-w-[560px] mx-auto">
-            <p className="text-[10px] font-medium text-text-quaternary uppercase tracking-wider mb-3">
-              对话张力对 (Dialogical Pairs)
+            <p className="text-[11px] font-medium text-text-quaternary uppercase tracking-wider mb-3">
+              Dialogical Tension Pairs
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
               {DIALOGICAL_PAIRS.map(([a, b, desc]) => {
