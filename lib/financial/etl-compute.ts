@@ -29,7 +29,7 @@ interface CPIRow {
 async function loadPrices(indexId: string): Promise<PriceRow[]> {
   const supabase = createServiceClient();
   const allRows: PriceRow[] = [];
-  const pageSize = 5000;
+  const pageSize = 1000;
   let from = 0;
 
   while (true) {
@@ -56,15 +56,27 @@ async function loadPrices(indexId: string): Promise<PriceRow[]> {
  */
 async function loadCPI(country: string): Promise<CPIRow[]> {
   const supabase = createServiceClient();
-  const { data, error } = await supabase
-    .from("cpi_data")
-    .select("date, cpi_value")
-    .eq("country", country)
-    .order("date", { ascending: true })
-    .range(0, 9999);
+  const allRows: CPIRow[] = [];
+  const pageSize = 1000;
+  let from = 0;
 
-  if (error) throw new Error(`Failed to load CPI: ${error.message}`);
-  return data as CPIRow[];
+  while (true) {
+    const { data, error } = await supabase
+      .from("cpi_data")
+      .select("date, cpi_value")
+      .eq("country", country)
+      .order("date", { ascending: true })
+      .range(from, from + pageSize - 1);
+
+    if (error) throw new Error(`Failed to load CPI: ${error.message}`);
+    if (!data || data.length === 0) break;
+
+    allRows.push(...(data as CPIRow[]));
+    if (data.length < pageSize) break;
+    from += pageSize;
+  }
+
+  return allRows;
 }
 
 /**

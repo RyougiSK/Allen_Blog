@@ -39,28 +39,27 @@ export function DeviationChart({ data }: { data: DeviationPoint[] }) {
     xAxis: {
       type: "category",
       data: dates,
-      axisLine: { lineStyle: { color: "rgba(255,255,255,0.08)" } },
-      axisLabel: { color: "#666", fontSize: 10, showMinLabel: true, showMaxLabel: true },
+      axisLine: { lineStyle: { color: "rgba(255,255,255,0.12)" } },
+      axisLabel: { color: "#999", fontSize: 10, showMinLabel: true, showMaxLabel: true },
       axisTick: { show: false },
     },
     yAxis: {
       type: "value",
       axisLine: { show: false },
       axisLabel: {
-        color: "#666",
+        color: "#999",
         fontSize: 10,
         formatter: (v: number) => `${v}σ`,
       },
-      splitLine: { lineStyle: { color: "rgba(255,255,255,0.04)" } },
+      splitLine: { lineStyle: { color: "rgba(255,255,255,0.08)" } },
     },
     series: [
-      // Reference lines
       {
         name: "+2σ",
         type: "line",
         data: dates.map(() => 2),
         symbol: "none",
-        lineStyle: { width: 1, color: "rgba(239, 68, 68, 0.35)", type: "dotted" },
+        lineStyle: { width: 1.5, color: "rgba(239, 68, 68, 0.6)", type: "dotted" },
         silent: true,
       },
       {
@@ -68,7 +67,7 @@ export function DeviationChart({ data }: { data: DeviationPoint[] }) {
         type: "line",
         data: dates.map(() => 1),
         symbol: "none",
-        lineStyle: { width: 1, color: "rgba(251, 191, 36, 0.3)", type: "dashed" },
+        lineStyle: { width: 1.5, color: "rgba(251, 191, 36, 0.5)", type: "dashed" },
         silent: true,
       },
       {
@@ -76,7 +75,7 @@ export function DeviationChart({ data }: { data: DeviationPoint[] }) {
         type: "line",
         data: dates.map(() => 0),
         symbol: "none",
-        lineStyle: { width: 1, color: "rgba(201, 183, 156, 0.3)" },
+        lineStyle: { width: 1.5, color: "rgba(201, 183, 156, 0.5)" },
         silent: true,
       },
       {
@@ -84,7 +83,7 @@ export function DeviationChart({ data }: { data: DeviationPoint[] }) {
         type: "line",
         data: dates.map(() => -1),
         symbol: "none",
-        lineStyle: { width: 1, color: "rgba(251, 191, 36, 0.3)", type: "dashed" },
+        lineStyle: { width: 1.5, color: "rgba(74, 222, 128, 0.5)", type: "dashed" },
         silent: true,
       },
       {
@@ -92,10 +91,9 @@ export function DeviationChart({ data }: { data: DeviationPoint[] }) {
         type: "line",
         data: dates.map(() => -2),
         symbol: "none",
-        lineStyle: { width: 1, color: "rgba(34, 197, 94, 0.35)", type: "dotted" },
+        lineStyle: { width: 1.5, color: "rgba(34, 197, 94, 0.6)", type: "dotted" },
         silent: true,
       },
-      // Actual deviation
       {
         name: "Deviation",
         type: "line",
@@ -107,9 +105,9 @@ export function DeviationChart({ data }: { data: DeviationPoint[] }) {
             type: "linear",
             x: 0, y: 0, x2: 0, y2: 1,
             colorStops: [
-              { offset: 0, color: "rgba(239, 68, 68, 0.12)" },
-              { offset: 0.5, color: "rgba(201, 183, 156, 0.03)" },
-              { offset: 1, color: "rgba(34, 197, 94, 0.12)" },
+              { offset: 0, color: "rgba(239, 68, 68, 0.18)" },
+              { offset: 0.5, color: "rgba(201, 183, 156, 0.04)" },
+              { offset: 1, color: "rgba(34, 197, 94, 0.18)" },
             ],
           },
           origin: 0,
