@@ -4,7 +4,7 @@ import { createServiceClient } from "@/utils/supabase/service";
 import { fetchPrices, fetchCPI, getActiveIndexes } from "@/lib/financial/etl-fetch";
 import { computeAllAnalyses } from "@/lib/financial/etl-compute";
 
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 export async function POST(request: NextRequest) {
   // Auth check — only authenticated admin users

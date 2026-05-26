@@ -174,41 +174,23 @@ function downsampleWeekly<T>(series: T[]): T[] {
 }
 
 /**
- * Compute mean reversion analysis for a single index + adjustment type.
+ * Compute and store analysis for a given index, adjustment type, and pre-loaded prices.
  */
-export async function computeMeanReversion(
+async function computeAndStore(
   index: MarketIndex,
-  adjustmentType: AdjustmentType
+  adjustmentType: AdjustmentType,
+  prices: PriceRow[]
 ): Promise<void> {
-  const supabase = createServiceClient();
-
-  // Load raw prices
-  let prices = await loadPrices(index.id);
-  if (prices.length < 100) return; // Need sufficient data
-
-  // Apply adjustment
-  if (adjustmentType === "cpi") {
-    const country = marketToCountry(index.market);
-    const cpiData = await loadCPI(country);
-    prices = adjustByCPI(prices, cpiData);
-  } else if (adjustmentType === "gold") {
-    const goldPrices = await loadDeflatorPrices("GOLD");
-    prices = adjustByCommodity(prices, goldPrices);
-  } else if (adjustmentType === "oil") {
-    const oilPrices = await loadDeflatorPrices("OIL");
-    prices = adjustByCommodity(prices, oilPrices);
-  }
-
   if (prices.length < 100) return;
 
-  // Convert dates to numeric x values (days since first date)
+  const supabase = createServiceClient();
+
   const startDate = new Date(prices[0].date).getTime();
   const x = prices.map(
     (p) => (new Date(p.date).getTime() - startDate) / 86400000
   );
   const y = prices.map((p) => p.close_price);
 
-  // Filter out non-positive values (log regression needs positive y)
   const validIndices = y
     .map((val, i) => (val > 0 ? i : -1))
     .filter((i) => i >= 0);
@@ -217,10 +199,8 @@ export async function computeMeanReversion(
 
   if (xValid.length < 100) return;
 
-  // Fit exponential regression
   const reg = exponentialRegression(xValid, yValid);
 
-  // Calculate current deviation
   const lastX = xValid[xValid.length - 1];
   const lastY = yValid[yValid.length - 1];
   const { deviationPct, trendValue } = calculateDeviation(
@@ -232,7 +212,6 @@ export async function computeMeanReversion(
   const sigma = deviationToSigma(deviationPct, reg.residualStdDev);
   const zone = classifyValuation(sigma);
 
-  // Build chart series (weekly sampled)
   const fullTrendSeries: TrendPoint[] = validIndices.map((i) => {
     const bands = sigmaBands(reg.a, reg.b, reg.residualStdDev, x[i]);
     return {
@@ -264,7 +243,6 @@ export async function computeMeanReversion(
   const priceSeries = downsampleWeekly(fullTrendSeries);
   const deviationSeries = downsampleWeekly(fullDeviationSeries);
 
-  // Upsert analysis result
   const { error } = await supabase.from("mean_reversion_analysis").upsert(
     {
       index_id: index.id,
@@ -295,6 +273,7 @@ export async function computeMeanReversion(
 
 /**
  * Run full analysis computation for all active indexes across all adjustment types.
+ * Pre-loads shared data (CPI, gold, oil prices) once and reuses across indexes.
  */
 export async function computeAllAnalyses(
   indexes: MarketIndex[]
@@ -302,21 +281,56 @@ export async function computeAllAnalyses(
   const adjustmentTypes: AdjustmentType[] = ["nominal", "cpi", "gold", "oil"];
   let processed = 0;
 
-  for (const index of indexes) {
-    // Skip deflators being adjusted by themselves
-    for (const adj of adjustmentTypes) {
-      if (adj === "gold" && index.symbol === "GOLD") continue;
-      if (adj === "oil" && index.symbol === "OIL") continue;
+  // Pre-load deflator prices once
+  const [goldPrices, oilPrices] = await Promise.all([
+    loadDeflatorPrices("GOLD").catch(() => [] as PriceRow[]),
+    loadDeflatorPrices("OIL").catch(() => [] as PriceRow[]),
+  ]);
 
-      try {
-        await computeMeanReversion(index, adj);
-        processed++;
-      } catch (e) {
-        console.error(
-          `Error computing ${index.symbol}/${adj}:`,
-          e instanceof Error ? e.message : e
-        );
+  // Pre-load CPI data for all relevant countries
+  const countries = [...new Set(indexes.map((i) => marketToCountry(i.market)))];
+  const cpiByCountry = new Map<string, CPIRow[]>();
+  await Promise.all(
+    countries.map(async (country) => {
+      const data = await loadCPI(country).catch(() => [] as CPIRow[]);
+      cpiByCountry.set(country, data);
+    })
+  );
+
+  for (const index of indexes) {
+    try {
+      const rawPrices = await loadPrices(index.id);
+      if (rawPrices.length < 100) continue;
+
+      for (const adj of adjustmentTypes) {
+        if (adj === "gold" && index.symbol === "GOLD") continue;
+        if (adj === "oil" && index.symbol === "OIL") continue;
+
+        let prices = rawPrices;
+        if (adj === "cpi") {
+          const country = marketToCountry(index.market);
+          prices = adjustByCPI(rawPrices, cpiByCountry.get(country) ?? []);
+        } else if (adj === "gold") {
+          prices = adjustByCommodity(rawPrices, goldPrices);
+        } else if (adj === "oil") {
+          prices = adjustByCommodity(rawPrices, oilPrices);
+        }
+
+        try {
+          await computeAndStore(index, adj, prices);
+          processed++;
+        } catch (e) {
+          console.error(
+            `Error computing ${index.symbol}/${adj}:`,
+            e instanceof Error ? e.message : e
+          );
+        }
       }
+    } catch (e) {
+      console.error(
+        `Error loading prices for ${index.symbol}:`,
+        e instanceof Error ? e.message : e
+      );
     }
   }
 

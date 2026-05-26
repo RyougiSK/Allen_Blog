@@ -20,7 +20,14 @@ export function ETLStatusPanel({ jobs }: { jobs: ETLJobLog[] }) {
         ? "/api/admin/financial-etl?fresh=1"
         : "/api/admin/financial-etl";
       const res = await fetch(url, { method: "POST" });
-      const data = await res.json();
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        setResult(`Error: Server returned non-JSON response (likely timeout). Status: ${res.status}`);
+        return;
+      }
       if (data.success) {
         setResult(`Done: ${data.indexes} indexes, ${data.priceRows} rows, ${data.analyses} analyses`);
         router.refresh();
