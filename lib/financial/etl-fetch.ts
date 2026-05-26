@@ -41,7 +41,7 @@ export async function fetchPrices(
 
   const startDate = lastRow
     ? new Date(new Date(lastRow.date).getTime() + 86400000)
-    : new Date("2000-01-01");
+    : new Date(index.data_start_date ?? "2000-01-01");
 
   const endDate = new Date();
   if (startDate >= endDate) return 0;
