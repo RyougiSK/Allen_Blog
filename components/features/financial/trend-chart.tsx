@@ -10,38 +10,6 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
 
   const option = {
     backgroundColor: "transparent",
-    graphic: [
-      {
-        type: "linearGradient",
-        id: "bgGradient",
-        left: 70,
-        top: 30,
-        right: 70,
-        bottom: 50,
-        shape: { width: 0, height: 0 },
-        style: { fill: "transparent" },
-      },
-      {
-        type: "rect",
-        left: 70,
-        top: 30,
-        right: 70,
-        bottom: 50,
-        shape: { r: 0 },
-        style: {
-          fill: {
-            type: "linear",
-            x: 0, y: 0, x2: 0, y2: 1,
-            colorStops: [
-              { offset: 0, color: "rgba(239, 68, 68, 0.04)" },
-              { offset: 0.5, color: "rgba(18, 18, 18, 0)" },
-              { offset: 1, color: "rgba(34, 197, 94, 0.04)" },
-            ],
-          },
-        },
-        z: 0,
-      },
-    ],
     grid: {
       top: 30,
       right: 70,
