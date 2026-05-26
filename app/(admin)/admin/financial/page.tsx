@@ -13,7 +13,6 @@ export default async function FinancialOverviewPage() {
   const usIndexes = overview.filter((o) => o.index.market === "us");
   const auIndexes = overview.filter((o) => o.index.market === "au");
   const cnIndexes = overview.filter((o) => o.index.market === "cn");
-  const commodities = overview.filter((o) => o.index.market === "commodity");
 
   return (
     <div className="space-y-6">
@@ -66,18 +65,6 @@ export default async function FinancialOverviewPage() {
         </section>
       )}
 
-      {commodities.length > 0 && (
-        <section>
-          <h2 className="text-sm font-medium text-text-secondary mb-3">
-            Commodities
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {commodities.map((o) => (
-              <MarketOverviewCard key={o.id} data={o} />
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 }

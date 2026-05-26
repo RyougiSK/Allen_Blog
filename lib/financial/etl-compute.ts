@@ -299,13 +299,13 @@ export async function computeAllAnalyses(
   );
 
   for (const index of indexes) {
+    if (index.is_deflator) continue;
+
     try {
       const rawPrices = await loadPrices(index.id);
       if (rawPrices.length < 100) continue;
 
       for (const adj of adjustmentTypes) {
-        if (adj === "gold" && index.symbol === "GOLD") continue;
-        if (adj === "oil" && index.symbol === "OIL") continue;
 
         let prices = rawPrices;
         if (adj === "cpi") {

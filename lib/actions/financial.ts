@@ -18,9 +18,10 @@ export async function getFinancialOverview(): Promise<MeanReversionOverview[]> {
     .from("mean_reversion_analysis")
     .select(`
       *,
-      index:market_indexes(*)
+      index:market_indexes!inner(*)
     `)
     .eq("adjustment_type", "nominal")
+    .eq("index.is_deflator", false)
     .order("computed_at", { ascending: false });
 
   if (error) throw new Error(error.message);
@@ -73,8 +74,9 @@ export async function getModelStats(): Promise<ModelStats[]> {
     .from("mean_reversion_analysis")
     .select(`
       *,
-      index:market_indexes(*)
+      index:market_indexes!inner(*)
     `)
+    .eq("index.is_deflator", false)
     .order("index_id", { ascending: true });
 
   if (error) throw new Error(error.message);
