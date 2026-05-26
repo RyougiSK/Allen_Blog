@@ -12,7 +12,9 @@ const marketLabels: Record<string, string> = {
 };
 
 export function MarketOverviewCard({ data }: { data: MeanReversionOverview }) {
-  const { index, deviation_pct, deviation_sigma, current_price, valuation_zone } = data;
+  const { index, deviation_pct, deviation_sigma, current_price, valuation_zone, data_start, data_end } = data;
+
+  const formatDate = (d: string | null) => d ? d.slice(0, 7) : "—";
 
   return (
     <Link
@@ -26,6 +28,9 @@ export function MarketOverviewCard({ data }: { data: MeanReversionOverview }) {
           </div>
           <div className="text-sm font-medium text-text-primary mt-0.5">
             {index.name}
+          </div>
+          <div className="text-[10px] text-text-quaternary mt-0.5">
+            {formatDate(data_start)} → {formatDate(data_end)}
           </div>
         </div>
         <ValuationBadge zone={valuation_zone} />

@@ -254,6 +254,7 @@ async function computeAndStore(
       std_deviation: reg.residualStdDev,
       data_points: xValid.length,
       data_start: prices[0].date,
+      data_end: prices[prices.length - 1].date,
       current_price: lastY,
       trend_value: trendValue,
       deviation_pct: Math.round(deviationPct * 100) / 100,

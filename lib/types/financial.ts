@@ -57,6 +57,7 @@ export interface MeanReversionAnalysis {
   std_deviation: number;
   data_points: number;
   data_start: string | null;
+  data_end: string | null;
   current_price: number;
   trend_value: number;
   deviation_pct: number;
