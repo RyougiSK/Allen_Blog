@@ -5,7 +5,6 @@ import type { AdjustmentType } from "@/lib/types/financial";
 const adjustments: { value: AdjustmentType; label: string }[] = [
   { value: "nominal", label: "Nominal" },
   { value: "cpi", label: "CPI-Adjusted" },
-  { value: "gold", label: "Gold-Adjusted" },
   { value: "oil", label: "Oil-Adjusted" },
 ];
 

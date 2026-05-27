@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createServiceClient } from "@/utils/supabase/service";
-import { fetchPrices, fetchCPI, fetchTreasuryRates, getActiveIndexes } from "@/lib/financial/etl-fetch";
+import { fetchPrices, fetchCPI, fetchTreasuryRates, fetchOilFromFRED, getActiveIndexes } from "@/lib/financial/etl-fetch";
 import { computeAllAnalyses } from "@/lib/financial/etl-compute";
 
 export const maxDuration = 300;
@@ -31,8 +31,15 @@ export async function POST(request: NextRequest) {
     let totalPriceRows = 0;
     for (const index of indexes) {
       try {
-        const count = await fetchPrices(index, forceFresh);
-        totalPriceRows += count;
+        if (index.symbol === "OIL") {
+          const count = await fetchOilFromFRED(forceFresh);
+          totalPriceRows += count;
+        } else if (index.symbol === "GOLD") {
+          continue;
+        } else {
+          const count = await fetchPrices(index, forceFresh);
+          totalPriceRows += count;
+        }
       } catch (e) {
         console.error(`Price fetch failed for ${index.symbol}:`, e);
       }

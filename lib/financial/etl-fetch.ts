@@ -12,6 +12,12 @@ const CPI_SERIES: Record<string, string> = {
   cn: "CHNCPIALLMINMEI",
 };
 
+const CPI_EARLIEST: Record<string, string> = {
+  us: "1947-01-01",
+  au: "1974-01-01",
+  cn: "1978-01-01",
+};
+
 /**
  * Fetch daily prices from Yahoo Finance and upsert into market_prices.
  * Uses delta loading: only fetches data since the last stored date.
@@ -107,7 +113,7 @@ export async function fetchCPI(country: string): Promise<number> {
     .limit(1)
     .single();
 
-  const startDate = lastRow ? lastRow.date : "2000-01-01";
+  const startDate = lastRow ? lastRow.date : (CPI_EARLIEST[country] ?? "1947-01-01");
 
   const apiKey = process.env.FRED_API_KEY || "DEMO_KEY";
   const url = `${FRED_BASE}?series_id=${seriesId}&api_key=${apiKey}&file_type=json&observation_start=${startDate}&sort_order=asc`;
@@ -140,6 +146,73 @@ export async function fetchCPI(country: string): Promise<number> {
       .upsert(batch, { onConflict: "date,country" });
 
     if (error) throw new Error(`Failed to upsert CPI for ${country}: ${error.message}`);
+  }
+
+  return rows.length;
+}
+
+/**
+ * Fetch WTI Oil prices from FRED (DCOILWTICO) and store into market_prices.
+ * Replaces Yahoo Finance for Oil since FRED has data from 1986.
+ */
+export async function fetchOilFromFRED(forceFresh = false): Promise<number> {
+  const supabase = createServiceClient();
+  const apiKey = process.env.FRED_API_KEY || "DEMO_KEY";
+
+  // Get the OIL index record
+  const { data: oilIndex } = await supabase
+    .from("market_indexes")
+    .select("id, data_start_date")
+    .eq("symbol", "OIL")
+    .single();
+
+  if (!oilIndex) return 0;
+
+  if (forceFresh) {
+    await supabase.from("market_prices").delete().eq("index_id", oilIndex.id);
+  }
+
+  // Find last stored date
+  const { data: lastRow } = await supabase
+    .from("market_prices")
+    .select("date")
+    .eq("index_id", oilIndex.id)
+    .order("date", { ascending: false })
+    .limit(1)
+    .single();
+
+  const startDate = lastRow ? lastRow.date : (oilIndex.data_start_date ?? "1986-01-01");
+
+  const url = `${FRED_BASE}?series_id=DCOILWTICO&api_key=${apiKey}&file_type=json&observation_start=${startDate}&sort_order=asc`;
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`FRED API error for DCOILWTICO: ${response.status}`);
+
+  const data = await response.json();
+  const observations = data.observations as Array<{ date: string; value: string }>;
+  if (!observations || observations.length === 0) return 0;
+
+  const rows = observations
+    .filter((o) => o.value !== ".")
+    .map((o) => ({
+      index_id: oilIndex.id,
+      date: o.date,
+      close_price: parseFloat(o.value),
+      adjusted_close: parseFloat(o.value),
+      volume: null,
+    }));
+
+  if (rows.length > 0) {
+    console.log(`[ETL] OIL (FRED): fetched ${rows.length} rows from ${rows[0].date} to ${rows[rows.length - 1].date}`);
+  }
+
+  const batchSize = 500;
+  for (let i = 0; i < rows.length; i += batchSize) {
+    const batch = rows.slice(i, i + batchSize);
+    const { error } = await supabase
+      .from("market_prices")
+      .upsert(batch, { onConflict: "index_id,date" });
+
+    if (error) throw new Error(`Failed to upsert Oil FRED prices: ${error.message}`);
   }
 
   return rows.length;

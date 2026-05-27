@@ -1,6 +1,6 @@
 export type Market = "us" | "au" | "cn" | "commodity";
 export type AssetType = "index" | "commodity";
-export type AdjustmentType = "cpi" | "gold" | "oil" | "nominal";
+export type AdjustmentType = "cpi" | "oil" | "nominal";
 export type ValuationZone =
   | "strongly_undervalued"
   | "undervalued"

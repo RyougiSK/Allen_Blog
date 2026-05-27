@@ -279,14 +279,11 @@ async function computeAndStore(
 export async function computeAllAnalyses(
   indexes: MarketIndex[]
 ): Promise<number> {
-  const adjustmentTypes: AdjustmentType[] = ["nominal", "cpi", "gold", "oil"];
+  const adjustmentTypes: AdjustmentType[] = ["nominal", "cpi", "oil"];
   let processed = 0;
 
   // Pre-load deflator prices once
-  const [goldPrices, oilPrices] = await Promise.all([
-    loadDeflatorPrices("GOLD").catch(() => [] as PriceRow[]),
-    loadDeflatorPrices("OIL").catch(() => [] as PriceRow[]),
-  ]);
+  const oilPrices = await loadDeflatorPrices("OIL").catch(() => [] as PriceRow[]);
 
   // Pre-load CPI data for all relevant countries
   const countries = [...new Set(indexes.map((i) => marketToCountry(i.market)))];
@@ -311,8 +308,6 @@ export async function computeAllAnalyses(
         if (adj === "cpi") {
           const country = marketToCountry(index.market);
           prices = adjustByCPI(rawPrices, cpiByCountry.get(country) ?? []);
-        } else if (adj === "gold") {
-          prices = adjustByCommodity(rawPrices, goldPrices);
         } else if (adj === "oil") {
           prices = adjustByCommodity(rawPrices, oilPrices);
         }

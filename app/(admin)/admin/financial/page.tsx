@@ -34,7 +34,7 @@ export default async function FinancialOverviewPage() {
 
       {deflators.length > 0 && (
         <section>
-          <h2 className="text-sm font-medium text-text-secondary mb-3">Deflators (Gold & Oil)</h2>
+          <h2 className="text-sm font-medium text-text-secondary mb-3">Deflators (Oil)</h2>
           <DataTable rows={deflators} />
         </section>
       )}
