@@ -1,14 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getCurrentYieldCurve, getHistoricalYieldCurve } from "@/lib/actions/financial";
+import { getCurrentYieldCurve, getHistoricalYieldCurve, getRateTimeSeries } from "@/lib/actions/financial";
 import type { TreasuryRate } from "@/lib/types/financial";
 import { YieldCurveChart } from "@/components/features/financial/yield-curve-chart";
+import { RateTimeseriesChart } from "@/components/features/financial/rate-timeseries-chart";
 
 export default function YieldCurvePage() {
   const [current, setCurrent] = useState<TreasuryRate[]>([]);
   const [oneYearAgo, setOneYearAgo] = useState<TreasuryRate[]>([]);
   const [fiveYearsAgo, setFiveYearsAgo] = useState<TreasuryRate[]>([]);
+  const [rateSeries, setRateSeries] = useState<{
+    dates: string[];
+    short: (number | null)[];
+    mid: (number | null)[];
+    long: (number | null)[];
+  }>({ dates: [], short: [], mid: [], long: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,10 +29,12 @@ export default function YieldCurvePage() {
       getCurrentYieldCurve(),
       getHistoricalYieldCurve(y1.toISOString().split("T")[0]),
       getHistoricalYieldCurve(y5.toISOString().split("T")[0]),
-    ]).then(([c, h1, h5]) => {
+      getRateTimeSeries(),
+    ]).then(([c, h1, h5, ts]) => {
       setCurrent(c);
       setOneYearAgo(h1);
       setFiveYearsAgo(h5);
+      setRateSeries(ts);
       setLoading(false);
     });
   }, []);
@@ -81,6 +90,23 @@ export default function YieldCurvePage() {
           </div>
         ))}
       </div>
+
+      {rateSeries.dates.length > 0 && (
+        <section className="space-y-3 pt-4">
+          <div>
+            <h3 className="text-sm font-medium text-text-secondary">Historical Rates</h3>
+            <p className="text-xs text-text-tertiary mt-0.5">
+              Short (2Y), mid (10Y), and long-term (30Y) Treasury rates over time
+            </p>
+          </div>
+          <RateTimeseriesChart
+            dates={rateSeries.dates}
+            short={rateSeries.short}
+            mid={rateSeries.mid}
+            long={rateSeries.long}
+          />
+        </section>
+      )}
     </div>
   );
 }

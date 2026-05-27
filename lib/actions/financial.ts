@@ -254,6 +254,66 @@ export async function getSpreadHistory(
   return allRows.filter((_, i) => i % 5 === 0);
 }
 
+export async function getRateTimeSeries(): Promise<{
+  dates: string[];
+  short: (number | null)[];
+  mid: (number | null)[];
+  long: (number | null)[];
+}> {
+  const supabase = await createClient();
+
+  async function loadMaturity(maturity: string): Promise<TreasuryRate[]> {
+    const allRows: TreasuryRate[] = [];
+    const pageSize = 1000;
+    let from = 0;
+
+    while (true) {
+      const { data, error } = await supabase
+        .from("treasury_rates")
+        .select("date, maturity, rate")
+        .eq("maturity", maturity)
+        .order("date", { ascending: true })
+        .range(from, from + pageSize - 1);
+
+      if (error) throw new Error(error.message);
+      if (!data || data.length === 0) break;
+
+      allRows.push(...(data as TreasuryRate[]));
+      if (data.length < pageSize) break;
+      from += pageSize;
+    }
+
+    return allRows;
+  }
+
+  const [r2y, r10y, r30y] = await Promise.all([
+    loadMaturity("2y"),
+    loadMaturity("10y"),
+    loadMaturity("30y"),
+  ]);
+
+  // Build unified date index from 10y (longest series)
+  const dateSet = new Set<string>();
+  r2y.forEach((r) => dateSet.add(r.date));
+  r10y.forEach((r) => dateSet.add(r.date));
+  r30y.forEach((r) => dateSet.add(r.date));
+
+  const allDates = [...dateSet].sort();
+  // Downsample to weekly
+  const dates = allDates.filter((_, i) => i % 5 === 0);
+
+  const map2y = new Map(r2y.map((r) => [r.date, r.rate]));
+  const map10y = new Map(r10y.map((r) => [r.date, r.rate]));
+  const map30y = new Map(r30y.map((r) => [r.date, r.rate]));
+
+  return {
+    dates,
+    short: dates.map((d) => map2y.get(d) ?? null),
+    mid: dates.map((d) => map10y.get(d) ?? null),
+    long: dates.map((d) => map30y.get(d) ?? null),
+  };
+}
+
 export async function triggerETL(): Promise<{ success: boolean; error?: string }> {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_SUPABASE_URL ? "" : ""}${process.env.NEXT_PUBLIC_SITE_URL || ""}/api/admin/financial-etl`,

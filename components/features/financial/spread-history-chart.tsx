@@ -50,29 +50,21 @@ export function SpreadHistoryChart({
       axisLabel: { color: "#999", fontSize: 10, formatter: "{value}%" },
       splitLine: { lineStyle: { color: "rgba(255,255,255,0.08)" } },
     },
-    visualMap: {
-      show: false,
-      pieces: [
-        { lte: 0, color: "rgba(239, 68, 68, 0.8)" },
-        { gt: 0, color: "rgba(74, 222, 128, 0.7)" },
-      ],
-      seriesIndex: 0,
-    },
     series: [
       {
         name: label,
         type: "line",
         data: values,
         symbol: "none",
-        lineStyle: { width: 1.5 },
+        lineStyle: { width: 1.5, color: "#C9B79C" },
         areaStyle: {
           color: {
             type: "linear",
             x: 0, y: 0, x2: 0, y2: 1,
             colorStops: [
-              { offset: 0, color: "rgba(74, 222, 128, 0.12)" },
+              { offset: 0, color: "rgba(74, 222, 128, 0.15)" },
               { offset: 0.5, color: "rgba(18, 18, 18, 0)" },
-              { offset: 1, color: "rgba(239, 68, 68, 0.12)" },
+              { offset: 1, color: "rgba(239, 68, 68, 0.15)" },
             ],
           },
           origin: 0,
