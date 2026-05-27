@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import ReactECharts from "echarts-for-react";
 import type { TrendPoint } from "@/lib/types/financial";
 
 export function TrendChart({ data }: { data: TrendPoint[] }) {
+  const [scale, setScale] = useState<"log" | "linear">("log");
+
   if (data.length === 0) return null;
 
   const dates = data.map((d) => d.date);
@@ -56,7 +59,7 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
       axisTick: { show: false },
     },
     yAxis: {
-      type: "log",
+      type: scale === "log" ? "log" : "value",
       axisLine: { show: false },
       axisLabel: { color: "#999", fontSize: 10 },
       splitLine: { lineStyle: { color: "rgba(255,255,255,0.08)" } },
@@ -120,6 +123,21 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
 
   return (
     <div className="w-full rounded-lg border border-border bg-bg-primary/50 overflow-hidden">
+      <div className="flex items-center gap-1 px-4 pt-3">
+        {(["log", "linear"] as const).map((s) => (
+          <button
+            key={s}
+            onClick={() => setScale(s)}
+            className={`px-2.5 py-1 text-[11px] rounded transition-colors ${
+              scale === s
+                ? "bg-accent-living/20 text-accent-living border border-accent-living/30"
+                : "text-text-tertiary hover:text-text-secondary hover:bg-surface/50"
+            }`}
+          >
+            {s === "log" ? "Log" : "Linear"}
+          </button>
+        ))}
+      </div>
       <ReactECharts
         option={option}
         style={{ height: "420px", width: "100%" }}
