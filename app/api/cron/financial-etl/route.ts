@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServiceClient } from "@/utils/supabase/service";
+import { createFinancialServiceClient } from "@/utils/supabase/financial";
 import { fetchPrices, fetchCPI, fetchTreasuryRates, fetchOilFromFRED, getActiveIndexes } from "@/lib/financial/etl-fetch";
 import { computeAllAnalyses } from "@/lib/financial/etl-compute";
 
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 }
 
 async function runPipeline() {
-  const supabase = createServiceClient();
+  const supabase = createFinancialServiceClient();
 
   // Log job start
   const { data: job } = await supabase

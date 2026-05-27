@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { createServiceClient } from "@/utils/supabase/service";
+import { createFinancialServiceClient } from "@/utils/supabase/financial";
 import { fetchPrices, fetchCPI, fetchTreasuryRates, fetchOilFromFRED, getActiveIndexes } from "@/lib/financial/etl-fetch";
 import { computeAllAnalyses } from "@/lib/financial/etl-compute";
 
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
   // Support forceFresh query param to re-fetch all data from scratch
   const forceFresh = request.nextUrl.searchParams.get("fresh") === "1";
 
-  const supabase = createServiceClient();
+  const supabase = createFinancialServiceClient();
 
   const { data: job } = await supabase
     .from("etl_job_log")

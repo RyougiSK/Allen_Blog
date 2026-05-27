@@ -1,5 +1,5 @@
 import YahooFinance from "yahoo-finance2";
-import { createServiceClient } from "@/utils/supabase/service";
+import { createFinancialServiceClient } from "@/utils/supabase/financial";
 import type { MarketIndex } from "@/lib/types/financial";
 
 const yahooFinance = new YahooFinance();
@@ -27,7 +27,7 @@ export async function fetchPrices(
   index: MarketIndex,
   forceFresh = false
 ): Promise<number> {
-  const supabase = createServiceClient();
+  const supabase = createFinancialServiceClient();
 
   if (forceFresh) {
     await supabase
@@ -102,7 +102,7 @@ export async function fetchCPI(country: string): Promise<number> {
   const seriesId = CPI_SERIES[country];
   if (!seriesId) throw new Error(`No CPI series configured for country: ${country}`);
 
-  const supabase = createServiceClient();
+  const supabase = createFinancialServiceClient();
 
   // Find last stored CPI date
   const { data: lastRow } = await supabase
@@ -156,7 +156,7 @@ export async function fetchCPI(country: string): Promise<number> {
  * Replaces Yahoo Finance for Oil since FRED has data from 1986.
  */
 export async function fetchOilFromFRED(forceFresh = false): Promise<number> {
-  const supabase = createServiceClient();
+  const supabase = createFinancialServiceClient();
   const apiKey = process.env.FRED_API_KEY || "DEMO_KEY";
 
   // Get the OIL index record
@@ -233,7 +233,7 @@ const TREASURY_SERIES: Record<string, string> = {
  * Fetch all treasury rate series from FRED and upsert into treasury_rates.
  */
 export async function fetchTreasuryRates(): Promise<number> {
-  const supabase = createServiceClient();
+  const supabase = createFinancialServiceClient();
   const apiKey = process.env.FRED_API_KEY || "DEMO_KEY";
   let totalRows = 0;
 
@@ -294,7 +294,7 @@ export async function fetchTreasuryRates(): Promise<number> {
  * Fetch all active market indexes from the database.
  */
 export async function getActiveIndexes(): Promise<MarketIndex[]> {
-  const supabase = createServiceClient();
+  const supabase = createFinancialServiceClient();
   const { data, error } = await supabase
     .from("market_indexes")
     .select("*")

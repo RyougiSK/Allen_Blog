@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/utils/supabase/server";
+import { createFinancialClient } from "@/utils/supabase/financial";
 import type {
   MarketIndex,
   MeanReversionAnalysis,
@@ -14,7 +14,7 @@ import type {
 import { annualizedGrowth } from "@/lib/financial/regression";
 
 export async function getFinancialOverview(): Promise<MeanReversionOverview[]> {
-  const supabase = await createClient();
+  const supabase = await createFinancialClient();
 
   const { data, error } = await supabase
     .from("mean_reversion_analysis")
@@ -34,7 +34,7 @@ export async function getIndexAnalysis(
   symbol: string,
   adjustmentType: AdjustmentType = "nominal"
 ): Promise<(MeanReversionAnalysis & { index: MarketIndex }) | null> {
-  const supabase = await createClient();
+  const supabase = await createFinancialClient();
 
   const { data: idx } = await supabase
     .from("market_indexes")
@@ -59,7 +59,7 @@ export async function getIndexAnalysis(
 }
 
 export async function getAllIndexes(): Promise<MarketIndex[]> {
-  const supabase = await createClient();
+  const supabase = await createFinancialClient();
   const { data, error } = await supabase
     .from("market_indexes")
     .select("*")
@@ -70,7 +70,7 @@ export async function getAllIndexes(): Promise<MarketIndex[]> {
 }
 
 export async function getModelStats(): Promise<ModelStats[]> {
-  const supabase = await createClient();
+  const supabase = await createFinancialClient();
 
   const { data, error } = await supabase
     .from("mean_reversion_analysis")
@@ -100,7 +100,7 @@ export async function getModelStats(): Promise<ModelStats[]> {
 }
 
 export async function getETLStatus(): Promise<ETLJobLog[]> {
-  const supabase = await createClient();
+  const supabase = await createFinancialClient();
 
   const { data, error } = await supabase
     .from("etl_job_log")
@@ -113,7 +113,7 @@ export async function getETLStatus(): Promise<ETLJobLog[]> {
 }
 
 export async function getDataInventory(): Promise<DataInventoryRow[]> {
-  const supabase = await createClient();
+  const supabase = await createFinancialClient();
   const rows: DataInventoryRow[] = [];
 
   // Market indexes — fetch all indexes with their price stats via analysis table
@@ -186,7 +186,7 @@ export async function getDataInventory(): Promise<DataInventoryRow[]> {
 }
 
 export async function getCurrentYieldCurve(): Promise<TreasuryRate[]> {
-  const supabase = await createClient();
+  const supabase = await createFinancialClient();
   const maturities = ["3m", "1y", "2y", "5y", "10y", "30y"];
   const results: TreasuryRate[] = [];
 
@@ -206,7 +206,7 @@ export async function getCurrentYieldCurve(): Promise<TreasuryRate[]> {
 }
 
 export async function getHistoricalYieldCurve(date: string): Promise<TreasuryRate[]> {
-  const supabase = await createClient();
+  const supabase = await createFinancialClient();
   const maturities = ["3m", "1y", "2y", "5y", "10y", "30y"];
   const results: TreasuryRate[] = [];
 
@@ -229,7 +229,7 @@ export async function getHistoricalYieldCurve(date: string): Promise<TreasuryRat
 export async function getSpreadHistory(
   spread: "10y2y" | "10y3m"
 ): Promise<TreasuryRate[]> {
-  const supabase = await createClient();
+  const supabase = await createFinancialClient();
   const allRows: TreasuryRate[] = [];
   const pageSize = 1000;
   let from = 0;
@@ -260,7 +260,7 @@ export async function getRateTimeSeries(): Promise<{
   mid: (number | null)[];
   long: (number | null)[];
 }> {
-  const supabase = await createClient();
+  const supabase = await createFinancialClient();
 
   async function loadMaturity(maturity: string): Promise<TreasuryRate[]> {
     const allRows: TreasuryRate[] = [];

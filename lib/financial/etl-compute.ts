@@ -1,4 +1,4 @@
-import { createServiceClient } from "@/utils/supabase/service";
+import { createFinancialServiceClient } from "@/utils/supabase/financial";
 import type {
   MarketIndex,
   AdjustmentType,
@@ -27,7 +27,7 @@ interface CPIRow {
  * Load all price rows for a given index (paginated to bypass Supabase 1000-row default limit).
  */
 async function loadPrices(indexId: string): Promise<PriceRow[]> {
-  const supabase = createServiceClient();
+  const supabase = createFinancialServiceClient();
   const allRows: PriceRow[] = [];
   const pageSize = 1000;
   let from = 0;
@@ -55,7 +55,7 @@ async function loadPrices(indexId: string): Promise<PriceRow[]> {
  * Load CPI data for a country.
  */
 async function loadCPI(country: string): Promise<CPIRow[]> {
-  const supabase = createServiceClient();
+  const supabase = createFinancialServiceClient();
   const allRows: CPIRow[] = [];
   const pageSize = 1000;
   let from = 0;
@@ -83,7 +83,7 @@ async function loadCPI(country: string): Promise<CPIRow[]> {
  * Load deflator prices (gold or oil).
  */
 async function loadDeflatorPrices(deflatorSymbol: string): Promise<PriceRow[]> {
-  const supabase = createServiceClient();
+  const supabase = createFinancialServiceClient();
 
   const { data: idx } = await supabase
     .from("market_indexes")
@@ -183,7 +183,7 @@ async function computeAndStore(
 ): Promise<void> {
   if (prices.length < 100) return;
 
-  const supabase = createServiceClient();
+  const supabase = createFinancialServiceClient();
 
   const startDate = new Date(prices[0].date).getTime();
   const x = prices.map(
