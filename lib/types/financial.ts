@@ -98,6 +98,20 @@ export interface ETLJobLog {
   metadata: Record<string, unknown> | null;
 }
 
+export interface TreasuryRate {
+  date: string;
+  maturity: string;
+  rate: number;
+}
+
+export interface DataInventoryRow {
+  source: string;
+  name: string;
+  rows: number;
+  earliest: string | null;
+  latest: string | null;
+}
+
 export interface ModelStats {
   index: MarketIndex;
   adjustment_type: AdjustmentType;

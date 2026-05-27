@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createServiceClient } from "@/utils/supabase/service";
-import { fetchPrices, fetchCPI, getActiveIndexes } from "@/lib/financial/etl-fetch";
+import { fetchPrices, fetchCPI, fetchTreasuryRates, getActiveIndexes } from "@/lib/financial/etl-fetch";
 import { computeAllAnalyses } from "@/lib/financial/etl-compute";
 
 export const maxDuration = 300;
@@ -50,6 +50,13 @@ export async function POST(request: NextRequest) {
       } catch (e) {
         console.error(`CPI fetch failed for ${country}:`, e);
       }
+    }
+
+    let treasuryRows = 0;
+    try {
+      treasuryRows = await fetchTreasuryRates();
+    } catch (e) {
+      console.error("Treasury rates fetch failed:", e);
     }
 
     const analysesComputed = await computeAllAnalyses(indexes);

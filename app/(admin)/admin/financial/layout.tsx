@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TrendingUp, LineChart, Activity } from "lucide-react";
+import { TrendingUp, LineChart, GitBranch, Activity } from "lucide-react";
 
 const tabs = [
   { href: "/admin/financial", label: "Overview", icon: TrendingUp, exact: true },
-  { href: "/admin/financial/markets", label: "Markets", icon: LineChart, exact: false },
-  { href: "/admin/financial/model", label: "Model Stats", icon: Activity, exact: true },
+  { href: "/admin/financial/markets", label: "Mean Reversion", icon: LineChart, exact: false },
+  { href: "/admin/financial/yield-curve", label: "Yield Curve", icon: GitBranch, exact: true },
+  { href: "/admin/financial/spread", label: "Spread", icon: Activity, exact: true },
 ];
 
 export default function FinancialLayout({

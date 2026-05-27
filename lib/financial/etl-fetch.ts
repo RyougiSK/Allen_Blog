@@ -145,6 +145,78 @@ export async function fetchCPI(country: string): Promise<number> {
   return rows.length;
 }
 
+const TREASURY_SERIES: Record<string, string> = {
+  "3m": "DGS3MO",
+  "1y": "DGS1",
+  "2y": "DGS2",
+  "5y": "DGS5",
+  "10y": "DGS10",
+  "30y": "DGS30",
+  "10y2y": "T10Y2Y",
+  "10y3m": "T10Y3M",
+};
+
+/**
+ * Fetch all treasury rate series from FRED and upsert into treasury_rates.
+ */
+export async function fetchTreasuryRates(): Promise<number> {
+  const supabase = createServiceClient();
+  const apiKey = process.env.FRED_API_KEY || "DEMO_KEY";
+  let totalRows = 0;
+
+  for (const [maturity, seriesId] of Object.entries(TREASURY_SERIES)) {
+    const { data: lastRow } = await supabase
+      .from("treasury_rates")
+      .select("date")
+      .eq("maturity", maturity)
+      .order("date", { ascending: false })
+      .limit(1)
+      .single();
+
+    const startDate = lastRow ? lastRow.date : "1962-01-01";
+    const url = `${FRED_BASE}?series_id=${seriesId}&api_key=${apiKey}&file_type=json&observation_start=${startDate}&sort_order=asc`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.error(`FRED API error for ${seriesId}: ${response.status}`);
+      continue;
+    }
+
+    const data = await response.json();
+    const observations = data.observations as Array<{
+      date: string;
+      value: string;
+    }>;
+
+    if (!observations || observations.length === 0) continue;
+
+    const rows = observations
+      .filter((o) => o.value !== ".")
+      .map((o) => ({
+        date: o.date,
+        maturity,
+        rate: parseFloat(o.value),
+      }));
+
+    const batchSize = 500;
+    for (let i = 0; i < rows.length; i += batchSize) {
+      const batch = rows.slice(i, i + batchSize);
+      const { error } = await supabase
+        .from("treasury_rates")
+        .upsert(batch, { onConflict: "date,maturity" });
+
+      if (error) {
+        console.error(`Failed to upsert treasury ${maturity}: ${error.message}`);
+        break;
+      }
+    }
+
+    totalRows += rows.length;
+  }
+
+  return totalRows;
+}
+
 /**
  * Fetch all active market indexes from the database.
  */

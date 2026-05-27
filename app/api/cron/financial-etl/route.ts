@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/utils/supabase/service";
-import { fetchPrices, fetchCPI, getActiveIndexes } from "@/lib/financial/etl-fetch";
+import { fetchPrices, fetchCPI, fetchTreasuryRates, getActiveIndexes } from "@/lib/financial/etl-fetch";
 import { computeAllAnalyses } from "@/lib/financial/etl-compute";
 
 export const maxDuration = 300;
@@ -61,6 +61,13 @@ async function runPipeline() {
       } catch (e) {
         console.error(`CPI fetch failed for ${country}:`, e);
       }
+    }
+
+    // Stage 2b: Fetch treasury rates
+    try {
+      await fetchTreasuryRates();
+    } catch (e) {
+      console.error("Treasury rates fetch failed:", e);
     }
 
     // Stage 3: Compute analysis

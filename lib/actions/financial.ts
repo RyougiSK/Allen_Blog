@@ -8,6 +8,8 @@ import type {
   ModelStats,
   ETLJobLog,
   AdjustmentType,
+  TreasuryRate,
+  DataInventoryRow,
 } from "@/lib/types/financial";
 import { annualizedGrowth } from "@/lib/financial/regression";
 
@@ -108,6 +110,148 @@ export async function getETLStatus(): Promise<ETLJobLog[]> {
 
   if (error) throw new Error(error.message);
   return (data ?? []) as ETLJobLog[];
+}
+
+export async function getDataInventory(): Promise<DataInventoryRow[]> {
+  const supabase = await createClient();
+  const rows: DataInventoryRow[] = [];
+
+  // Market indexes — fetch all indexes with their price stats via analysis table
+  const { data: indexes } = await supabase
+    .from("market_indexes")
+    .select("id, symbol, name, is_deflator")
+    .eq("is_active", true)
+    .order("market");
+
+  if (indexes) {
+    const priceStats = await Promise.all(
+      indexes.map(async (idx) => {
+        const [{ count }, { data: earliest }, { data: latest }] = await Promise.all([
+          supabase.from("market_prices").select("*", { count: "exact", head: true }).eq("index_id", idx.id),
+          supabase.from("market_prices").select("date").eq("index_id", idx.id).order("date", { ascending: true }).limit(1).single(),
+          supabase.from("market_prices").select("date").eq("index_id", idx.id).order("date", { ascending: false }).limit(1).single(),
+        ]);
+        return {
+          source: idx.is_deflator ? "Deflator" : "Market Index",
+          name: `${idx.name} (${idx.symbol})`,
+          rows: count ?? 0,
+          earliest: earliest?.date ?? null,
+          latest: latest?.date ?? null,
+        };
+      })
+    );
+    rows.push(...priceStats);
+  }
+
+  // Treasury rates
+  const maturities = ["3m", "1y", "2y", "5y", "10y", "30y", "10y2y", "10y3m"];
+  const treasuryStats = await Promise.all(
+    maturities.map(async (m) => {
+      const [{ count }, { data: earliest }, { data: latest }] = await Promise.all([
+        supabase.from("treasury_rates").select("*", { count: "exact", head: true }).eq("maturity", m),
+        supabase.from("treasury_rates").select("date").eq("maturity", m).order("date", { ascending: true }).limit(1).single(),
+        supabase.from("treasury_rates").select("date").eq("maturity", m).order("date", { ascending: false }).limit(1).single(),
+      ]);
+      return {
+        source: "Treasury",
+        name: m.toUpperCase(),
+        rows: count ?? 0,
+        earliest: earliest?.date ?? null,
+        latest: latest?.date ?? null,
+      };
+    })
+  );
+  rows.push(...treasuryStats);
+
+  // CPI data
+  const cpiStats = await Promise.all(
+    ["us", "au", "cn"].map(async (country) => {
+      const [{ count }, { data: earliest }, { data: latest }] = await Promise.all([
+        supabase.from("cpi_data").select("*", { count: "exact", head: true }).eq("country", country),
+        supabase.from("cpi_data").select("date").eq("country", country).order("date", { ascending: true }).limit(1).single(),
+        supabase.from("cpi_data").select("date").eq("country", country).order("date", { ascending: false }).limit(1).single(),
+      ]);
+      return {
+        source: "CPI",
+        name: country.toUpperCase(),
+        rows: count ?? 0,
+        earliest: earliest?.date ?? null,
+        latest: latest?.date ?? null,
+      };
+    })
+  );
+  rows.push(...cpiStats);
+
+  return rows;
+}
+
+export async function getCurrentYieldCurve(): Promise<TreasuryRate[]> {
+  const supabase = await createClient();
+  const maturities = ["3m", "1y", "2y", "5y", "10y", "30y"];
+  const results: TreasuryRate[] = [];
+
+  for (const m of maturities) {
+    const { data } = await supabase
+      .from("treasury_rates")
+      .select("date, maturity, rate")
+      .eq("maturity", m)
+      .order("date", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (data) results.push(data as TreasuryRate);
+  }
+
+  return results;
+}
+
+export async function getHistoricalYieldCurve(date: string): Promise<TreasuryRate[]> {
+  const supabase = await createClient();
+  const maturities = ["3m", "1y", "2y", "5y", "10y", "30y"];
+  const results: TreasuryRate[] = [];
+
+  for (const m of maturities) {
+    const { data } = await supabase
+      .from("treasury_rates")
+      .select("date, maturity, rate")
+      .eq("maturity", m)
+      .lte("date", date)
+      .order("date", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (data) results.push(data as TreasuryRate);
+  }
+
+  return results;
+}
+
+export async function getSpreadHistory(
+  spread: "10y2y" | "10y3m"
+): Promise<TreasuryRate[]> {
+  const supabase = await createClient();
+  const allRows: TreasuryRate[] = [];
+  const pageSize = 1000;
+  let from = 0;
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("treasury_rates")
+      .select("date, maturity, rate")
+      .eq("maturity", spread)
+      .order("date", { ascending: true })
+      .range(from, from + pageSize - 1);
+
+    if (error) throw new Error(error.message);
+    if (!data || data.length === 0) break;
+
+    allRows.push(...(data as TreasuryRate[]));
+    if (data.length < pageSize) break;
+    from += pageSize;
+  }
+
+  // Downsample to weekly
+  return allRows.filter((_, i) => i % 5 === 0);
 }
 
 export async function triggerETL(): Promise<{ success: boolean; error?: string }> {
