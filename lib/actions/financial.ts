@@ -182,6 +182,46 @@ export async function getDataInventory(): Promise<DataInventoryRow[]> {
   );
   rows.push(...cpiStats);
 
+  // Liquidity rates
+  const liquidityRateSeries = ["sofr", "effr", "iorb", "fed_upper", "fed_lower", "obfr", "dpcredit"];
+  const liquidityRateStats = await Promise.all(
+    liquidityRateSeries.map(async (s) => {
+      const [{ count }, { data: earliest }, { data: latest }] = await Promise.all([
+        supabase.from("liquidity_rates").select("*", { count: "exact", head: true }).eq("series", s),
+        supabase.from("liquidity_rates").select("date").eq("series", s).order("date", { ascending: true }).limit(1).single(),
+        supabase.from("liquidity_rates").select("date").eq("series", s).order("date", { ascending: false }).limit(1).single(),
+      ]);
+      return {
+        source: "Liquidity Rate",
+        name: s.toUpperCase(),
+        rows: count ?? 0,
+        earliest: earliest?.date ?? null,
+        latest: latest?.date ?? null,
+      };
+    })
+  );
+  rows.push(...liquidityRateStats);
+
+  // Liquidity reserves
+  const liquidityReserveSeries = ["rrp", "reserves", "tga", "fed_assets", "repo_treasury", "repo_agency"];
+  const liquidityReserveStats = await Promise.all(
+    liquidityReserveSeries.map(async (s) => {
+      const [{ count }, { data: earliest }, { data: latest }] = await Promise.all([
+        supabase.from("liquidity_reserves").select("*", { count: "exact", head: true }).eq("series", s),
+        supabase.from("liquidity_reserves").select("date").eq("series", s).order("date", { ascending: true }).limit(1).single(),
+        supabase.from("liquidity_reserves").select("date").eq("series", s).order("date", { ascending: false }).limit(1).single(),
+      ]);
+      return {
+        source: "Liquidity Reserve",
+        name: s.toUpperCase(),
+        rows: count ?? 0,
+        earliest: earliest?.date ?? null,
+        latest: latest?.date ?? null,
+      };
+    })
+  );
+  rows.push(...liquidityReserveStats);
+
   return rows;
 }
 

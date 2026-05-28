@@ -73,6 +73,7 @@ const navGroups: NavGroup[] = [
       { href: "/admin/financial/markets", label: "Mean Reversion", icon: LineChart, exact: false },
       { href: "/admin/financial/yield-curve", label: "Yield Curve", icon: Activity, exact: false },
       { href: "/admin/financial/spread", label: "Spread", icon: Activity, exact: false },
+      { href: "/admin/financial/liquidity", label: "Liquidity", icon: Activity, exact: false },
     ],
   },
   {

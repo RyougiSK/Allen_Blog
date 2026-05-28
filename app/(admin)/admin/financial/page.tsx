@@ -13,6 +13,8 @@ export default async function FinancialOverviewPage() {
   const deflators = inventory.filter((r) => r.source === "Deflator");
   const treasury = inventory.filter((r) => r.source === "Treasury");
   const cpi = inventory.filter((r) => r.source === "CPI");
+  const liquidityRates = inventory.filter((r) => r.source === "Liquidity Rate");
+  const liquidityReserves = inventory.filter((r) => r.source === "Liquidity Reserve");
 
   return (
     <div className="space-y-6">
@@ -47,6 +49,16 @@ export default async function FinancialOverviewPage() {
       <section>
         <h2 className="text-sm font-medium text-text-secondary mb-3">CPI Data</h2>
         <DataTable rows={cpi} />
+      </section>
+
+      <section>
+        <h2 className="text-sm font-medium text-text-secondary mb-3">Liquidity Rates</h2>
+        <DataTable rows={liquidityRates} />
+      </section>
+
+      <section>
+        <h2 className="text-sm font-medium text-text-secondary mb-3">Liquidity Reserves</h2>
+        <DataTable rows={liquidityReserves} />
       </section>
     </div>
   );
