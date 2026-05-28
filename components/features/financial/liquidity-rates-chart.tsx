@@ -4,10 +4,11 @@ import { useState, useMemo } from "react";
 import ReactECharts from "echarts-for-react";
 
 const TIMEFRAMES = [
-  { label: "1Y", years: 1 },
-  { label: "3Y", years: 3 },
-  { label: "5Y", years: 5 },
-  { label: "All", years: 0 },
+  { label: "1M", days: 30 },
+  { label: "3M", days: 90 },
+  { label: "1Y", days: 365 },
+  { label: "3Y", days: 365 * 3 },
+  { label: "All", days: 0 },
 ] as const;
 
 export function LiquidityRatesChart({
@@ -27,15 +28,15 @@ export function LiquidityRatesChart({
   fed_lower: (number | null)[];
   obfr: (number | null)[];
 }) {
-  const [timeframe, setTimeframe] = useState<string>("3Y");
+  const [timeframe, setTimeframe] = useState<string>("1M");
 
   const filtered = useMemo(() => {
     if (dates.length === 0) return { dates: [], sofr: [], effr: [], iorb: [], fed_upper: [], fed_lower: [], obfr: [] };
     const selected = TIMEFRAMES.find((t) => t.label === timeframe);
-    if (!selected || selected.years === 0) return { dates, sofr, effr, iorb, fed_upper, fed_lower, obfr };
+    if (!selected || selected.days === 0) return { dates, sofr, effr, iorb, fed_upper, fed_lower, obfr };
 
     const cutoff = new Date();
-    cutoff.setFullYear(cutoff.getFullYear() - selected.years);
+    cutoff.setDate(cutoff.getDate() - selected.days);
     const cutoffStr = cutoff.toISOString().split("T")[0];
     const startIdx = dates.findIndex((d) => d >= cutoffStr);
     if (startIdx === -1) return { dates: [], sofr: [], effr: [], iorb: [], fed_upper: [], fed_lower: [], obfr: [] };
@@ -50,6 +51,61 @@ export function LiquidityRatesChart({
       obfr: obfr.slice(startIdx),
     };
   }, [dates, sofr, effr, iorb, fed_upper, fed_lower, obfr, timeframe]);
+
+  const { yMin, yMax } = useMemo(() => {
+    const allVals = [
+      ...filtered.sofr,
+      ...filtered.effr,
+      ...filtered.iorb,
+      ...filtered.fed_upper,
+      ...filtered.fed_lower,
+      ...filtered.obfr,
+    ].filter((v): v is number => v != null);
+    if (allVals.length === 0) return { yMin: 0, yMax: 6 };
+    const min = Math.min(...allVals);
+    const max = Math.max(...allVals);
+    const padding = Math.max((max - min) * 0.15, 0.1);
+    return {
+      yMin: Math.floor((min - padding) * 20) / 20,
+      yMax: Math.ceil((max + padding) * 20) / 20,
+    };
+  }, [filtered]);
+
+  const stressAreas = useMemo(() => {
+    const areas: [{ xAxis: string; itemStyle: { color: string } }, { xAxis: string }][] = [];
+    let inStress = false;
+    let stressStart = "";
+
+    for (let i = 0; i < filtered.dates.length; i++) {
+      const s = filtered.sofr[i];
+      const ir = filtered.iorb[i];
+      const fu = filtered.fed_upper[i];
+      const e = filtered.effr[i];
+
+      const isStress =
+        (s != null && ir != null && s > ir) ||
+        (s != null && fu != null && s > fu) ||
+        (e != null && s != null && Math.abs(e - s) > 0.05);
+
+      if (isStress && !inStress) {
+        stressStart = filtered.dates[i];
+        inStress = true;
+      } else if (!isStress && inStress) {
+        areas.push([
+          { xAxis: stressStart, itemStyle: { color: "rgba(239, 68, 68, 0.1)" } },
+          { xAxis: filtered.dates[i - 1] },
+        ]);
+        inStress = false;
+      }
+    }
+    if (inStress) {
+      areas.push([
+        { xAxis: stressStart, itemStyle: { color: "rgba(239, 68, 68, 0.1)" } },
+        { xAxis: filtered.dates[filtered.dates.length - 1] },
+      ]);
+    }
+    return areas;
+  }, [filtered]);
 
   if (dates.length === 0) return null;
 
@@ -85,6 +141,8 @@ export function LiquidityRatesChart({
     },
     yAxis: {
       type: "value",
+      min: yMin,
+      max: yMax,
       axisLine: { show: false },
       axisLabel: { color: "#999", fontSize: 10, formatter: "{value}%" },
       splitLine: { lineStyle: { color: "rgba(255,255,255,0.08)" } },
@@ -131,6 +189,9 @@ export function LiquidityRatesChart({
         itemStyle: { color: "#C9B79C" },
         connectNulls: true,
         z: 4,
+        markArea: stressAreas.length > 0
+          ? { silent: true, data: stressAreas }
+          : undefined,
       },
       {
         name: "EFFR",

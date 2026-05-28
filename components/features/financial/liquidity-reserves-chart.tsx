@@ -4,10 +4,12 @@ import { useState, useMemo } from "react";
 import ReactECharts from "echarts-for-react";
 
 const TIMEFRAMES = [
-  { label: "1Y", years: 1 },
-  { label: "3Y", years: 3 },
-  { label: "5Y", years: 5 },
-  { label: "All", years: 0 },
+  { label: "1M", days: 30 },
+  { label: "3M", days: 90 },
+  { label: "1Y", days: 365 },
+  { label: "3Y", days: 365 * 3 },
+  { label: "5Y", days: 365 * 5 },
+  { label: "All", days: 0 },
 ] as const;
 
 export function LiquidityReservesChart({
@@ -23,15 +25,15 @@ export function LiquidityReservesChart({
   tga: (number | null)[];
   fed_assets: (number | null)[];
 }) {
-  const [timeframe, setTimeframe] = useState<string>("5Y");
+  const [timeframe, setTimeframe] = useState<string>("3Y");
 
   const filtered = useMemo(() => {
     if (dates.length === 0) return { dates: [], rrp: [], reserves: [], tga: [], fed_assets: [] };
     const selected = TIMEFRAMES.find((t) => t.label === timeframe);
-    if (!selected || selected.years === 0) return { dates, rrp, reserves, tga, fed_assets };
+    if (!selected || selected.days === 0) return { dates, rrp, reserves, tga, fed_assets };
 
     const cutoff = new Date();
-    cutoff.setFullYear(cutoff.getFullYear() - selected.years);
+    cutoff.setDate(cutoff.getDate() - selected.days);
     const cutoffStr = cutoff.toISOString().split("T")[0];
     const startIdx = dates.findIndex((d) => d >= cutoffStr);
     if (startIdx === -1) return { dates: [], rrp: [], reserves: [], tga: [], fed_assets: [] };
@@ -46,6 +48,14 @@ export function LiquidityReservesChart({
   }, [dates, rrp, reserves, tga, fed_assets, timeframe]);
 
   if (dates.length === 0) return null;
+
+  const benchmarkLines = [
+    { yAxis: 100, label: "RRP Critical $100B", color: "rgba(239, 68, 68, 0.6)" },
+    { yAxis: 200, label: "RRP Warning $200B", color: "rgba(251, 191, 36, 0.5)" },
+    { yAxis: 2500, label: "LCLoR $2.5T", color: "rgba(239, 68, 68, 0.6)" },
+    { yAxis: 3000, label: "Reserves Caution $3T", color: "rgba(251, 191, 36, 0.5)" },
+    { yAxis: 800, label: "TGA Drain Risk $800B", color: "rgba(251, 191, 36, 0.5)" },
+  ];
 
   const option = {
     backgroundColor: "transparent",
@@ -93,6 +103,17 @@ export function LiquidityReservesChart({
         areaStyle: { color: "rgba(148, 163, 184, 0.05)" },
         connectNulls: true,
         z: 1,
+        markLine: {
+          silent: true,
+          symbol: "none",
+          lineStyle: { type: "dashed", width: 1 },
+          label: { fontSize: 9, color: "#999", position: "insideEndTop" },
+          data: benchmarkLines.map((b) => ({
+            yAxis: b.yAxis,
+            lineStyle: { color: b.color },
+            label: { formatter: b.label, color: b.color },
+          })),
+        },
       },
       {
         name: "Reserves",
