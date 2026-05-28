@@ -314,6 +314,151 @@ export async function getRateTimeSeries(): Promise<{
   };
 }
 
+export interface LiquidityPoint {
+  date: string;
+  series: string;
+  value: number;
+}
+
+export async function getLiquidityRates(): Promise<{
+  dates: string[];
+  sofr: (number | null)[];
+  effr: (number | null)[];
+  iorb: (number | null)[];
+  fed_upper: (number | null)[];
+  fed_lower: (number | null)[];
+  obfr: (number | null)[];
+}> {
+  const supabase = await createFinancialClient();
+  const series = ["sofr", "effr", "iorb", "fed_upper", "fed_lower", "obfr"];
+
+  const allData = await Promise.all(
+    series.map(async (s) => {
+      const allRows: LiquidityPoint[] = [];
+      const pageSize = 1000;
+      let from = 0;
+      while (true) {
+        const { data, error } = await supabase
+          .from("liquidity_rates")
+          .select("date, series, value")
+          .eq("series", s)
+          .order("date", { ascending: true })
+          .range(from, from + pageSize - 1);
+        if (error) throw new Error(error.message);
+        if (!data || data.length === 0) break;
+        allRows.push(...(data as LiquidityPoint[]));
+        if (data.length < pageSize) break;
+        from += pageSize;
+      }
+      return { series: s, rows: allRows };
+    })
+  );
+
+  const dateSet = new Set<string>();
+  allData.forEach((d) => d.rows.forEach((r) => dateSet.add(r.date)));
+  const allDates = [...dateSet].sort();
+  const dates = allDates.filter((_, i) => i % 5 === 0);
+
+  const maps = Object.fromEntries(
+    allData.map((d) => [d.series, new Map(d.rows.map((r) => [r.date, r.value]))])
+  );
+
+  return {
+    dates,
+    sofr: dates.map((d) => maps.sofr?.get(d) ?? null),
+    effr: dates.map((d) => maps.effr?.get(d) ?? null),
+    iorb: dates.map((d) => maps.iorb?.get(d) ?? null),
+    fed_upper: dates.map((d) => maps.fed_upper?.get(d) ?? null),
+    fed_lower: dates.map((d) => maps.fed_lower?.get(d) ?? null),
+    obfr: dates.map((d) => maps.obfr?.get(d) ?? null),
+  };
+}
+
+export async function getLiquidityReserves(): Promise<{
+  dates: string[];
+  rrp: (number | null)[];
+  reserves: (number | null)[];
+  tga: (number | null)[];
+  fed_assets: (number | null)[];
+  repo_treasury: (number | null)[];
+  repo_agency: (number | null)[];
+}> {
+  const supabase = await createFinancialClient();
+  const series = ["rrp", "reserves", "tga", "fed_assets", "repo_treasury", "repo_agency"];
+
+  const allData = await Promise.all(
+    series.map(async (s) => {
+      const allRows: LiquidityPoint[] = [];
+      const pageSize = 1000;
+      let from = 0;
+      while (true) {
+        const { data, error } = await supabase
+          .from("liquidity_reserves")
+          .select("date, series, value")
+          .eq("series", s)
+          .order("date", { ascending: true })
+          .range(from, from + pageSize - 1);
+        if (error) throw new Error(error.message);
+        if (!data || data.length === 0) break;
+        allRows.push(...(data as LiquidityPoint[]));
+        if (data.length < pageSize) break;
+        from += pageSize;
+      }
+      return { series: s, rows: allRows };
+    })
+  );
+
+  const dateSet = new Set<string>();
+  allData.forEach((d) => d.rows.forEach((r) => dateSet.add(r.date)));
+  const allDates = [...dateSet].sort();
+  const dates = allDates.filter((_, i) => i % 5 === 0);
+
+  const maps = Object.fromEntries(
+    allData.map((d) => [d.series, new Map(d.rows.map((r) => [r.date, r.value]))])
+  );
+
+  return {
+    dates,
+    rrp: dates.map((d) => maps.rrp?.get(d) ?? null),
+    reserves: dates.map((d) => maps.reserves?.get(d) ?? null),
+    tga: dates.map((d) => maps.tga?.get(d) ?? null),
+    fed_assets: dates.map((d) => maps.fed_assets?.get(d) ?? null),
+    repo_treasury: dates.map((d) => maps.repo_treasury?.get(d) ?? null),
+    repo_agency: dates.map((d) => maps.repo_agency?.get(d) ?? null),
+  };
+}
+
+export async function getLiquidityLatest(): Promise<Record<string, number | null>> {
+  const supabase = await createFinancialClient();
+  const result: Record<string, number | null> = {};
+
+  const rateSeries = ["sofr", "effr", "iorb", "fed_upper", "fed_lower"];
+  for (const s of rateSeries) {
+    const { data } = await supabase
+      .from("liquidity_rates")
+      .select("value")
+      .eq("series", s)
+      .order("date", { ascending: false })
+      .limit(1)
+      .single();
+    result[s] = data?.value ?? null;
+  }
+
+  const reserveSeries = ["rrp", "reserves", "tga", "fed_assets"];
+  for (const s of reserveSeries) {
+    const { data } = await supabase
+      .from("liquidity_reserves")
+      .select("value")
+      .eq("series", s)
+      .order("date", { ascending: false })
+      .limit(1)
+      .single();
+    result[s] = data?.value ?? null;
+  }
+
+  return result;
+}
+
 export async function triggerETL(): Promise<{ success: boolean; error?: string }> {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_SUPABASE_URL ? "" : ""}${process.env.NEXT_PUBLIC_SITE_URL || ""}/api/admin/financial-etl`,

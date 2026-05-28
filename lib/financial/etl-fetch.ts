@@ -290,6 +290,126 @@ export async function fetchTreasuryRates(): Promise<number> {
   return totalRows;
 }
 
+const LIQUIDITY_RATE_SERIES: Record<string, string> = {
+  sofr: "SOFR",
+  effr: "EFFR",
+  iorb: "IORB",
+  fed_upper: "DFEDTARU",
+  fed_lower: "DFEDTARL",
+  obfr: "OBFR",
+  dpcredit: "DPCREDIT",
+};
+
+const LIQUIDITY_RESERVE_SERIES: Record<string, string> = {
+  rrp: "RRPONTSYD",
+  reserves: "WRESBAL",
+  tga: "WTREGEN",
+  fed_assets: "WALCL",
+  repo_treasury: "RPONTSYD",
+  repo_agency: "RPONAGYD",
+};
+
+// Series reported in millions by FRED — convert to billions
+const MILLIONS_TO_BILLIONS = new Set(["WRESBAL", "WTREGEN", "WALCL", "RRPONTSYD", "RPONTSYD", "RPONAGYD"]);
+
+/**
+ * Fetch liquidity monitoring data from FRED (rates + reserves).
+ */
+export async function fetchLiquidityData(): Promise<number> {
+  const supabase = createFinancialServiceClient();
+  const apiKey = process.env.FRED_API_KEY || "DEMO_KEY";
+  let totalRows = 0;
+
+  // Fetch rate series
+  for (const [series, seriesId] of Object.entries(LIQUIDITY_RATE_SERIES)) {
+    const { data: lastRow } = await supabase
+      .from("liquidity_rates")
+      .select("date")
+      .eq("series", series)
+      .order("date", { ascending: false })
+      .limit(1)
+      .single();
+
+    const startDate = lastRow ? lastRow.date : "2000-01-01";
+    const url = `${FRED_BASE}?series_id=${seriesId}&api_key=${apiKey}&file_type=json&observation_start=${startDate}&sort_order=asc`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.error(`FRED API error for ${seriesId}: ${response.status}`);
+      continue;
+    }
+
+    const data = await response.json();
+    const observations = data.observations as Array<{ date: string; value: string }>;
+    if (!observations || observations.length === 0) continue;
+
+    const rows = observations
+      .filter((o) => o.value !== ".")
+      .map((o) => ({ date: o.date, series, value: parseFloat(o.value) }));
+
+    const batchSize = 500;
+    for (let i = 0; i < rows.length; i += batchSize) {
+      const batch = rows.slice(i, i + batchSize);
+      const { error } = await supabase
+        .from("liquidity_rates")
+        .upsert(batch, { onConflict: "date,series" });
+      if (error) {
+        console.error(`Failed to upsert liquidity rate ${series}: ${error.message}`);
+        break;
+      }
+    }
+    totalRows += rows.length;
+  }
+
+  // Fetch reserve series
+  for (const [series, seriesId] of Object.entries(LIQUIDITY_RESERVE_SERIES)) {
+    const { data: lastRow } = await supabase
+      .from("liquidity_reserves")
+      .select("date")
+      .eq("series", series)
+      .order("date", { ascending: false })
+      .limit(1)
+      .single();
+
+    const startDate = lastRow ? lastRow.date : "2000-01-01";
+    const url = `${FRED_BASE}?series_id=${seriesId}&api_key=${apiKey}&file_type=json&observation_start=${startDate}&sort_order=asc`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.error(`FRED API error for ${seriesId}: ${response.status}`);
+      continue;
+    }
+
+    const data = await response.json();
+    const observations = data.observations as Array<{ date: string; value: string }>;
+    if (!observations || observations.length === 0) continue;
+
+    const toB = MILLIONS_TO_BILLIONS.has(seriesId);
+    const rows = observations
+      .filter((o) => o.value !== ".")
+      .map((o) => ({
+        date: o.date,
+        series,
+        value: toB ? parseFloat(o.value) / 1000 : parseFloat(o.value),
+      }));
+
+    const batchSize = 500;
+    for (let i = 0; i < rows.length; i += batchSize) {
+      const batch = rows.slice(i, i + batchSize);
+      const { error } = await supabase
+        .from("liquidity_reserves")
+        .upsert(batch, { onConflict: "date,series" });
+      if (error) {
+        console.error(`Failed to upsert liquidity reserve ${series}: ${error.message}`);
+        break;
+      }
+    }
+    totalRows += rows.length;
+  }
+
+  return totalRows;
+}
+
 /**
  * Fetch all active market indexes from the database.
  */
