@@ -71,6 +71,15 @@ export function LiquidityRatesChart({
     };
   }, [filtered]);
 
+  const spreadBps = useMemo(() => {
+    return filtered.dates.map((_, i) => {
+      const s = filtered.sofr[i];
+      const ir = filtered.iorb[i];
+      if (s == null || ir == null) return null;
+      return Math.round((s - ir) * 100);
+    });
+  }, [filtered]);
+
   const stressAreas = useMemo(() => {
     const areas: [{ xAxis: string; itemStyle: { color: string } }, { xAxis: string }][] = [];
     let inStress = false;
@@ -109,19 +118,19 @@ export function LiquidityRatesChart({
 
   if (dates.length === 0) return null;
 
-  const option = {
+  const ratesOption = {
     backgroundColor: "transparent",
-    grid: { top: 50, right: 30, bottom: 50, left: 50 },
+    grid: { top: 40, right: 30, bottom: 30, left: 50 },
     legend: {
       show: true,
-      top: 8,
+      top: 6,
       right: 30,
       textStyle: { color: "#999", fontSize: 10 },
       data: [
         { name: "SOFR", itemStyle: { color: "#C9B79C" } },
-        { name: "EFFR", itemStyle: { color: "rgba(251, 191, 36, 0.85)" } },
         { name: "IORB", itemStyle: { color: "rgba(99, 102, 241, 0.85)" } },
-        { name: "OBFR", itemStyle: { color: "rgba(148, 163, 184, 0.7)" } },
+        { name: "EFFR", itemStyle: { color: "rgba(251, 191, 36, 0.7)" } },
+        { name: "OBFR", itemStyle: { color: "rgba(148, 163, 184, 0.5)" } },
         { name: "Fed Band", itemStyle: { color: "rgba(239, 68, 68, 0.3)" } },
       ],
     },
@@ -136,7 +145,7 @@ export function LiquidityRatesChart({
       type: "category",
       data: filtered.dates,
       axisLine: { lineStyle: { color: "rgba(255,255,255,0.12)" } },
-      axisLabel: { color: "#999", fontSize: 10, showMinLabel: true, showMaxLabel: true },
+      axisLabel: { show: false },
       axisTick: { show: false },
     },
     yAxis: {
@@ -154,7 +163,7 @@ export function LiquidityRatesChart({
         data: filtered.fed_upper,
         symbol: "none",
         lineStyle: { width: 0 },
-        areaStyle: { color: "rgba(239, 68, 68, 0.08)", origin: "start" },
+        areaStyle: { color: "rgba(239, 68, 68, 0.06)", origin: "start" },
         stack: "band",
         connectNulls: true,
         silent: true,
@@ -165,7 +174,7 @@ export function LiquidityRatesChart({
         type: "line",
         data: filtered.fed_lower,
         symbol: "none",
-        lineStyle: { width: 1, color: "rgba(239, 68, 68, 0.3)", type: "dashed" },
+        lineStyle: { width: 1, color: "rgba(239, 68, 68, 0.25)", type: "dashed" },
         connectNulls: true,
         silent: true,
         z: 1,
@@ -175,7 +184,7 @@ export function LiquidityRatesChart({
         type: "line",
         data: filtered.fed_upper,
         symbol: "none",
-        lineStyle: { width: 1, color: "rgba(239, 68, 68, 0.3)", type: "dashed" },
+        lineStyle: { width: 1, color: "rgba(239, 68, 68, 0.25)", type: "dashed" },
         connectNulls: true,
         silent: true,
         z: 1,
@@ -185,31 +194,31 @@ export function LiquidityRatesChart({
         type: "line",
         data: filtered.sofr,
         symbol: "none",
-        lineStyle: { width: 2, color: "#C9B79C" },
+        lineStyle: { width: 2.5, color: "#C9B79C" },
         itemStyle: { color: "#C9B79C" },
         connectNulls: true,
-        z: 4,
+        z: 5,
         markArea: stressAreas.length > 0
           ? { silent: true, data: stressAreas }
           : undefined,
-      },
-      {
-        name: "EFFR",
-        type: "line",
-        data: filtered.effr,
-        symbol: "none",
-        lineStyle: { width: 1.5, color: "rgba(251, 191, 36, 0.85)" },
-        itemStyle: { color: "rgba(251, 191, 36, 0.85)" },
-        connectNulls: true,
-        z: 3,
       },
       {
         name: "IORB",
         type: "line",
         data: filtered.iorb,
         symbol: "none",
-        lineStyle: { width: 1.5, color: "rgba(99, 102, 241, 0.85)" },
+        lineStyle: { width: 2, color: "rgba(99, 102, 241, 0.85)" },
         itemStyle: { color: "rgba(99, 102, 241, 0.85)" },
+        connectNulls: true,
+        z: 4,
+      },
+      {
+        name: "EFFR",
+        type: "line",
+        data: filtered.effr,
+        symbol: "none",
+        lineStyle: { width: 1.2, color: "rgba(251, 191, 36, 0.7)" },
+        itemStyle: { color: "rgba(251, 191, 36, 0.7)" },
         connectNulls: true,
         z: 3,
       },
@@ -218,10 +227,63 @@ export function LiquidityRatesChart({
         type: "line",
         data: filtered.obfr,
         symbol: "none",
-        lineStyle: { width: 1, color: "rgba(148, 163, 184, 0.7)" },
-        itemStyle: { color: "rgba(148, 163, 184, 0.7)" },
+        lineStyle: { width: 1, color: "rgba(148, 163, 184, 0.5)" },
+        itemStyle: { color: "rgba(148, 163, 184, 0.5)" },
         connectNulls: true,
         z: 2,
+      },
+    ],
+  };
+
+  const spreadOption = {
+    backgroundColor: "transparent",
+    grid: { top: 16, right: 30, bottom: 30, left: 50 },
+    tooltip: {
+      trigger: "axis",
+      backgroundColor: "rgba(18, 18, 18, 0.95)",
+      borderColor: "rgba(255,255,255,0.1)",
+      textStyle: { color: "#e0e0e0", fontSize: 11 },
+      formatter: (params: { value: number | null; axisValue: string }[]) => {
+        const p = params[0];
+        if (!p || p.value == null) return "";
+        const color = p.value > 0 ? "#ef4444" : "#22c55e";
+        return `<span style="color:${color};font-weight:600">${p.value > 0 ? "+" : ""}${p.value} bps</span><br/><span style="color:#999;font-size:10px">${p.axisValue}</span>`;
+      },
+    },
+    xAxis: {
+      type: "category",
+      data: filtered.dates,
+      axisLine: { lineStyle: { color: "rgba(255,255,255,0.12)" } },
+      axisLabel: { color: "#999", fontSize: 10, showMinLabel: true, showMaxLabel: true },
+      axisTick: { show: false },
+    },
+    yAxis: {
+      type: "value",
+      axisLine: { show: false },
+      axisLabel: { color: "#999", fontSize: 10, formatter: "{value}bp" },
+      splitLine: { lineStyle: { color: "rgba(255,255,255,0.06)" } },
+    },
+    series: [
+      {
+        name: "SOFR − IORB",
+        type: "bar",
+        data: spreadBps.map((v) => ({
+          value: v,
+          itemStyle: {
+            color: v != null && v > 0 ? "rgba(239, 68, 68, 0.7)" : "rgba(34, 197, 94, 0.5)",
+          },
+        })),
+        barMaxWidth: 4,
+      },
+    ],
+    graphic: [
+      {
+        type: "line",
+        shape: { x1: 50, y1: 0, x2: "100%", y2: 0 },
+        style: { stroke: "rgba(255,255,255,0.15)" },
+        z: 100,
+        position: [0, 0],
+        invisible: true,
       },
     ],
   };
@@ -244,8 +306,18 @@ export function LiquidityRatesChart({
         ))}
       </div>
       <ReactECharts
-        option={option}
-        style={{ height: "360px", width: "100%" }}
+        option={ratesOption}
+        style={{ height: "280px", width: "100%" }}
+        opts={{ renderer: "canvas" }}
+      />
+      <div className="px-4 pt-1 pb-1">
+        <div className="text-[10px] text-text-quaternary uppercase tracking-wide">
+          SOFR − IORB Spread (bps) — <span className="text-red-400">positive = funding stress</span>
+        </div>
+      </div>
+      <ReactECharts
+        option={spreadOption}
+        style={{ height: "120px", width: "100%" }}
         opts={{ renderer: "canvas" }}
       />
     </div>
