@@ -89,7 +89,7 @@ export default async function Home({
         </Reveal>
       )}
 
-      <Reveal className="mt-[var(--spacing-section)]" delay={160}>
+      <Reveal className="mt-16" delay={160}>
         <ReflectionSection dictionary={dictionary} locale={urlLocale} />
       </Reveal>
     </>
