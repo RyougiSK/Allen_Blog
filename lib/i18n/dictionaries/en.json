@@ -9,7 +9,7 @@
   "hero.subtitle": "Designing Inner Life in the Modern World",
 
   "home.heroCta": "Begin Reading",
-  "home.heroMicro": "A space for reflection, philosophy, and inner order.",
+  "home.heroMicro": "A space for the outer world and inner order.",
   "home.featured": "Featured",
   "home.selected": "Selected",
   "home.recent": "Recent",
@@ -19,15 +19,7 @@
   "home.authorLabel": "Who writes this",
   "home.authorIntro": "I work with data and design by day. The rest of the time, I pay attention to what goes on under the surface — in people, in patterns, in the things we take for granted. This is where I write about it.",
   "home.moreAbout": "More about me",
-  "home.pillarsTitle": "Three quiet directions",
-  "home.reflectionQuote": "A space for those who are already asking. You're welcome to sit with it here.",
-
-  "pillar.self.question": "What remains when the noise stops?",
-  "pillar.self.subtext": "Thoughts on identity, inner patterns, and the slow work of becoming honest with oneself.",
-  "pillar.nature.question": "Where do we stand in all of this?",
-  "pillar.nature.subtext": "Reflections on belonging, uncertainty, and finding footing in a world that doesn't wait.",
-  "pillar.living.question": "What does it look like, lived out?",
-  "pillar.living.subtext": "Notes on rhythm, attention, and the ordinary practice of a considered life.",
+  "home.reflectionQuote": "A place to sit down with yourself.",
 
   "writing.title": "Writing",
   "writing.description": "On what I notice, what I remember, and what won't leave me alone.",

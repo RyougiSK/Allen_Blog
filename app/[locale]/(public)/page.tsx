@@ -1,6 +1,5 @@
 import { createStaticClient } from "@/utils/supabase/static";
 import { HeroSection } from "@/components/features/hero-section";
-import { ThreePillars } from "@/components/features/three-pillars";
 import { SelectedWriting } from "@/components/features/selected-writing";
 import { ReflectionSection } from "@/components/features/reflection-section";
 import { Reveal } from "@/components/features/reveal";
@@ -78,10 +77,6 @@ export default async function Home({
   return (
     <>
       <HeroSection dictionary={dictionary} locale={urlLocale} />
-
-      <Reveal className="mt-[var(--spacing-section)]">
-        <ThreePillars dictionary={dictionary} />
-      </Reveal>
 
       {(featured.length > 0 || recent.length > 0) && (
         <Reveal className="mt-[var(--spacing-section)]" delay={80}>

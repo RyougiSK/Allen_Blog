@@ -5,7 +5,7 @@ import ReactECharts from "echarts-for-react";
 import type { TrendPoint } from "@/lib/types/financial";
 
 export function TrendChart({ data }: { data: TrendPoint[] }) {
-  const [scale, setScale] = useState<"log" | "linear">("log");
+  const [scale, setScale] = useState<"log" | "linear">("linear");
 
   if (data.length === 0) return null;
 
