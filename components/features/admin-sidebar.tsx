@@ -20,7 +20,6 @@ import {
   Menu,
   X,
   Search,
-  CalendarDays,
   TrendingUp,
   LineChart,
   Activity,
@@ -55,7 +54,6 @@ const navGroups: NavGroup[] = [
       { href: "/admin/posts", label: "Articles", icon: FileText, exact: false },
       { href: "/admin/threads", label: "Threads", icon: MessageSquare, exact: false },
       { href: "/admin/film-psyche", label: "作品解析", icon: Brain, exact: false },
-      { href: "/admin/calendar", label: "Calendar", icon: CalendarDays, exact: false },
     ],
   },
   {
