@@ -5,22 +5,28 @@ import { computeAllAnalyses } from "@/lib/financial/etl-compute";
 
 export const maxDuration = 300;
 
-export async function GET(request: NextRequest) {
-  // Verify cron secret (Vercel sets this automatically)
+function verifyCronAuth(request: NextRequest) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) {
+    console.error("CRON_SECRET env var is not configured");
+    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
+  }
   const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  return null;
+}
 
+export async function GET(request: NextRequest) {
+  const authError = verifyCronAuth(request);
+  if (authError) return authError;
   return runPipeline();
 }
 
 export async function POST(request: NextRequest) {
-  const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+  const authError = verifyCronAuth(request);
+  if (authError) return authError;
   return runPipeline();
 }
 
