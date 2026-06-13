@@ -48,9 +48,6 @@ export function HeroSection({ dictionary, locale }: HeroSectionProps) {
             The Quiet Way
           </p>
         )}
-        <p className="hero-entrance hero-stagger-3 text-[length:var(--text-body-lg)] text-text-secondary mt-8 mx-auto max-w-[32rem] leading-[var(--leading-body)]">
-          {dictionary["hero.subtitle"]}
-        </p>
         <div className="hero-entrance hero-stagger-4 mt-14">
           <Link
             href={`/${locale}/writing`}

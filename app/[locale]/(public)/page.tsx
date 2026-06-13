@@ -1,7 +1,6 @@
 import { createStaticClient } from "@/utils/supabase/static";
 import { HeroSection } from "@/components/features/hero-section";
 import { SelectedWriting } from "@/components/features/selected-writing";
-import { ReflectionSection } from "@/components/features/reflection-section";
 import { Reveal } from "@/components/features/reveal";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import type { ArticleWithTags, Tag, ContentLocale } from "@/lib/types";
@@ -89,9 +88,6 @@ export default async function Home({
         </Reveal>
       )}
 
-      <Reveal className="mt-16" delay={160}>
-        <ReflectionSection dictionary={dictionary} locale={urlLocale} />
-      </Reveal>
     </>
   );
 }
