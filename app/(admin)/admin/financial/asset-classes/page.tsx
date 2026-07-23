@@ -104,7 +104,7 @@ export default function AssetClassesPage() {
     rawPoints.forEach((p) => dateSet.add(p.date));
     const allDates = [...dateSet].sort();
 
-    const maxPoints = 200;
+    const maxPoints = 400;
     const step = Math.max(1, Math.floor(allDates.length / maxPoints));
     const dates = allDates.filter((_, i) => i % step === 0);
 

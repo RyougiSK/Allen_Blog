@@ -627,7 +627,7 @@ export async function getAssetClassTimeSeries(
   if (!assetClasses || assetClasses.length === 0) return [];
 
   // Determine start date based on timeframe
-  let startDate = "1945-01-01";
+  let startDate = "2000-01-01";
   if (timeframe !== "all") {
     const now = new Date();
     const years = timeframe === "1y" ? 1 : timeframe === "5y" ? 5 : 10;
@@ -773,7 +773,7 @@ export async function getAssetClassRawTimeSeries(
 
   if (!assetClasses || assetClasses.length === 0) return { points: [], classes: [] };
 
-  let startDate = "1945-01-01";
+  let startDate = "2000-01-01";
   if (timeframe !== "all") {
     const now = new Date();
     const years = timeframe === "1y" ? 1 : timeframe === "5y" ? 5 : 10;
