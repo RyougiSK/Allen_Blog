@@ -104,13 +104,10 @@ export default function AssetClassesPage() {
     rawPoints.forEach((p) => dateSet.add(p.date));
     const allDates = [...dateSet].sort();
 
-    const maxPoints = 400;
-    const step = Math.max(1, Math.floor(allDates.length / maxPoints));
-    const dates = allDates.filter((_, i) => i % step === 0);
-
     const slugs = classMeta.map((c) => c.slug);
     const methodMap = new Map(classMeta.map((c) => [c.slug, c.estimation_method]));
 
+    // Build raw lookup maps per slug
     const maps: Record<string, Map<string, { market_cap_t: number; raw_value: number | null }>> = {};
     for (const slug of slugs) {
       maps[slug] = new Map();
@@ -121,21 +118,31 @@ export default function AssetClassesPage() {
       }
     }
 
-    const lastKnown: Record<string, { market_cap_t: number; raw_value: number | null } | null> = {};
-    slugs.forEach((s) => { lastKnown[s] = null; });
+    // Phase 1: Forward-fill across ALL dates for every slug
+    const forwardFilled: Record<string, Map<string, { market_cap_t: number; raw_value: number | null }>> = {};
+    for (const slug of slugs) {
+      forwardFilled[slug] = new Map();
+      let last: { market_cap_t: number; raw_value: number | null } | null = null;
+      for (const date of allDates) {
+        const entry = maps[slug].get(date);
+        if (entry !== undefined) last = entry;
+        if (last) forwardFilled[slug].set(date, last);
+      }
+    }
 
+    // Phase 2: Downsample
+    const maxPoints = 400;
+    const step = Math.max(1, Math.floor(allDates.length / maxPoints));
+    const dates = allDates.filter((_, i) => i % step === 0);
+
+    // Phase 3: Build result from forward-filled data
     const result: AssetClassTimeSeriesPoint[] = [];
 
     for (const date of dates) {
       const values: Record<string, number | null> = {};
 
       for (const slug of slugs) {
-        const entry = maps[slug].get(date);
-        if (entry !== undefined) {
-          lastKnown[slug] = entry;
-        }
-
-        const known = lastKnown[slug];
+        const known = forwardFilled[slug].get(date) ?? null;
         if (!known) {
           values[slug] = null;
           continue;
@@ -152,6 +159,7 @@ export default function AssetClassesPage() {
         }
       }
 
+      // Phase 4: Compute "Other" residual
       const tracked = Object.values(values).reduce<number>((sum, v) => sum + (v ?? 0), 0);
       const globalTotal = computeGlobalTotal(date, assumptions);
       values["other"] = Math.max(0, globalTotal - tracked);
@@ -185,12 +193,24 @@ export default function AssetClassesPage() {
         totalEstimated={adjustedTotalEstimated}
       />
 
+      <div className="flex items-center justify-end">
+        <button
+          onClick={() => setShowOther(!showOther)}
+          className={`px-3 py-1.5 text-[11px] rounded border transition-colors ${
+            showOther
+              ? "border-border text-text-tertiary hover:text-text-secondary"
+              : "border-amber-500/40 text-amber-400 bg-amber-500/10"
+          }`}
+        >
+          {showOther ? "Hide \"Other\" Residual" : "Show \"Other\" Residual"}
+        </button>
+      </div>
+
       <AssetClassStackedArea
         data={timeSeries}
         onTimeframeChange={setTimeframe}
         activeTimeframe={timeframe}
         showOther={showOther}
-        onToggleOther={() => setShowOther(!showOther)}
         loading={tsLoading}
       />
 

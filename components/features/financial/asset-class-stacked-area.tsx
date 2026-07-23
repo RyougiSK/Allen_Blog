@@ -27,14 +27,12 @@ export function AssetClassStackedArea({
   onTimeframeChange,
   activeTimeframe = "all",
   showOther = true,
-  onToggleOther,
   loading = false,
 }: {
   data: AssetClassTimeSeriesPoint[];
   onTimeframeChange: (tf: "1y" | "5y" | "10y" | "all") => void;
   activeTimeframe?: string;
   showOther?: boolean;
-  onToggleOther?: () => void;
   loading?: boolean;
 }) {
   const [logScale, setLogScale] = useState(false);
@@ -127,18 +125,6 @@ export function AssetClassStackedArea({
           Global Asset Classes — Stacked Market Cap ($T)
         </h3>
         <div className="flex items-center gap-2">
-          {onToggleOther && (
-            <button
-              onClick={onToggleOther}
-              className={`px-2 py-0.5 text-[10px] rounded border transition-colors ${
-                showOther
-                  ? "border-border text-text-tertiary hover:text-text-secondary"
-                  : "border-amber-500/40 text-amber-400 bg-amber-500/10"
-              }`}
-            >
-              {showOther ? "Hide Other" : "Show Other"}
-            </button>
-          )}
           <button
             onClick={() => setLogScale(!logScale)}
             className={`px-2 py-0.5 text-[10px] rounded border transition-colors ${
