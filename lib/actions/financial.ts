@@ -10,6 +10,9 @@ import type {
   AdjustmentType,
   TreasuryRate,
   DataInventoryRow,
+  AssetClass,
+  AssetClassSnapshot,
+  AssetClassTimeSeriesPoint,
 } from "@/lib/types/financial";
 import { annualizedGrowth } from "@/lib/financial/regression";
 
@@ -221,6 +224,34 @@ export async function getDataInventory(): Promise<DataInventoryRow[]> {
     })
   );
   rows.push(...liquidityReserveStats);
+
+  // Asset class market caps
+  const { data: assetClasses } = await supabase
+    .from("asset_classes")
+    .select("id, slug, name, source_description")
+    .eq("is_active", true)
+    .order("sort_order");
+
+  if (assetClasses) {
+    const acStats = await Promise.all(
+      assetClasses.map(async (ac) => {
+        const [{ count }, { data: earliest }, { data: latest }] = await Promise.all([
+          supabase.from("asset_class_market_cap").select("*", { count: "exact", head: true }).eq("asset_class_id", ac.id),
+          supabase.from("asset_class_market_cap").select("date").eq("asset_class_id", ac.id).order("date", { ascending: true }).limit(1).single(),
+          supabase.from("asset_class_market_cap").select("date").eq("asset_class_id", ac.id).order("date", { ascending: false }).limit(1).single(),
+        ]);
+        return {
+          source: "Asset Class",
+          name: `${ac.name}`,
+          rows: count ?? 0,
+          earliest: earliest?.date ?? null,
+          latest: latest?.date ?? null,
+          description: ac.source_description ?? undefined,
+        };
+      })
+    );
+    rows.push(...acStats);
+  }
 
   return rows;
 }
@@ -514,4 +545,279 @@ export async function triggerETL(): Promise<{ success: boolean; error?: string }
   }
 
   return { success: true };
+}
+
+// --- Asset Class Market Cap ---
+
+const GLOBAL_TOTAL_BASE_YEAR = 2024;
+const GLOBAL_TOTAL_BASE_VALUE_T = 900;
+const GLOBAL_TOTAL_GROWTH_RATE = 0.05;
+
+function getGlobalTotalEstimate(date: string): number {
+  const year = new Date(date).getFullYear();
+  const yearFrac = (new Date(date).getMonth()) / 12;
+  const yearsSince = (year - GLOBAL_TOTAL_BASE_YEAR) + yearFrac;
+  return GLOBAL_TOTAL_BASE_VALUE_T * Math.pow(1 + GLOBAL_TOTAL_GROWTH_RATE, yearsSince);
+}
+
+export async function getAssetClassSnapshots(): Promise<AssetClassSnapshot[]> {
+  const supabase = await createFinancialClient();
+
+  const { data: assetClasses } = await supabase
+    .from("asset_classes")
+    .select("*")
+    .eq("is_active", true)
+    .order("sort_order");
+
+  if (!assetClasses || assetClasses.length === 0) return [];
+
+  const snapshots: AssetClassSnapshot[] = [];
+
+  for (const ac of assetClasses as AssetClass[]) {
+    const { data: latest } = await supabase
+      .from("asset_class_market_cap")
+      .select("date, market_cap_t")
+      .eq("asset_class_id", ac.id)
+      .order("date", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (!latest) continue;
+
+    // Get value from ~1 year ago for YoY
+    const oneYearAgo = new Date(latest.date);
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    const targetDate = oneYearAgo.toISOString().split("T")[0];
+
+    const { data: yearAgo } = await supabase
+      .from("asset_class_market_cap")
+      .select("market_cap_t")
+      .eq("asset_class_id", ac.id)
+      .lte("date", targetDate)
+      .order("date", { ascending: false })
+      .limit(1)
+      .single();
+
+    const change1y = yearAgo
+      ? ((latest.market_cap_t - yearAgo.market_cap_t) / yearAgo.market_cap_t) * 100
+      : null;
+
+    snapshots.push({
+      asset_class: ac,
+      latest_value: latest.market_cap_t,
+      latest_date: latest.date,
+      change_1y_pct: change1y,
+    });
+  }
+
+  return snapshots;
+}
+
+export async function getAssetClassTimeSeries(
+  timeframe: "1y" | "5y" | "10y" | "all" = "all"
+): Promise<AssetClassTimeSeriesPoint[]> {
+  const supabase = await createFinancialClient();
+
+  const { data: assetClasses } = await supabase
+    .from("asset_classes")
+    .select("id, slug")
+    .eq("is_active", true)
+    .order("sort_order");
+
+  if (!assetClasses || assetClasses.length === 0) return [];
+
+  // Determine start date based on timeframe
+  let startDate = "1945-01-01";
+  if (timeframe !== "all") {
+    const now = new Date();
+    const years = timeframe === "1y" ? 1 : timeframe === "5y" ? 5 : 10;
+    now.setFullYear(now.getFullYear() - years);
+    startDate = now.toISOString().split("T")[0];
+  }
+
+  // Fetch all market cap data for all classes
+  const allData: Array<{ slug: string; date: string; value: number }> = [];
+
+  for (const ac of assetClasses) {
+    const pageSize = 1000;
+    let from = 0;
+    while (true) {
+      const { data, error } = await supabase
+        .from("asset_class_market_cap")
+        .select("date, market_cap_t")
+        .eq("asset_class_id", ac.id)
+        .gte("date", startDate)
+        .order("date", { ascending: true })
+        .range(from, from + pageSize - 1);
+
+      if (error) break;
+      if (!data || data.length === 0) break;
+
+      for (const row of data) {
+        allData.push({ slug: ac.slug, date: row.date, value: row.market_cap_t });
+      }
+
+      if (data.length < pageSize) break;
+      from += pageSize;
+    }
+  }
+
+  // Build unified date index
+  const dateSet = new Set<string>();
+  allData.forEach((d) => dateSet.add(d.date));
+  const allDates = [...dateSet].sort();
+
+  // Downsample: keep every Nth point depending on total dates
+  const maxPoints = 200;
+  const step = Math.max(1, Math.floor(allDates.length / maxPoints));
+  const dates = allDates.filter((_, i) => i % step === 0);
+
+  // Build lookup maps per slug
+  const slugs = assetClasses.map((ac) => ac.slug);
+  const maps: Record<string, Map<string, number>> = {};
+  for (const slug of slugs) {
+    maps[slug] = new Map();
+  }
+  for (const row of allData) {
+    maps[row.slug]?.set(row.date, row.value);
+  }
+
+  // Forward-fill: for each date, use last known value
+  const lastKnown: Record<string, number | null> = {};
+  slugs.forEach((s) => { lastKnown[s] = null; });
+
+  const result: AssetClassTimeSeriesPoint[] = [];
+
+  for (const date of dates) {
+    const values: Record<string, number | null> = {};
+
+    for (const slug of slugs) {
+      const val = maps[slug].get(date);
+      if (val !== undefined) {
+        lastKnown[slug] = val;
+      }
+      values[slug] = lastKnown[slug];
+    }
+
+    // Compute "other" as residual
+    const tracked = Object.values(values).reduce<number>((sum, v) => sum + (v ?? 0), 0);
+    const globalTotal = getGlobalTotalEstimate(date);
+    values["other"] = Math.max(0, globalTotal - tracked);
+
+    result.push({ date, values });
+  }
+
+  return result;
+}
+
+export async function getAssetClassBreakdown(): Promise<{
+  total_estimated: number;
+  tracked_total: number;
+  classes: Array<{
+    slug: string;
+    name: string;
+    color: string;
+    market_cap_t: number;
+    pct_of_total: number;
+    date: string;
+  }>;
+}> {
+  const snapshots = await getAssetClassSnapshots();
+  const today = new Date().toISOString().split("T")[0];
+  const totalEstimated = getGlobalTotalEstimate(today);
+  const trackedTotal = snapshots.reduce((sum, s) => sum + s.latest_value, 0);
+
+  const classes = snapshots.map((s) => ({
+    slug: s.asset_class.slug,
+    name: s.asset_class.name,
+    color: s.asset_class.color,
+    market_cap_t: s.latest_value,
+    pct_of_total: (s.latest_value / totalEstimated) * 100,
+    date: s.latest_date,
+  }));
+
+  // Add "other" residual
+  const otherValue = Math.max(0, totalEstimated - trackedTotal);
+  classes.push({
+    slug: "other",
+    name: "Other",
+    color: "#525252",
+    market_cap_t: otherValue,
+    pct_of_total: (otherValue / totalEstimated) * 100,
+    date: today,
+  });
+
+  return { total_estimated: totalEstimated, tracked_total: trackedTotal, classes };
+}
+
+export interface RawAssetClassDataPoint {
+  slug: string;
+  date: string;
+  market_cap_t: number;
+  raw_value: number | null;
+}
+
+export async function getAssetClassRawTimeSeries(
+  timeframe: "1y" | "5y" | "10y" | "all" = "all"
+): Promise<{
+  points: RawAssetClassDataPoint[];
+  classes: Array<{ slug: string; estimation_method: string; multiplier: number | null }>;
+}> {
+  const supabase = await createFinancialClient();
+
+  const { data: assetClasses } = await supabase
+    .from("asset_classes")
+    .select("id, slug, estimation_method, multiplier")
+    .eq("is_active", true)
+    .order("sort_order");
+
+  if (!assetClasses || assetClasses.length === 0) return { points: [], classes: [] };
+
+  let startDate = "1945-01-01";
+  if (timeframe !== "all") {
+    const now = new Date();
+    const years = timeframe === "1y" ? 1 : timeframe === "5y" ? 5 : 10;
+    now.setFullYear(now.getFullYear() - years);
+    startDate = now.toISOString().split("T")[0];
+  }
+
+  const allPoints: RawAssetClassDataPoint[] = [];
+
+  for (const ac of assetClasses) {
+    const pageSize = 1000;
+    let from = 0;
+    while (true) {
+      const { data, error } = await supabase
+        .from("asset_class_market_cap")
+        .select("date, market_cap_t, raw_value")
+        .eq("asset_class_id", ac.id)
+        .gte("date", startDate)
+        .order("date", { ascending: true })
+        .range(from, from + pageSize - 1);
+
+      if (error) break;
+      if (!data || data.length === 0) break;
+
+      for (const row of data) {
+        allPoints.push({
+          slug: ac.slug,
+          date: row.date,
+          market_cap_t: row.market_cap_t,
+          raw_value: row.raw_value,
+        });
+      }
+
+      if (data.length < pageSize) break;
+      from += pageSize;
+    }
+  }
+
+  return {
+    points: allPoints,
+    classes: assetClasses.map((ac) => ({
+      slug: ac.slug,
+      estimation_method: ac.estimation_method,
+      multiplier: ac.multiplier,
+    })),
+  };
 }

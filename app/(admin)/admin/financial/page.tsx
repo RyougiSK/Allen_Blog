@@ -15,6 +15,7 @@ export default async function FinancialOverviewPage() {
   const cpi = inventory.filter((r) => r.source === "CPI");
   const liquidityRates = inventory.filter((r) => r.source === "Liquidity Rate");
   const liquidityReserves = inventory.filter((r) => r.source === "Liquidity Reserve");
+  const assetClasses = inventory.filter((r) => r.source === "Asset Class");
 
   return (
     <div className="space-y-6">
@@ -60,6 +61,55 @@ export default async function FinancialOverviewPage() {
         <h2 className="text-sm font-medium text-text-secondary mb-3">Liquidity Reserves</h2>
         <DataTable rows={liquidityReserves} />
       </section>
+
+      <section>
+        <h2 className="text-sm font-medium text-text-secondary mb-3">Asset Class Market Caps</h2>
+        <DataTableWithSource rows={assetClasses} />
+      </section>
+    </div>
+  );
+}
+
+function DataTableWithSource({ rows }: { rows: { name: string; rows: number; earliest: string | null; latest: string | null; description?: string }[] }) {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-surface/30">
+            <th className="text-left px-4 py-2.5 font-medium text-text-secondary">Name</th>
+            <th className="text-left px-4 py-2.5 font-medium text-text-secondary">Data Source</th>
+            <th className="text-right px-4 py-2.5 font-medium text-text-secondary">Rows</th>
+            <th className="text-right px-4 py-2.5 font-medium text-text-secondary">From</th>
+            <th className="text-right px-4 py-2.5 font-medium text-text-secondary">To</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.name} className="border-b border-border/50">
+              <td className="px-4 py-2.5 text-text-primary">{row.name}</td>
+              <td className="px-4 py-2.5 text-[11px] text-text-tertiary max-w-[300px]">
+                {row.description ?? "—"}
+              </td>
+              <td className="px-4 py-2.5 text-right font-mono text-text-tertiary">
+                {row.rows.toLocaleString()}
+              </td>
+              <td className="px-4 py-2.5 text-right font-mono text-text-tertiary">
+                {row.earliest ?? "—"}
+              </td>
+              <td className="px-4 py-2.5 text-right font-mono text-text-tertiary">
+                {row.latest ?? "—"}
+              </td>
+            </tr>
+          ))}
+          {rows.length === 0 && (
+            <tr>
+              <td colSpan={5} className="px-4 py-4 text-center text-text-quaternary text-xs">
+                No data yet — click Update above
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }

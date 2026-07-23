@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createFinancialServiceClient } from "@/utils/supabase/financial";
 import { fetchPrices, fetchCPI, fetchTreasuryRates, fetchOilFromFRED, fetchLiquidityData, getActiveIndexes } from "@/lib/financial/etl-fetch";
 import { computeAllAnalyses } from "@/lib/financial/etl-compute";
+import { fetchAssetClassMarketCaps } from "@/lib/financial/etl-asset-class";
 
 export const maxDuration = 300;
 
@@ -93,6 +94,14 @@ async function runPipeline() {
     // Stage 3: Compute analysis
     const analysesComputed = await computeAllAnalyses(indexes);
 
+    // Stage 4: Asset class market caps
+    let assetClassRows = 0;
+    try {
+      assetClassRows = await fetchAssetClassMarketCaps();
+    } catch (e) {
+      console.error("Asset class market cap fetch failed:", e);
+    }
+
     // Log completion
     if (job) {
       await supabase
@@ -101,7 +110,7 @@ async function runPipeline() {
           status: "completed",
           indexes_processed: indexes.length,
           completed_at: new Date().toISOString(),
-          metadata: { totalPriceRows, analysesComputed },
+          metadata: { totalPriceRows, analysesComputed, assetClassRows },
         })
         .eq("id", job.id);
     }
@@ -111,6 +120,7 @@ async function runPipeline() {
       indexes: indexes.length,
       priceRows: totalPriceRows,
       analyses: analysesComputed,
+      assetClassRows,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

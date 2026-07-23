@@ -7,7 +7,7 @@ export type ValuationZone =
   | "fair_value"
   | "overvalued"
   | "strongly_overvalued";
-export type ETLJobType = "price_fetch" | "cpi_fetch" | "analysis_compute" | "full_pipeline";
+export type ETLJobType = "price_fetch" | "cpi_fetch" | "analysis_compute" | "full_pipeline" | "asset_class_fetch";
 export type ETLJobStatus = "started" | "completed" | "failed";
 
 export interface MarketIndex {
@@ -110,6 +110,49 @@ export interface DataInventoryRow {
   rows: number;
   earliest: string | null;
   latest: string | null;
+  description?: string;
+}
+
+export interface AssetClass {
+  id: string;
+  slug: string;
+  name: string;
+  color: string;
+  sort_order: number;
+  estimation_method: "direct" | "multiplier" | "calculated";
+  multiplier: number | null;
+  source_description: string | null;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface AssetClassMarketCap {
+  id: string;
+  asset_class_id: string;
+  date: string;
+  market_cap_t: number;
+  source: string;
+  raw_value: number | null;
+  metadata: Record<string, unknown> | null;
+}
+
+export interface AssetClassSnapshot {
+  asset_class: AssetClass;
+  latest_value: number;
+  latest_date: string;
+  change_1y_pct: number | null;
+}
+
+export interface AssetClassTimeSeriesPoint {
+  date: string;
+  values: Record<string, number | null>;
+}
+
+export interface RawAssetClassDataPoint {
+  slug: string;
+  date: string;
+  market_cap_t: number;
+  raw_value: number | null;
 }
 
 export interface ModelStats {

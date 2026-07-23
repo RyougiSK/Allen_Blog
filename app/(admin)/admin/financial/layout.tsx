@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TrendingUp, LineChart, GitBranch, Activity, Droplets } from "lucide-react";
+import { TrendingUp, LineChart, GitBranch, Activity, Droplets, PieChart } from "lucide-react";
 
 const tabs = [
   { href: "/admin/financial", label: "Overview", icon: TrendingUp, exact: true },
@@ -10,6 +10,7 @@ const tabs = [
   { href: "/admin/financial/yield-curve", label: "Yield Curve", icon: GitBranch, exact: true },
   { href: "/admin/financial/spread", label: "Spread", icon: Activity, exact: true },
   { href: "/admin/financial/liquidity", label: "Liquidity", icon: Droplets, exact: true },
+  { href: "/admin/financial/asset-classes", label: "Asset Classes", icon: PieChart, exact: true },
 ];
 
 export default function FinancialLayout({
