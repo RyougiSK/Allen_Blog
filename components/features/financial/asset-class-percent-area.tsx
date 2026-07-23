@@ -106,13 +106,17 @@ export function AssetClassPercentArea({
     <div className="w-full rounded-lg border border-border bg-bg-primary/50 overflow-hidden">
       <div className="px-4 pt-3">
         <h3 className="text-sm font-medium text-text-secondary">
-          % of Estimated Global Total (~$900T+)
+          {showOther
+            ? "% of Estimated Global Total (~$900T+)"
+            : "% of Tracked Asset Classes"}
         </h3>
         <p className="text-[10px] text-text-tertiary mt-0.5">
-          Includes &ldquo;Other&rdquo; residual (private equity, deposits, insurance, etc.)
+          {showOther
+            ? "Includes “Other” residual (private equity, deposits, insurance, etc.)"
+            : "Relative share among the 6 tracked asset classes only"}
         </p>
       </div>
-      <ReactECharts option={option} style={{ height: 340 }} />
+      <ReactECharts option={option} notMerge={true} style={{ height: 340 }} />
     </div>
   );
 }

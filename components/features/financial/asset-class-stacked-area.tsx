@@ -158,7 +158,7 @@ export function AssetClassStackedArea({
             <Loader2 className="h-5 w-5 text-text-tertiary animate-spin" />
           </div>
         )}
-        <ReactECharts option={option} style={{ height: 380 }} />
+        <ReactECharts option={option} notMerge={true} style={{ height: 380 }} />
       </div>
     </div>
   );
