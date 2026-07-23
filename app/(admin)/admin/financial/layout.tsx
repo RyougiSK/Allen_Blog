@@ -41,7 +41,7 @@ export default function FinancialLayout({
             </p>
           </div>
 
-          <nav className="flex gap-1 border-b border-border pb-px mb-6">
+          <nav className="flex gap-1 border-b border-border pb-px mb-6 overflow-x-auto">
             {tabs.map(({ href, label, icon: Icon, exact }) => (
               <Link
                 key={href}

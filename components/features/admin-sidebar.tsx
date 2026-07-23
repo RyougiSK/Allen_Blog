@@ -23,6 +23,7 @@ import {
   TrendingUp,
   LineChart,
   Activity,
+  PieChart,
   ChevronRight,
 } from "lucide-react";
 import { signOut } from "@/app/(auth)/login/actions";
@@ -72,6 +73,7 @@ const navGroups: NavGroup[] = [
       { href: "/admin/financial/yield-curve", label: "Yield Curve", icon: Activity, exact: false },
       { href: "/admin/financial/spread", label: "Spread", icon: Activity, exact: false },
       { href: "/admin/financial/liquidity", label: "Liquidity", icon: Activity, exact: false },
+      { href: "/admin/financial/asset-classes", label: "Asset Classes", icon: PieChart, exact: false },
     ],
   },
   {
