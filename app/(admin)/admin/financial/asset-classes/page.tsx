@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { Loader2 } from "lucide-react";
 import {
   getAssetClassSnapshots,
   getAssetClassRawTimeSeries,
@@ -59,7 +60,9 @@ export default function AssetClassesPage() {
   const [totalEstimated, setTotalEstimated] = useState(0);
   const [timeframe, setTimeframe] = useState<"1y" | "5y" | "10y" | "all">("all");
   const [loading, setLoading] = useState(true);
+  const [tsLoading, setTsLoading] = useState(true);
   const [assumptions, setAssumptions] = useState<AssumptionParams>(DEFAULT_ASSUMPTIONS);
+  const [showOther, setShowOther] = useState(true);
 
   useEffect(() => {
     async function load() {
@@ -81,6 +84,7 @@ export default function AssetClassesPage() {
 
   useEffect(() => {
     async function loadRaw() {
+      setTsLoading(true);
       try {
         const { points, classes } = await getAssetClassRawTimeSeries(timeframe);
         setRawPoints(points);
@@ -88,6 +92,7 @@ export default function AssetClassesPage() {
       } catch (e) {
         console.error("Failed to load raw time series:", e);
       }
+      setTsLoading(false);
     }
     loadRaw();
   }, [timeframe]);
@@ -164,9 +169,9 @@ export default function AssetClassesPage() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
-        <div className="h-24 rounded-lg border border-border bg-bg-primary/50 animate-pulse" />
-        <div className="h-[380px] rounded-lg border border-border bg-bg-primary/50 animate-pulse" />
+      <div className="flex flex-col items-center justify-center py-24 gap-3">
+        <Loader2 className="h-6 w-6 text-text-tertiary animate-spin" />
+        <p className="text-sm text-text-tertiary">Loading asset class data...</p>
       </div>
     );
   }
@@ -184,9 +189,12 @@ export default function AssetClassesPage() {
         data={timeSeries}
         onTimeframeChange={setTimeframe}
         activeTimeframe={timeframe}
+        showOther={showOther}
+        onToggleOther={() => setShowOther(!showOther)}
+        loading={tsLoading}
       />
 
-      <AssetClassPercentArea data={timeSeries} />
+      <AssetClassPercentArea data={timeSeries} showOther={showOther} />
 
       <div className="rounded-lg border border-border bg-bg-primary/50 p-4">
         <h4 className="text-xs font-medium text-text-secondary mb-2">

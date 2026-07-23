@@ -16,26 +16,30 @@ const SERIES_CONFIG: Array<{ slug: string; name: string; color: string }> = [
 
 export function AssetClassPercentArea({
   data,
+  showOther = true,
 }: {
   data: AssetClassTimeSeriesPoint[];
+  showOther?: boolean;
 }) {
   const chartData = useMemo(() => {
     if (data.length === 0) return { dates: [], series: [] };
 
+    const configs = showOther ? SERIES_CONFIG : SERIES_CONFIG.filter((c) => c.slug !== "other");
     const dates = data.map((d) => d.date);
 
-    // Compute % of total for each date
-    const series = SERIES_CONFIG.map((cfg) => ({
+    const series = configs.map((cfg) => ({
       ...cfg,
       data: data.map((d) => {
-        const total = Object.values(d.values).reduce<number>((sum, v) => sum + (v ?? 0), 0);
+        const total = showOther
+          ? Object.values(d.values).reduce<number>((sum, v) => sum + (v ?? 0), 0)
+          : Object.entries(d.values).reduce<number>((sum, [k, v]) => k === "other" ? sum : sum + (v ?? 0), 0);
         if (total === 0) return null;
         return ((d.values[cfg.slug] ?? 0) / total) * 100;
       }),
     }));
 
     return { dates, series };
-  }, [data]);
+  }, [data, showOther]);
 
   if (data.length === 0) return null;
 

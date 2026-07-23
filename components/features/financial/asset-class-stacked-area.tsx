@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import ReactECharts from "echarts-for-react";
+import { Loader2 } from "lucide-react";
 import type { AssetClassTimeSeriesPoint } from "@/lib/types/financial";
 
 const TIMEFRAMES = [
@@ -25,26 +26,33 @@ export function AssetClassStackedArea({
   data,
   onTimeframeChange,
   activeTimeframe = "all",
+  showOther = true,
+  onToggleOther,
+  loading = false,
 }: {
   data: AssetClassTimeSeriesPoint[];
   onTimeframeChange: (tf: "1y" | "5y" | "10y" | "all") => void;
   activeTimeframe?: string;
+  showOther?: boolean;
+  onToggleOther?: () => void;
+  loading?: boolean;
 }) {
   const [logScale, setLogScale] = useState(false);
 
   const chartData = useMemo(() => {
     if (data.length === 0) return { dates: [], series: [] };
 
+    const configs = showOther ? SERIES_CONFIG : SERIES_CONFIG.filter((c) => c.slug !== "other");
     const dates = data.map((d) => d.date);
-    const series = SERIES_CONFIG.map((cfg) => ({
+    const series = configs.map((cfg) => ({
       ...cfg,
       data: data.map((d) => d.values[cfg.slug] ?? null),
     }));
 
     return { dates, series };
-  }, [data]);
+  }, [data, showOther]);
 
-  if (data.length === 0) {
+  if (data.length === 0 && !loading) {
     return (
       <div className="w-full rounded-lg border border-border bg-bg-primary/50 p-8 text-center text-text-tertiary text-sm">
         No asset class data available. Run the ETL pipeline to populate.
@@ -119,6 +127,18 @@ export function AssetClassStackedArea({
           Global Asset Classes — Stacked Market Cap ($T)
         </h3>
         <div className="flex items-center gap-2">
+          {onToggleOther && (
+            <button
+              onClick={onToggleOther}
+              className={`px-2 py-0.5 text-[10px] rounded border transition-colors ${
+                showOther
+                  ? "border-border text-text-tertiary hover:text-text-secondary"
+                  : "border-amber-500/40 text-amber-400 bg-amber-500/10"
+              }`}
+            >
+              {showOther ? "Hide Other" : "Show Other"}
+            </button>
+          )}
           <button
             onClick={() => setLogScale(!logScale)}
             className={`px-2 py-0.5 text-[10px] rounded border transition-colors ${
@@ -146,7 +166,14 @@ export function AssetClassStackedArea({
           </div>
         </div>
       </div>
-      <ReactECharts option={option} style={{ height: 380 }} />
+      <div className="relative">
+        {loading && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-bg-primary/60 backdrop-blur-[1px]">
+            <Loader2 className="h-5 w-5 text-text-tertiary animate-spin" />
+          </div>
+        )}
+        <ReactECharts option={option} style={{ height: 380 }} />
+      </div>
     </div>
   );
 }
