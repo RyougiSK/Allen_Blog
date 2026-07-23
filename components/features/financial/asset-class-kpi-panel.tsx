@@ -7,9 +7,11 @@ import type { AssetClassTimeSeriesPoint } from "@/lib/types/financial";
 interface KPIDef {
   id: string;
   name: string;
+  formula: string;
   compute: (latest: Record<string, number | null>, globalTotal: number) => number | null;
   format: (v: number) => string;
   interpret: (v: number) => string;
+  commentary: (v: number) => string;
   zones: Array<{ max: number; color: string; label: string }>;
   source: string;
   rationale: string;
@@ -19,6 +21,7 @@ const KPIS: KPIDef[] = [
   {
     id: "gold_anchor",
     name: "Gold Monetary Anchor",
+    formula: "Gold Market Cap ÷ Global Total Assets × 100",
     compute: (v, total) => {
       const gold = v.gold ?? 0;
       return total > 0 ? (gold / total) * 100 : null;
@@ -27,6 +30,12 @@ const KPIS: KPIDef[] = [
     interpret: (v) => {
       const ratio = Math.round(100 / v);
       return `$${ratio} of claims per $1 gold backing`;
+    },
+    commentary: (v) => {
+      if (v < 4) return "Risk — financial system has expanded far beyond its hard anchor. Historically precedes currency debasement or gold repricing.";
+      if (v < 6) return "Caution — gold's backing role is thin. Central banks accumulating suggests smart money sees rebalancing ahead.";
+      if (v < 10) return "Neutral — adequate hard backing. Financial expansion is proportionate to monetary base.";
+      return "Opportunity — gold overweight signals fear. Financial assets may be undervalued relative to hard money.";
     },
     zones: [
       { max: 4, color: "#EF4444", label: "Excessive expansion" },
@@ -40,6 +49,7 @@ const KPIS: KPIDef[] = [
   {
     id: "financialization",
     name: "Financialization Index",
+    formula: "(Equities + Bonds) ÷ (Real Estate + Gold)",
     compute: (v) => {
       const securities = (v.global_equities ?? 0) + (v.global_bonds ?? 0);
       const real = (v.real_estate ?? 0) + (v.gold ?? 0);
@@ -47,6 +57,12 @@ const KPIS: KPIDef[] = [
     },
     format: (v) => `${v.toFixed(2)}×`,
     interpret: (v) => `$${v.toFixed(1)} in paper claims per $1 real asset`,
+    commentary: (v) => {
+      if (v > 2.5) return "Risk — too many paper claims on too few real assets. System is fragile to confidence shocks. Favors tangible assets.";
+      if (v > 2.0) return "Caution — financialization running ahead of real wealth creation. Late-cycle dynamics.";
+      if (v > 1.5) return "Neutral — financial system is proportionate. Paper and real assets in reasonable balance.";
+      return "Opportunity — financial assets may be undervalued or underdeveloped relative to real economy.";
+    },
     zones: [
       { max: 1.5, color: "#3B82F6", label: "Under-financialized" },
       { max: 2.0, color: "#22C55E", label: "Balanced" },
@@ -59,6 +75,7 @@ const KPIS: KPIDef[] = [
   {
     id: "debt_dominance",
     name: "Debt Dominance",
+    formula: "Global Bonds ÷ Global Equities",
     compute: (v) => {
       const bonds = v.global_bonds ?? 0;
       const equities = v.global_equities ?? 0;
@@ -66,6 +83,12 @@ const KPIS: KPIDef[] = [
     },
     format: (v) => `${v.toFixed(2)}:1`,
     interpret: (v) => `$${v.toFixed(2)} of debt per $1 of equity`,
+    commentary: (v) => {
+      if (v > 2.0) return "Risk — debt overhang is severe. Growth is debt-fueled, making the system fragile to rate hikes or economic slowdowns.";
+      if (v > 1.5) return "Caution — capital structure tilts toward fixed obligations. Rising rates compress further; equity may benefit from deleveraging.";
+      if (v > 1.0) return "Neutral — balanced debt-to-equity. Neither side dominates, suggesting a stable funding mix.";
+      return "Opportunity — rare equity-dominant structure. Economy is self-funding rather than debt-dependent.";
+    },
     zones: [
       { max: 1.0, color: "#3B82F6", label: "Equity-dominant" },
       { max: 1.5, color: "#22C55E", label: "Balanced" },
@@ -78,6 +101,7 @@ const KPIS: KPIDef[] = [
   {
     id: "derivatives_complexity",
     name: "Derivatives Complexity",
+    formula: "Derivatives GMV ÷ (Equities + Bonds) × 100",
     compute: (v) => {
       const deriv = v.derivatives ?? 0;
       const underlying = (v.global_equities ?? 0) + (v.global_bonds ?? 0);
@@ -85,6 +109,12 @@ const KPIS: KPIDef[] = [
     },
     format: (v) => `${v.toFixed(1)}%`,
     interpret: (v) => `GMV is ${v.toFixed(1)}% of underlying securities`,
+    commentary: (v) => {
+      if (v > 8) return "Risk — counterparty exposure is high. Hidden leverage amplifies shocks. Recall: this exceeded 10% before 2008.";
+      if (v > 6) return "Caution — derivatives layer is thickening. Hedging complexity rises, but so does interconnected fragility.";
+      if (v > 3) return "Neutral — moderate derivative usage. Markets are hedged without excessive layering of synthetic exposure.";
+      return "Opportunity — low derivatives usage suggests simpler markets with less counterparty entanglement.";
+    },
     zones: [
       { max: 3, color: "#22C55E", label: "Low complexity" },
       { max: 6, color: "#F59E0B", label: "Moderate" },
@@ -97,6 +127,7 @@ const KPIS: KPIDef[] = [
   {
     id: "crypto_gold",
     name: "Digital Gold Displacement",
+    formula: "Crypto Market Cap ÷ Gold Market Cap × 100",
     compute: (v) => {
       const crypto = v.crypto ?? 0;
       const gold = v.gold ?? 0;
@@ -104,6 +135,12 @@ const KPIS: KPIDef[] = [
     },
     format: (v) => `${v.toFixed(1)}%`,
     interpret: (v) => `Crypto is ${v.toFixed(1)}% of gold's market cap`,
+    commentary: (v) => {
+      if (v > 25) return "Signal — digital scarcity is becoming a peer asset to physical scarcity. Generational shift in store-of-value preference.";
+      if (v > 10) return "Emerging — crypto is no longer negligible vs gold. If cycle troughs keep rising, structural reallocation is underway.";
+      if (v > 5) return "Early — crypto is visible but unproven at scale. Ratio must survive bear markets to confirm structural shift.";
+      return "Nascent — crypto remains a rounding error vs gold. Too early to call displacement.";
+    },
     zones: [
       { max: 5, color: "#22C55E", label: "Nascent" },
       { max: 15, color: "#F59E0B", label: "Emerging" },
@@ -116,12 +153,19 @@ const KPIS: KPIDef[] = [
   {
     id: "tangible_backing",
     name: "Real Asset Backing",
+    formula: "(Real Estate + Gold) ÷ Global Total × 100",
     compute: (v, total) => {
       const real = (v.real_estate ?? 0) + (v.gold ?? 0);
       return total > 0 ? (real / total) * 100 : null;
     },
     format: (v) => `${v.toFixed(1)}%`,
     interpret: (v) => `${v.toFixed(0)}% of global assets are tangible`,
+    commentary: (v) => {
+      if (v < 15) return "Risk — the system is overwhelmingly paper-based. Vulnerable to confidence crises where abstract claims lose credibility.";
+      if (v < 25) return "Caution — tangible backing is thin. Real assets may be relatively undervalued, offering long-term reversion opportunity.";
+      if (v < 35) return "Neutral — healthy balance between tangible and financial assets. Neither side overly dominates.";
+      return "Opportunity — tangible assets dominate, suggesting financial markets are underdeveloped or recovering from crisis.";
+    },
     zones: [
       { max: 15, color: "#EF4444", label: "Overwhelmingly paper" },
       { max: 25, color: "#F59E0B", label: "Low tangibility" },
@@ -154,7 +198,7 @@ function getZonePosition(value: number, zones: KPIDef["zones"]): number {
   return 100;
 }
 
-function InfoTooltip({ source, rationale }: { source: string; rationale: string }) {
+function InfoTooltip({ formula, source, rationale }: { formula: string; source: string; rationale: string }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -169,6 +213,9 @@ function InfoTooltip({ source, rationale }: { source: string; rationale: string 
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <div className="absolute right-0 top-5 z-50 w-72 p-3 rounded-lg border border-border bg-bg-secondary shadow-lg">
+            <p className="text-[10px] text-text-primary font-mono mb-2 px-2 py-1 rounded bg-bg-primary/60 border border-border/50">
+              {formula}
+            </p>
             <p className="text-[10px] text-text-tertiary leading-relaxed mb-2">
               {rationale}
             </p>
@@ -222,7 +269,7 @@ export function AssetClassKPIPanel({
                 <span className="text-[11px] text-text-tertiary font-medium">
                   {kpi.name}
                 </span>
-                <InfoTooltip source={kpi.source} rationale={kpi.rationale} />
+                <InfoTooltip formula={kpi.formula} source={kpi.source} rationale={kpi.rationale} />
               </div>
 
               <div className="flex items-baseline gap-2 mb-1.5">
@@ -265,6 +312,10 @@ export function AssetClassKPIPanel({
 
               <p className="text-[10px] text-text-tertiary">
                 {kpi.interpret(kpi.value)}
+              </p>
+
+              <p className="text-[9px] mt-2 leading-relaxed italic" style={{ color: zone.color }}>
+                {kpi.commentary(kpi.value)}
               </p>
             </div>
           );
