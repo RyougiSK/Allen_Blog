@@ -15,6 +15,7 @@ import {
   DEFAULT_ASSUMPTIONS,
   type AssumptionParams,
 } from "@/components/features/financial/asset-class-assumptions";
+import { AssetClassKPIPanel } from "@/components/features/financial/asset-class-kpi-panel";
 import type {
   AssetClassSnapshot,
   AssetClassTimeSeriesPoint,
@@ -191,6 +192,11 @@ export default function AssetClassesPage() {
       <AssetClassSummaryCards
         snapshots={snapshots}
         totalEstimated={adjustedTotalEstimated}
+      />
+
+      <AssetClassKPIPanel
+        timeSeries={timeSeries}
+        globalTotal={adjustedTotalEstimated}
       />
 
       <div className="flex items-center justify-end">
